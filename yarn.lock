@@ -1594,14 +1594,15 @@ __metadata:
     blessed: "npm:^0.1.81"
     concurrently: "npm:^9.0.1"
     eslint: "npm:^9.12.0"
+    hash.js: "npm:^1.1.7"
     nodemon: "npm:^3.1.7"
-    obsidian: "npm:^1.7.2"
+    obsidian: "npm:^1.8.7"
     preact: "npm:^10.24.3"
     prettier: "npm:^3.3.3"
     ps-list: "npm:^8.1.1"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
-    react-obsidian-setting: "npm:^1.0.1"
+    react-obsidian-setting: "npm:^1.0.25"
     react-router-dom: "npm:^6.27.0"
     rollup: "npm:^4.24.0"
     rollup-plugin-bundle-stats: "npm:^4.16.0"
@@ -2219,6 +2220,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hash.js@npm:^1.1.7":
+  version: 1.1.7
+  resolution: "hash.js@npm:1.1.7"
+  dependencies:
+    inherits: "npm:^2.0.3"
+    minimalistic-assert: "npm:^1.0.1"
+  checksum: 10c0/41ada59494eac5332cfc1ce6b7ebdd7b88a3864a6d6b08a3ea8ef261332ed60f37f10877e0c825aaa4bddebf164fbffa618286aeeec5296675e2671cbfa746c4
+  languageName: node
+  linkType: hard
+
 "hasown@npm:^2.0.2":
   version: 2.0.2
   resolution: "hasown@npm:2.0.2"
@@ -2321,7 +2332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inherits@npm:2":
+"inherits@npm:2, inherits@npm:^2.0.3":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 10c0/4e531f648b29039fb7426fb94075e6545faa1eb9fe83c29f0b6d9e7263aceb4289d2d4557db0d428188eeb449cc7c5e77b0a0b2c4e248ff2a65933a0dee49ef2
@@ -2643,6 +2654,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimalistic-assert@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "minimalistic-assert@npm:1.0.1"
+  checksum: 10c0/96730e5601cd31457f81a296f521eb56036e6f69133c0b18c13fe941109d53ad23a4204d946a0d638d7f3099482a0cec8c9bb6d642604612ce43ee536be3dddd
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
@@ -2856,16 +2874,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"obsidian@npm:^1.7.2":
-  version: 1.7.2
-  resolution: "obsidian@npm:1.7.2"
+"obsidian@npm:^1.8.7":
+  version: 1.8.7
+  resolution: "obsidian@npm:1.8.7"
   dependencies:
     "@types/codemirror": "npm:5.60.8"
     moment: "npm:2.29.4"
   peerDependencies:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
-  checksum: 10c0/7ad1e97e0a21e5011640a8c02bdd74844ccf22d12c84ad8fcd653bc11cde47422e7dce38142d4659f8bca5f2043ce7f849e750765ac8052fed8770d37cbf39a6
+  checksum: 10c0/b03fdaf5a2c950c9f737f2dcf830e90aa8e0565cb68f2ffcbe10dd5a02a642efa2a141095e18ee7d1ae50adbe7ab694f2e66094ebf88a7a36e7c329d034c1a05
   languageName: node
   linkType: hard
 
@@ -3153,24 +3171,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-obsidian-setting@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "react-obsidian-setting@npm:1.0.0"
+"react-obsidian-setting@npm:^1.0.25":
+  version: 1.0.25
+  resolution: "react-obsidian-setting@npm:1.0.25"
   dependencies:
-    obsidian: "npm:^1.7.2"
-    react: "npm:^18.3.1"
-  checksum: 10c0/68884d361f0d92d19f01b26d5258ea00500b99014302a67e9ce6d5d8c3f6d5c578679f4462222fa0ddc7da31bb25b0edf9e577eaf11e83ee950711d004ea1965
-  languageName: node
-  linkType: hard
-
-"react-obsidian-setting@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "react-obsidian-setting@npm:1.0.1"
-  dependencies:
-    obsidian: "npm:^1.7.2"
-    react: "npm:^18.3.1"
-    react-obsidian-setting: "npm:^1.0.0"
-  checksum: 10c0/e5971f1532e2fcc20bbc62a07fcee43937744ab3f149b7aec4de6008980d46f08a2c3d033d5795de16fa9ff5ae49bde274dce20059716f13f5d74ec22e85a39a
+    styled-components: "npm:^6.1.13"
+  checksum: 10c0/d9811464b7f3bced4ac3492a0694ab38bef51688f88b75961c2644a6de4304663f500c2bae671cbf676bf0bf145b414581012b0933ba3da302aacc9b42342dd5
   languageName: node
   linkType: hard
 
