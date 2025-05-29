@@ -24,6 +24,10 @@ export class Diagram {
     source!: string;
     panelsData!: PanelsData;
     livePreviewObserver!: MutationObserver | undefined;
+    size!: {
+        expanded: { width: number; height: number };
+        folded: { width: number; height: number };
+    };
 
     constructor(public plugin: DiagramZoomDragPlugin) {
         this.state = new State(this);
@@ -101,12 +105,17 @@ export class Diagram {
         context: MarkdownPostProcessorContext
     ): Promise<void> {
         const maxWaitTime = 5000;
-        if (await this.processDiagramsInPreview(element, context)) {
+        if (!!(await this.checkForDiagram(element))) {
             return;
         }
 
         const observer = new MutationObserver(async () => {
-            if (await this.processDiagramsInPreview(element, context)) {
+            const diagram = await this.checkForDiagram(element);
+            if (diagram) {
+                await this.setDiagramContainer(diagram, {
+                    context: context,
+                    contextElement: element,
+                });
                 observer.disconnect();
             }
         });
@@ -151,8 +160,8 @@ export class Diagram {
                         if (target.tagName !== 'DIV') {
                             continue;
                         }
-                        const diagram = this.querySelectorWithData(target);
-                        if (diagram) {
+                        const diagram = await this.checkForDiagram(target);
+                        if (!!diagram) {
                             await this.setDiagramContainer(diagram);
                             observer.disconnect();
                             elementObservers.delete(target);
@@ -213,33 +222,15 @@ export class Diagram {
         });
     }
 
-    /**
-     * Processes diagrams within the provided element in preview mode.
-     *
-     * This method checks for the existence of a diagram within the specified
-     * HTML element. If a diagram is found, it sets up the diagram container
-     * with the relevant context data for rendering in preview mode.
-     *
-     * @param {HTMLElement} element - The HTML element to search for a diagram.
-     * @param {MarkdownPostProcessorContext} context - The context for rendering the diagram in preview mode.
-     * @returns {Promise<boolean>} A promise that resolves to true if a diagram is found and processed, otherwise false.
-     */
-    private async processDiagramsInPreview(
-        element: HTMLElement,
-        context: MarkdownPostProcessorContext
-    ): Promise<boolean> {
+    private async checkForDiagram(element: HTMLElement) {
         const diagram = this.querySelectorWithData(element);
 
-        if (!diagram) {
-            return false;
+        const svg = diagram?.element.querySelector('svg');
+        const img = diagram?.element.querySelector('img');
+
+        if (diagram && (!!svg || !!img)) {
+            return diagram;
         }
-
-        await this.setDiagramContainer(diagram, {
-            context: context,
-            contextElement: element,
-        });
-
-        return true;
     }
 
     /**
@@ -290,6 +281,125 @@ export class Diagram {
             context: MarkdownPostProcessorContext;
         }
     ): Promise<void> {
+        const sourceExtraction = (
+            el: HTMLElement
+        ):
+            | {
+                  source: string;
+                  lineStart: number;
+                  lineEnd: number;
+              }
+            | undefined => {
+            let source: string, lineStart: number, lineEnd: number;
+            if (this.plugin.livePreview) {
+                const e = this.plugin.view?.editor as unknown as any;
+                const startPos = e.cm.posAtDOM(el.parentElement);
+                const data = this.plugin.view?.editor
+                    .getValue()
+                    .slice(startPos);
+                source = data?.match(/^"?(```.+?```)/ms)?.[1] ?? 'No source';
+                const endPos = startPos + source.length;
+                lineStart = e.cm.state.doc.lineAt(startPos).number;
+                lineEnd = e.cm.state.doc.lineAt(endPos).number;
+            } else {
+                if (!contextData) {
+                    return;
+                }
+                const sectionsInfo = contextData.context.getSectionInfo(
+                    contextData.contextElement
+                );
+                if (!sectionsInfo) {
+                    return;
+                }
+                const { lineStart: ls, lineEnd: le, text } = sectionsInfo;
+                lineStart = ls;
+                lineEnd = le;
+                const lines = text.split('\n');
+                source = lines.slice(lineStart, lineEnd + 1).join('\n');
+            }
+            return {
+                source: source,
+                lineStart: lineStart,
+                lineEnd: lineEnd,
+            };
+        };
+
+        const initDiagramSize = (el: HTMLElement): boolean => {
+            const diagramOriginalSize = this.getElSize(el);
+
+            if (!diagramOriginalSize) {
+                return false;
+            }
+            let expandedWidth, expandedHeight, foldedWidth, foldedHeight;
+
+            if (this.plugin.settings.preserveDiagramOriginalSize) {
+                expandedWidth = diagramOriginalSize.width;
+                expandedHeight = diagramOriginalSize.height;
+                foldedWidth = diagramOriginalSize.width / 2;
+                foldedHeight = diagramOriginalSize.height / 2;
+            } else {
+                expandedWidth = this.plugin.settings.diagramExpandedWidth;
+                expandedHeight = this.plugin.settings.diagramExpandedHeight;
+                foldedWidth = this.plugin.settings.diagramCollapsedWidth;
+                foldedHeight = this.plugin.settings.diagramCollapsedHeight;
+            }
+
+            this.size = {
+                expanded: {
+                    width: expandedWidth,
+                    height: expandedHeight,
+                },
+                folded: {
+                    width: foldedWidth,
+                    height: foldedHeight,
+                },
+            };
+
+            return true;
+        };
+
+        const createDiagramWrapper = async (
+            el: HTMLElement,
+            sourceData: {
+                source: string;
+                lineStart: number;
+                lineEnd: number;
+            }
+        ): Promise<HTMLElement> => {
+            const container = document.createElement('div');
+
+            container.addClass('diagram-container');
+
+            if (this.plugin.livePreview) {
+                container.addClass('live-preview');
+                el.parentElement?.addClass('live-preview-parent');
+            }
+            el.parentNode?.insertBefore(container, el);
+            container.appendChild(el);
+
+            initDiagramSize(el);
+            this.updateDiagramSizeBasedOnStatus(container);
+
+            container.id = await this.genID(
+                sourceData.lineStart,
+                sourceData.lineEnd,
+                diagram.diagram
+            );
+            container.toggleClass(
+                'folded',
+                this.plugin.settings.collapseByDefault
+            );
+            if (this.plugin.livePreview) {
+                container.parentElement?.toggleClass(
+                    'folded',
+                    this.plugin.settings.collapseByDefault
+                );
+            }
+            container.setAttribute('tabindex', '0');
+
+            return container;
+        };
+
         const el = diagram.element;
 
         if (!el.parentElement) {
@@ -302,60 +412,19 @@ export class Diagram {
             return;
         }
 
-        const isLivePreview = this.plugin.livePreview;
-
         el.addClass('centered');
         el.addClass('diagram-content');
 
-        let source: string, lineStart: number, lineEnd: number;
+        const sourceData = sourceExtraction(el);
 
-        if (!isLivePreview) {
-            if (!contextData) {
-                return;
-            }
-            const sectionsInfo = contextData.context.getSectionInfo(
-                contextData.contextElement
-            );
-            if (!sectionsInfo) {
-                return;
-            }
-            const { lineStart: ls, lineEnd: le, text } = sectionsInfo;
-            lineStart = ls;
-            lineEnd = le;
-            const lines = text.split('\n');
-            source = lines.slice(lineStart, lineEnd + 1).join('\n');
-        } else {
-            const e = this.plugin.view?.editor as unknown as any;
-            const startPos = e.cm.posAtDOM(el.parentElement);
-            const data = this.plugin.view?.editor.getValue().slice(startPos);
-            source = data?.match(/^"?(```.+?```)/ms)?.[1] ?? 'No source';
-            const endPos = startPos + source.length;
-            lineStart = e.cm.state.doc.lineAt(startPos).number;
-            lineEnd = e.cm.state.doc.lineAt(endPos).number;
+        if (!sourceData) {
+            return;
         }
 
-        const container = document.createElement('div');
-
-        container.addClass('diagram-container');
-        if (isLivePreview) {
-            container.addClass('live-preview');
-            el.parentElement.addClass('live-preview-parent');
-        }
-        el.parentNode?.insertBefore(container, el);
-        container.appendChild(el);
-
-        container.id = await this.genID(lineStart, lineEnd, diagram.diagram);
-        container.toggleClass('folded', this.plugin.settings.collapseByDefault);
-        if (isLivePreview) {
-            container.parentElement?.toggleClass(
-                'folded',
-                this.plugin.settings.collapseByDefault
-            );
-        }
-        container.setAttribute('tabindex', '0');
+        const container = await createDiagramWrapper(el, sourceData);
 
         this.activeContainer = container;
-        this.state.initializeContainer(container.id, source);
+        this.state.initializeContainer(container.id, sourceData.source);
 
         this.controlPanel.initialize(container, diagram.diagram);
         this.events.initialize(container, diagram.diagram);
@@ -455,5 +524,44 @@ export class Diagram {
             .join('');
         const ctime = this.plugin.view?.file?.stat.ctime ?? 0;
         return `id-${ctime}-${hash}`;
+    }
+
+    private getElSize(
+        el: HTMLElement
+    ): { height: number; width: number } | undefined {
+        const svg = el.querySelector('svg');
+        const img = el.querySelector('img');
+
+        if (svg === null && img === null) {
+            return undefined;
+        }
+
+        if (svg) {
+            const rect = el.getBoundingClientRect();
+            return {
+                width: rect.width,
+                height: rect.height,
+            };
+        }
+
+        if (img) {
+            const rect = img.getBoundingClientRect();
+            return {
+                width: rect.width,
+                height: rect.height,
+            };
+        }
+    }
+
+    updateDiagramSizeBasedOnStatus(el: HTMLElement): void {
+        const isFolded = el.hasClass('folded');
+        const size = (isFolded && this.size.folded) || this.size.expanded;
+
+        el.style.height = `${size.height}px`;
+        el.style.width = `${size.width}px`;
+        if (this.plugin.livePreview) {
+            el.parentElement!.style.height = `${size.height}px`;
+            el.parentElement!.style.width = `${size.width}px`;
+        }
     }
 }
