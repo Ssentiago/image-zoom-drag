@@ -55,7 +55,6 @@ export default class DiagramZoomDragPlugin extends Plugin {
         this.settingsManager = new SettingsManager(this);
         await this.settingsManager.loadSettings();
         this.addSettingTab(new SettingsTab(this.app, this));
-        this.updateCssProperties();
     }
 
     /**
@@ -222,35 +221,5 @@ export default class DiagramZoomDragPlugin extends Plugin {
      */
     showNotice(message: string, duration?: number): void {
         new Notice(message, duration);
-    }
-
-    /**
-     * Updates the CSS properties related to the diagram container dimensions.
-     *
-     * This method sets the CSS custom properties for the expanded and collapsed
-     * widths and heights of the diagram container according to the current settings.
-     * These properties are used to adjust the layout and appearance of the diagram
-     * container dynamically based on the user's configuration.
-     *
-     * @returns {void} Void.
-     */
-    updateCssProperties(): void {
-        document.documentElement.style.setProperty(
-            '--diagram-zoom-drag-diagram-container-expanded-width',
-            `${this.settings.diagramExpandedWidth}px`
-        );
-
-        document.documentElement.style.setProperty(
-            '--diagram-zoom-drag-diagram-container-expanded-height',
-            `${this.settings.diagramExpandedHeight}px`
-        );
-        document.documentElement.style.setProperty(
-            '--diagram-zoom-drag-diagram-container-collapsed-width',
-            `${this.settings.diagramCollapsedWidth}px`
-        );
-        document.documentElement.style.setProperty(
-            '--diagram-zoom-drag-diagram-container-collapsed-height',
-            `${this.settings.diagramCollapsedHeight}px`
-        );
     }
 }

@@ -31,7 +31,6 @@ const ResetSettings: React.FC = () => {
                         setCurrentPath(location.pathname);
                         await plugin.settingsManager.resetSettings();
                         forceReload();
-                        plugin.updateCssProperties();
                         new Notice('Settings have been reset to default.');
                     });
                     return button;
