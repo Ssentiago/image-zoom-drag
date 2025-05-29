@@ -27,7 +27,6 @@ export default class DiagramZoomDragPlugin extends Plugin {
     publisher!: EventPublisher;
     observer!: EventObserver;
     diagram!: Diagram;
-    livePreview = false;
 
     /**
      * Initializes the plugin.
@@ -73,7 +72,7 @@ export default class DiagramZoomDragPlugin extends Plugin {
                 context: MarkdownPostProcessorContext
             ) => {
                 this.initializeView();
-                if (this.livePreview) {
+                if (this.isInLivePreviewMode) {
                     return;
                 }
                 await this.diagram.initialize(element, context);
@@ -84,7 +83,7 @@ export default class DiagramZoomDragPlugin extends Plugin {
                 this.cleanupView();
                 await this.diagram.state.cleanupContainers();
                 this.initializeView();
-                if (this.view && this.livePreview) {
+                if (this.view && this.isInLivePreviewMode) {
                     await this.diagram.initialize(this.view.contentEl);
                 }
             })
@@ -191,8 +190,6 @@ export default class DiagramZoomDragPlugin extends Plugin {
         this.leafID = view.leaf.id;
         this.diagram.state.initializeLeafData(this.leafID);
         this.view = view;
-        const viewState = view.getState();
-        this.livePreview = !viewState.source && viewState.mode === 'source';
     }
 
     /**
@@ -221,5 +218,15 @@ export default class DiagramZoomDragPlugin extends Plugin {
      */
     showNotice(message: string, duration?: number): void {
         new Notice(message, duration);
+    }
+
+    get isInPreviewMode(): boolean {
+        const viewState = this.view?.getState();
+        return viewState?.mode === 'preview';
+    }
+
+    get isInLivePreviewMode(): boolean {
+        const viewState = this.view?.getState();
+        return !viewState?.source && viewState?.mode === 'source';
     }
 }
