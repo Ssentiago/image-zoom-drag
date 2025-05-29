@@ -32,6 +32,7 @@ export interface DefaultSettings {
     panelsConfig: PanelsConfig;
     diagramsPerPage: number;
     collapseByDefault: boolean;
+    preserveDiagramOriginalSize: boolean;
     automaticCollapsingOnFocusChange: boolean;
     hideOnMouseOutDiagram: boolean;
     diagramExpandedHeight: number;
