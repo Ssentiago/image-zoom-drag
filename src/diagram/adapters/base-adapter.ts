@@ -97,7 +97,7 @@ export abstract class BaseAdapter {
     ): Promise<string> {
         const preId = `${diagram.name}:${lineStart}-${lineEnd}`;
         const hashed_data = hash.sha256().update(preId).digest('hex');
-        const ctime = this.diagram.plugin.view?.file?.stat.ctime ?? 0;
+        const ctime = this.diagram.plugin.context.view?.file?.stat.ctime ?? 0;
         return `id-${ctime}-${hashed_data}`;
     }
 
@@ -146,7 +146,7 @@ export abstract class BaseAdapter {
               lineEnd: 0;
           }
         | { source: any; lineStart: any; lineEnd: any } {
-        const e = this.diagram.plugin.view?.editor as unknown as any;
+        const e = this.diagram.plugin.context.view?.editor as unknown as any;
         const startPos = e.cm.posAtDOM(el.parentElement);
 
         if (!startPos) {
@@ -157,7 +157,7 @@ export abstract class BaseAdapter {
             };
         }
 
-        const data = this.diagram.plugin.view?.editor
+        const data = this.diagram.plugin.context.view?.editor
             .getValue()
             .slice(startPos);
         const source = data?.match(/^"?(```.+?```)/ms)?.[1] ?? 'No source';

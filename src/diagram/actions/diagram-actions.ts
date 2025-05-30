@@ -36,7 +36,7 @@ export class DiagramActions {
         });
 
         if (setAnimation) {
-            this.diagram.plugin.view!.registerDomEvent(
+            this.diagram.plugin.context.view!.registerDomEvent(
                 element,
                 'transitionend',
                 () => {
@@ -93,7 +93,7 @@ export class DiagramActions {
             transform: `translate(${this.diagram.dx}px, ${this.diagram.dy}px) scale(${this.diagram.scale})`,
         });
         if (setAnimation) {
-            this.diagram.plugin.view!.registerDomEvent(
+            this.diagram.plugin.context.view!.registerDomEvent(
                 element,
                 'transitionend',
                 () => {
@@ -158,7 +158,7 @@ export class DiagramActions {
             transformOrigin: 'top left',
         });
         if (setAnimation) {
-            this.diagram.plugin.view!.registerDomEvent(
+            this.diagram.plugin.context.view!.registerDomEvent(
                 element,
                 'transitionend',
                 () => {

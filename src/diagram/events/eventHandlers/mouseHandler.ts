@@ -34,48 +34,48 @@ export class MouseHandler {
             return;
         }
 
-        if (!this.diagramEvents.diagram.plugin.view) {
+        if (!this.diagramEvents.diagram.plugin.context.view) {
             return;
         }
 
         diagramElement.addClass('eventHandlers-bound');
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'wheel',
             this.wheel.bind(this, container, diagramElement),
             { passive: true }
         );
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'mousedown',
             this.mouseDown.bind(this, container, diagramElement)
         );
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'mousemove',
             this.mouseMove.bind(this, container, diagramElement)
         );
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'mouseup',
             this.mouseUp.bind(this, container, diagramElement)
         );
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'mouseleave',
             this.mouseLeave.bind(this, container, diagramElement)
         );
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'mouseenter',
             this.mouseEnterOnDiagram.bind(this, container)
         );
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'mouseleave',
             this.mouseLeaveOutDiagram.bind(this, container)

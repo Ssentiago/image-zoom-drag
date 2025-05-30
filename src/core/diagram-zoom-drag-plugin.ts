@@ -14,12 +14,11 @@ import {
 } from '../events-management/events-management';
 import { publishPanelsStateEvent } from '../helpers/helpers';
 import { Diagram } from '../diagram/diagram';
-import { LeafID } from '../diagram/state/typing/types';
 import { DefaultSettings } from '../settings/typing/interfaces';
+import { PluginContext } from './plugin-context';
 
 export default class DiagramZoomDragPlugin extends Plugin {
-    view: MarkdownView | null = null;
-    leafID!: LeafID | undefined;
+    context!: PluginContext;
 
     settings!: DefaultSettings;
     settingsManager!: SettingsManager;
@@ -54,6 +53,7 @@ export default class DiagramZoomDragPlugin extends Plugin {
         this.settingsManager = new SettingsManager(this);
         await this.settingsManager.loadSettings();
         this.addSettingTab(new SettingsTab(this.app, this));
+        this.context = new PluginContext();
     }
 
     /**
@@ -83,16 +83,18 @@ export default class DiagramZoomDragPlugin extends Plugin {
                 this.cleanupView();
                 await this.diagram.state.cleanupContainers();
                 this.initializeView();
-                if (this.view && this.isInLivePreviewMode) {
-                    await this.diagram.initialize(this.view.contentEl);
+                if (this.context.isValid && this.isInLivePreviewMode) {
+                    await this.diagram.initialize(this.context.view!.contentEl);
                 }
             })
         );
-
         this.registerEvent(
-            this.app.workspace.on('active-leaf-change', () => {
+            this.app.workspace.on('active-leaf-change', async () => {
                 this.cleanupView();
                 this.initializeView();
+                if (this.context.isValid && this.isInLivePreviewMode) {
+                    await this.diagram.initialize(this.context.view!.contentEl);
+                }
             })
         );
     }
@@ -186,10 +188,11 @@ export default class DiagramZoomDragPlugin extends Plugin {
         if (!view) {
             return;
         }
+        const leaf = view.leaf;
+        this.context.leaf = leaf;
+        this.context.view = view;
 
-        this.leafID = view.leaf.id;
-        this.diagram.state.initializeLeafData(this.leafID);
-        this.view = view;
+        this.diagram.state.initializeLeafData(this.context.leafID!);
     }
 
     /**
@@ -199,12 +202,12 @@ export default class DiagramZoomDragPlugin extends Plugin {
      * @returns {void} Void.
      */
     cleanupView(): void {
-        if (this.leafID) {
-            const isLeaf = this.app.workspace.getLeafById(this.leafID);
+        if (this.context?.leaf) {
+            const isLeaf = this.app.workspace.getLeafById(this.context.leaf.id);
             if (isLeaf === null) {
-                this.view = null;
-                this.diagram.state.cleanupData(this.leafID);
-                this.leafID = undefined;
+                this.context.view = undefined;
+                this.diagram.state.cleanupData(this.context.leafID!);
+                this.context.leaf = undefined;
             }
         }
     }
@@ -221,12 +224,12 @@ export default class DiagramZoomDragPlugin extends Plugin {
     }
 
     get isInPreviewMode(): boolean {
-        const viewState = this.view?.getState();
+        const viewState = this.context?.view?.getState();
         return viewState?.mode === 'preview';
     }
 
     get isInLivePreviewMode(): boolean {
-        const viewState = this.view?.getState();
+        const viewState = this.context?.view?.getState();
         return !viewState?.source && viewState?.mode === 'source';
     }
 }
