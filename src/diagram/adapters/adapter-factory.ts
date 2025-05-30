@@ -10,6 +10,5 @@ export class AdapterFactory {
         } else if (diagram.plugin.isInLivePreviewMode) {
             return new MarkdownLivePreviewAdapter(diagram);
         }
-        throw new Error('Diagram Zoom Drag: "No suitable adapter found!"');
     }
 }
