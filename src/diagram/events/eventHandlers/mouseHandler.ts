@@ -30,15 +30,9 @@ export class MouseHandler {
             return;
         }
 
-        if (diagramElement.hasClass('eventHandlers-bound')) {
-            return;
-        }
-
         if (!this.diagramEvents.diagram.plugin.context.view) {
             return;
         }
-
-        diagramElement.addClass('eventHandlers-bound');
 
         this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
