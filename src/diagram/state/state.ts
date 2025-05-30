@@ -83,9 +83,9 @@ export class State {
      * @param source - The source of the diagram to be set.
      */
     initializeContainer(containerID: string, source: string): void {
-        const leafID = this.diagram.plugin.leafID!;
+        const leafID = this.diagram.plugin.context.leafID;
 
-        const viewData = this.data.get(leafID);
+        const viewData = this.data.get(leafID!);
         if (viewData) {
             viewData.containers[containerID] = {
                 dx: 0,
@@ -129,12 +129,13 @@ export class State {
     }
 
     async cleanupContainers(): Promise<void> {
-        const data = this.data.get(this.diagram.plugin.leafID!);
+        const data = this.data.get(this.diagram.plugin.context.leafID!);
         if (!data) {
             return;
         }
 
-        const currentFileCtime = this.diagram.plugin.view?.file?.stat.ctime;
+        const currentFileCtime =
+            this.diagram.plugin.context.view?.file?.stat.ctime;
 
         const containersIds = Object.keys(data);
 
@@ -173,7 +174,7 @@ export class State {
         if (!activeContainer) {
             return;
         }
-        const leafID = this.diagram.plugin.leafID;
+        const leafID = this.diagram.plugin.context.leafID;
         if (!leafID) {
             return;
         }
@@ -199,7 +200,7 @@ export class State {
         if (!activeContainer) {
             return;
         }
-        const leafID = this.diagram.plugin.leafID;
+        const leafID = this.diagram.plugin.context.leafID;
         if (!leafID) {
             return;
         }
@@ -341,7 +342,7 @@ export class State {
      * if no observer is available.
      */
     get livePreviewObserver(): MutationObserver | undefined {
-        const data = this.data.get(this.diagram.plugin.leafID!);
+        const data = this.data.get(this.diagram.plugin.context.leafID!);
         return data?.livePreviewObserver;
     }
 
@@ -354,7 +355,7 @@ export class State {
      * @param observer - The MutationObserver instance to set for the active leaf.
      */
     set livePreviewObserver(observer: MutationObserver) {
-        const data = this.data.get(this.diagram.plugin.leafID!);
+        const data = this.data.get(this.diagram.plugin.context.leafID!);
         if (data) {
             data.livePreviewObserver = observer;
         }

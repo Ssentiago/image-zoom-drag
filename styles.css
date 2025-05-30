@@ -90,19 +90,16 @@ inside views when rendering
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    width: var(--diagram-zoom-drag-diagram-container-expanded-width);
-    height: var(--diagram-zoom-drag-diagram-container-expanded-height);
     margin-bottom: 40px;
     cursor: grab;
 }
 
-.diagram-container.is-fullscreen {
-    background-color: var(--background-primary);
-}
 
 .diagram-container.folded {
-    width: var(--diagram-zoom-drag-diagram-container-collapsed-width);
-    height: var(--diagram-zoom-drag-diagram-container-collapsed-height);
+}
+
+.diagram-container.is-fullscreen {
+    background-color: var(--background-primary);
 }
 
 .diagram-content {
@@ -148,14 +145,10 @@ inside views when rendering
 
 .live-preview-parent {
     transition: all 0.3s ease;
-    width: var(--diagram-zoom-drag-diagram-container-expanded-width);
-    height: var(--diagram-zoom-drag-diagram-container-expanded-height);
 }
 
 .live-preview-parent.folded {
     transition: all 0.3s ease;
-    width: var(--diagram-zoom-drag-diagram-container-collapsed-width);
-    height: var(--diagram-zoom-drag-diagram-container-collapsed-height);
 }
 
 .live-preview {

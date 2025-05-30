@@ -45,9 +45,10 @@ export class FoldPanel implements PanelType {
                 icon: isFolded ? 'unfold-vertical' : 'fold-vertical',
                 action: (): void => {
                     container.classList.toggle('folded');
-                    if (this.diagram.plugin.livePreview) {
+                    if (this.diagram.plugin.isInLivePreviewMode) {
                         container.parentElement?.classList.toggle('folded');
                     }
+                    this.diagram.updateDiagramSizeBasedOnStatus(container);
                 },
                 title: isFolded ? 'Expand diagram' : 'Fold diagram',
                 id: 'diagram-fold-button',

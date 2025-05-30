@@ -13,17 +13,17 @@ export class FocusHandler {
      * @param container - The container element to add the focus event listeners to.
      */
     initialize(container: HTMLElement): void {
-        if (!this.diagramEvents.diagram.plugin.view) {
+        if (!this.diagramEvents.diagram.plugin.context.view) {
             return;
         }
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'focusin',
             this.focusIn.bind(this, container)
         );
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'focusout',
             this.focusOut.bind(this, container)
@@ -44,7 +44,7 @@ export class FocusHandler {
                 .automaticCollapsingOnFocusChange
         ) {
             container.removeClass('folded');
-            if (this.diagramEvents.diagram.plugin.livePreview) {
+            if (this.diagramEvents.diagram.plugin.isInLivePreviewMode) {
                 container.parentElement?.removeClass('folded');
             }
         }
@@ -64,7 +64,7 @@ export class FocusHandler {
                 .automaticCollapsingOnFocusChange
         ) {
             container.addClass('folded');
-            if (this.diagramEvents.diagram.plugin.livePreview) {
+            if (this.diagramEvents.diagram.plugin.isInLivePreviewMode) {
                 container.parentElement?.addClass('folded');
             }
         }

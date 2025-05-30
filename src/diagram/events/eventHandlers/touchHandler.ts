@@ -19,23 +19,23 @@ export class TouchHandler {
      * @param container - The container element to add the touch event listeners to.
      */
     initialize(container: HTMLElement): void {
-        if (!this.diagramEvents.diagram.plugin.view) {
+        if (!this.diagramEvents.diagram.plugin.context.view) {
             return;
         }
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'touchstart',
             this.touchStart.bind(this, container),
             { passive: false }
         );
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'touchmove',
             this.touchMove.bind(this, container),
             { passive: false }
         );
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'touchend',
             this.touchEnd.bind(this, container),

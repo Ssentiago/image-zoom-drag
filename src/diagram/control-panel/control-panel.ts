@@ -135,9 +135,13 @@ export class ControlPanel {
             });
             updateButton(button, icon, title);
 
-            this.diagram.plugin.view!.registerDomEvent(button, 'click', action);
+            this.diagram.plugin.context.view!.registerDomEvent(
+                button,
+                'click',
+                action
+            );
 
-            this.diagram.plugin.view!.registerDomEvent(
+            this.diagram.plugin.context.view!.registerDomEvent(
                 button,
                 'mouseenter',
                 () => {
@@ -147,7 +151,7 @@ export class ControlPanel {
                 }
             );
 
-            this.diagram.plugin.view!.registerDomEvent(
+            this.diagram.plugin.context.view!.registerDomEvent(
                 button,
                 'mouseleave',
                 () => {

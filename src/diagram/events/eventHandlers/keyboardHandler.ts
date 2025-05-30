@@ -13,11 +13,11 @@ export class KeyboardHandler {
      * @param container - The container element to add the keydown event listener to.
      */
     initialize(container: HTMLElement): void {
-        if (!this.diagramEvents.diagram.plugin.view) {
+        if (!this.diagramEvents.diagram.plugin.context.view) {
             return;
         }
 
-        this.diagramEvents.diagram.plugin.view.registerDomEvent(
+        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
             container,
             'keydown',
             this.keyDown.bind(this, container)

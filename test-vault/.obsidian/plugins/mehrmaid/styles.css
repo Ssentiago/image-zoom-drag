@@ -1,0 +1,13 @@
+.block-language-mehrmaid p:first-child {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.block-language-mehrmaid p:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.mehrmaid-markdown-container {
+    display: inline-block;
+}

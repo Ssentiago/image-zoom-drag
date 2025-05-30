@@ -4,19 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "baf3ae41d4a4f707",
+        "id": "0d5a5ba121474635",
         "type": "tabs",
         "children": [
           {
-            "id": "3a3e63f2bde6160d",
+            "id": "03897eb4ee69e7ea",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ww.md",
+                "file": "Untitled 3.md",
                 "mode": "preview",
                 "source": true
-              }
+              },
+              "icon": "lucide-file",
+              "title": "Untitled 3"
             }
           }
         ]
@@ -38,8 +40,11 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
-              }
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -54,7 +59,9 @@
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -62,30 +69,32 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 293.5
+    "width": 279.5
   },
   "right": {
     "id": "dfece06dc10863e1",
     "type": "split",
     "children": [
       {
-        "id": "ad35fedad067b796",
+        "id": "96f852399fa98bd9",
         "type": "tabs",
         "children": [
           {
-            "id": "9ea330ff3a00b25e",
+            "id": "13d715657f2e44e6",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "ww.md",
+                "file": "Untitled 3.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -93,52 +102,65 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Untitled 3"
             }
           },
           {
-            "id": "789ee142930c7422",
+            "id": "ccccc7f3b5c07df8",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "ww.md",
+                "file": "Untitled 3.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Untitled 3"
             }
           },
           {
-            "id": "131610f5f234f06b",
+            "id": "45e0677ad0579a41",
             "type": "leaf",
             "state": {
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
-              }
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
-            "id": "3775fdca5d4d801d",
+            "id": "9f4ff39a28603aa5",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "ww.md"
-              }
+                "file": "Untitled 3.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Untitled 3"
             }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 200,
+    "width": 490.5,
     "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-mobile-emulator-toggle:Switch to PC emulation": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -147,13 +169,20 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "3a3e63f2bde6160d",
+  "active": "03897eb4ee69e7ea",
   "lastOpenFiles": [
-    "ww.md",
-    "Untitled 5.md",
-    "Untitled 4.md",
+    "Untitled 2.md",
+    "Untitled 1.md",
     "Untitled 3.md",
+    "Untitled 4.md",
+    "Untitled 5.md",
+    "Untitled 6.md",
+    "Untitled 7.md",
+    "Untitled 8.md",
+    "Untitled 9.md",
     "Untitled.md",
+    "ww.md",
+    "bear-facing-right-svgrepo-com.svg",
     "Test.md",
     "Test-2024-09-14_01-47-35.svg",
     "Untitled-2024-09-14_01-49-41.svg",

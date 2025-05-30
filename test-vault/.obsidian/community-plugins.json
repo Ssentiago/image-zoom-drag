@@ -2,5 +2,9 @@
   "mermaid-zoom-drag",
   "example",
   "mehrmaid",
+  "obsidian-mobile-emulator-toggle",
+  "obsidian-graphviz",
+  "obsidian-plantuml",
+  "hot-reload",
   "diagram-zoom-drag"
 ]

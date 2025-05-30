@@ -54,7 +54,7 @@ export class Export {
 
     private downloadFile(blob: Blob, extension: string): void {
         const { diagram } = this.diagramContextMenu;
-        const filename = `dzg_export_${diagram.plugin.view?.file?.basename ?? 'diagram'}_${diagram.activeContainer?.id ?? 'unknown'}}_${moment().format('YYYYMMDDHHmmss')}.${extension}`;
+        const filename = `dzg_export_${diagram.plugin.context.view?.file?.basename ?? 'diagram'}_${diagram.activeContainer?.id ?? 'unknown'}}_${moment().format('YYYYMMDDHHmmss')}.${extension}`;
         const url = URL.createObjectURL(blob);
         const downloadLink = document.createElement('a');
         downloadLink.href = url;
