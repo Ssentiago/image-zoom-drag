@@ -209,7 +209,7 @@ export class ServicePanel implements PanelType {
             return;
         }
 
-        this.diagram.plugin.view?.registerDomEvent(
+        this.diagram.plugin.context.view?.registerDomEvent(
             container,
             'fullscreenchange',
             this.onFullScreenChange.bind(this, container, fullscreenButton)

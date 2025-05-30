@@ -16,7 +16,7 @@ export class ContextMenu {
     }
 
     initialize(container: HTMLElement, diagramData: DiagramData): void {
-        this.diagram.plugin.view?.registerDomEvent(
+        this.diagram.plugin.context.view?.registerDomEvent(
             container,
             'contextmenu',
             () => {
