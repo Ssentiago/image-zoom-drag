@@ -249,7 +249,6 @@ export abstract class BaseAdapter {
             return false;
         }
 
-        el.addClass('centered');
         el.addClass('diagram-content');
 
         return true;

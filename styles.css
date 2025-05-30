@@ -74,17 +74,7 @@ Partially replaces by Obsidian styles.
     }
 }
 
-/**
-These styles apply directly to charts
-inside views when rendering
-*/
-.centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
+
 
 .diagram-container {
     transition: all 0.3s ease;
@@ -108,6 +98,9 @@ inside views when rendering
     cursor: grab;
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .diagram-zoom-drag-panel {
