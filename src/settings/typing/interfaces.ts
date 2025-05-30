@@ -31,13 +31,13 @@ export interface DefaultSettings {
     supported_diagrams: DiagramData[];
     panelsConfig: PanelsConfig;
     diagramsPerPage: number;
-    collapseByDefault: boolean;
+    foldByDefault: boolean;
     preserveDiagramOriginalSize: boolean;
-    automaticCollapsingOnFocusChange: boolean;
+    automaticFoldingOnFocusChange: boolean;
     hideOnMouseOutDiagram: boolean;
     diagramExpandedHeight: number;
     diagramExpandedWidth: number;
-    diagramCollapsedHeight: number;
-    diagramCollapsedWidth: number;
+    diagramFoldedHeight: number;
+    diagramFoldedWidth: number;
     addHidingButton: boolean;
 }

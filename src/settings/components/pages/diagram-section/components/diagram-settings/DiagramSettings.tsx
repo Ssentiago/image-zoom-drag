@@ -7,8 +7,8 @@ import { ToggleComponent } from 'obsidian';
 /**
  * A React component that renders a settings page for diagrams.
  *
- * This component uses `ReactObsidianSetting` to create toggles for collapsing
- * diagrams by default and for automatically collapsing diagrams on focus change.
+ * This component uses `ReactObsidianSetting` to create toggles for folding
+ * diagrams by default and for automatically folding diagrams on focus change.
  *
  * It also renders a component for setting the size of the diagram.
  *
@@ -19,16 +19,16 @@ const DiagramsSettings: React.FC = (): React.ReactElement => {
 
     return (
         <>
-            <ReactObsidianSetting name={'Collapse'} setHeading={true} />
+            <ReactObsidianSetting name={'Fold'} setHeading={true} />
 
             <ReactObsidianSetting
-                name="Collapse diagrams by default?"
+                name="Fold diagrams by default?"
                 addToggles={[
                     (toggle): ToggleComponent => {
                         toggle
-                            .setValue(plugin.settings.collapseByDefault)
+                            .setValue(plugin.settings.foldByDefault)
                             .onChange(async (value: boolean) => {
-                                plugin.settings.collapseByDefault = value;
+                                plugin.settings.foldByDefault = value;
                                 await plugin.settingsManager.saveSettings();
                             });
                         return toggle;
@@ -37,15 +37,15 @@ const DiagramsSettings: React.FC = (): React.ReactElement => {
             />
 
             <ReactObsidianSetting
-                name="Automatically collapse diagrams on focus change?"
+                name="Automatically fold diagrams on focus change?"
                 addToggles={[
                     (toggle): ToggleComponent => {
                         toggle
                             .setValue(
-                                plugin.settings.automaticCollapsingOnFocusChange
+                                plugin.settings.automaticFoldingOnFocusChange
                             )
                             .onChange(async (value: boolean) => {
-                                plugin.settings.automaticCollapsingOnFocusChange =
+                                plugin.settings.automaticFoldingOnFocusChange =
                                     value;
                                 await plugin.settingsManager.saveSettings();
                             });

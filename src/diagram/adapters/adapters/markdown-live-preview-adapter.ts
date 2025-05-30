@@ -117,7 +117,7 @@ export class MarkdownLivePreviewAdapter extends BaseAdapter {
         container.addClass('live-preview');
         container.parentElement?.toggleClass(
             'folded',
-            this.diagram.plugin.settings.collapseByDefault
+            this.diagram.plugin.settings.foldByDefault
         );
         this.postInitDiagram(diagram, container, sourceData);
     }

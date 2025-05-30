@@ -188,8 +188,8 @@ export abstract class BaseAdapter {
         } else {
             expandedWidth = this.diagram.plugin.settings.diagramExpandedWidth;
             expandedHeight = this.diagram.plugin.settings.diagramExpandedHeight;
-            foldedWidth = this.diagram.plugin.settings.diagramCollapsedWidth;
-            foldedHeight = this.diagram.plugin.settings.diagramCollapsedHeight;
+            foldedWidth = this.diagram.plugin.settings.diagramFoldedWidth;
+            foldedHeight = this.diagram.plugin.settings.diagramFoldedHeight;
         }
 
         this.diagram.size = {
@@ -230,7 +230,7 @@ export abstract class BaseAdapter {
         );
         container.toggleClass(
             'folded',
-            this.diagram.plugin.settings.collapseByDefault
+            this.diagram.plugin.settings.foldByDefault
         );
 
         container.setAttribute('tabindex', '0');

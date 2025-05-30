@@ -1,7 +1,4 @@
-import {
-    MultiDescComponent,
-    ReactObsidianSetting,
-} from 'react-obsidian-setting';
+import { MultiDescComponent, ReactObsidianSetting } from 'react-obsidian-setting';
 import React, { useState } from 'react';
 import { useSettingsContext } from '../../../../../../core/context';
 import { ComponentType } from './typing/constanst';
@@ -9,7 +6,7 @@ import { ToggleComponent } from 'obsidian';
 
 /**
  * A React component that renders two settings for the diagram size:
- * one for the expanded diagram and one for the collapsed diagram.
+ * one for the expanded diagram and one for the folded diagram.
  *
  * It uses the `ReactObsidianSetting` component to render a setting with a
  * heading and two input fields for the width and height of the diagram.
@@ -27,11 +24,11 @@ const DiagramSizes: React.FC = () => {
     const [expandedWidth, setExpandedWidth] = useState(
         plugin.settings.diagramExpandedWidth
     );
-    const [collapsedHeight, setCollapsedHeight] = useState(
-        plugin.settings.diagramCollapsedHeight
+    const [foldedHeight, setFoldedHeight] = useState(
+        plugin.settings.diagramFoldedHeight
     );
-    const [collapsedWidth, setCollapsedWidth] = useState(
-        plugin.settings.diagramCollapsedWidth
+    const [foldedWidth, setFoldedWidth] = useState(
+        plugin.settings.diagramFoldedWidth
     );
 
     const [preserveDiagramOriginalSize, setPreserveDiagramOriginalSize] =
@@ -46,16 +43,14 @@ const DiagramSizes: React.FC = () => {
 
     const createSettingInputs = (componentType: ComponentType) => {
         const prefix =
-            componentType === ComponentType.Collapsed
-                ? 'Collapsed'
-                : 'Expanded';
+            componentType === ComponentType.Folded ? 'Folded' : 'Expanded';
         const height =
-            componentType === ComponentType.Collapsed
-                ? collapsedHeight
+            componentType === ComponentType.Folded
+                ? foldedHeight
                 : expandedHeight;
         const width =
-            componentType === ComponentType.Collapsed
-                ? collapsedWidth
+            componentType === ComponentType.Folded
+                ? foldedWidth
                 : expandedWidth;
 
         return (
@@ -158,11 +153,11 @@ const DiagramSizes: React.FC = () => {
                             const width = parseInt(inputWidth.value, 10);
                             const height = parseInt(inputHeight.value, 10);
 
-                            if (componentType === ComponentType.Collapsed) {
-                                setCollapsedWidth(width);
-                                setCollapsedHeight(height);
-                                plugin.settings.diagramCollapsedHeight = height;
-                                plugin.settings.diagramCollapsedWidth = width;
+                            if (componentType === ComponentType.Folded) {
+                                setFoldedWidth(width);
+                                setFoldedHeight(height);
+                                plugin.settings.diagramFoldedHeight = height;
+                                plugin.settings.diagramFoldedWidth = width;
                             } else {
                                 setExpandedWidth(width);
                                 setExpandedHeight(height);
@@ -227,7 +222,7 @@ const DiagramSizes: React.FC = () => {
             />
 
             {createSettingInputs(ComponentType.Expanded)}
-            {createSettingInputs(ComponentType.Collapsed)}
+            {createSettingInputs(ComponentType.Folded)}
         </>
     );
 };

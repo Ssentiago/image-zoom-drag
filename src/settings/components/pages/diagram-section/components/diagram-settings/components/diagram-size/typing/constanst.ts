@@ -1,4 +1,4 @@
 export enum ComponentType {
-    Collapsed = 'collapsed',
+    Folded = 'folded',
     Expanded = 'expanded',
 }
