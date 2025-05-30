@@ -27,7 +27,6 @@ const DiagramSection: React.FC = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     borderBottom: '1px solid var(--color-base-30)',
-                    marginTop: '20px',
                 }}
             >
                 <ReactObsidianSetting
