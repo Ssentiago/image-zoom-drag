@@ -1,8 +1,12 @@
-import { MultiDescComponent, ReactObsidianSetting } from 'react-obsidian-setting';
+import {
+    MultiDescComponent,
+    ReactObsidianSetting,
+} from 'react-obsidian-setting';
 import React, { useState } from 'react';
 import { useSettingsContext } from '../../../../../../core/context';
 import { ComponentType } from './typing/constanst';
 import { ToggleComponent } from 'obsidian';
+import { SmoothAnimatedItem } from '../../../../../../common/smooth-animated-item';
 
 /**
  * A React component that renders two settings for the diagram size:
@@ -172,11 +176,6 @@ const DiagramSizes: React.FC = () => {
                 ]}
                 noBorder={true}
                 setDisabled={preserveDiagramOriginalSize}
-                setTooltip={
-                    preserveDiagramOriginalSize
-                        ? "Diagram size settings are disabled because 'Preserve diagram's original size' or 'Fit diagram to screen size' is enabled"
-                        : undefined
-                }
             />
         );
     };
@@ -220,9 +219,12 @@ const DiagramSizes: React.FC = () => {
                     return multidesc;
                 }}
             />
-
-            {createSettingInputs(ComponentType.Expanded)}
-            {createSettingInputs(ComponentType.Folded)}
+            <SmoothAnimatedItem $isVisible={!preserveDiagramOriginalSize}>
+                {createSettingInputs(ComponentType.Expanded)}
+            </SmoothAnimatedItem>
+            <SmoothAnimatedItem $isVisible={!preserveDiagramOriginalSize}>
+                {createSettingInputs(ComponentType.Folded)}
+            </SmoothAnimatedItem>
         </>
     );
 };
