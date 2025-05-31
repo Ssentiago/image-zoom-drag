@@ -22,8 +22,7 @@ const About: React.FC = () => {
                         button.setTooltip('Go to GitHub page of this plugin');
                         button.onClick((cb) => {
                             open(
-                                'https://github.com/gitcpy/diagram-zoom-drag/',
-                                undefined
+                                'https://github.com/Ssentiago/diagram-zoom-drag/'
                             );
                         });
                         return button;
@@ -38,8 +37,7 @@ const About: React.FC = () => {
                         button.setTooltip('Leave feedback');
                         button.onClick(() => {
                             open(
-                                'https://github.com/gitcpy/diagram-zoom-drag/issues',
-                                undefined
+                                'https://github.com/Ssentiago/diagram-zoom-drag/issues'
                             );
                         });
                         return button;
@@ -68,10 +66,10 @@ const About: React.FC = () => {
                     <div>
                         •{' '}
                         <a
-                            href="https://github.com/gitcpy/diagram-zoom-drag/blob/main/LICENSE"
+                            href="https://github.com/Ssentiago/diagram-zoom-drag/blob/main/LICENSE"
                             target="_blank"
                         >
-                            MIT License
+                            Apache-2.0 License
                         </a>
                     </div>
                 </div>
