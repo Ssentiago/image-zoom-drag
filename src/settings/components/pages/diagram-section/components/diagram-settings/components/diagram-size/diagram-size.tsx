@@ -20,30 +20,73 @@ import { SmoothAnimatedItem } from '../../../../../../common/smooth-animated-ite
  *
  * @returns The React component for the diagram size settings.
  */
+const dimensionSpec = {
+    px: {
+        min: 100,
+        max: 1000,
+        label: 'px',
+        rangeMessage: '100-1000px',
+    },
+    '%': {
+        min: 10,
+        max: 100,
+        label: '%',
+        rangeMessage: '10-100%',
+    },
+} as const;
+
+type DimensionUnit = keyof typeof dimensionSpec;
+
+const getRangeMessage = (unit: DimensionUnit) =>
+    dimensionSpec[unit].rangeMessage;
+
+const isDimensionInValidRange = (
+    value: string,
+    unit: DimensionUnit
+): boolean => {
+    const n = parseInt(value, 10);
+    const { min, max } = dimensionSpec[unit];
+    return n >= min && n <= max;
+};
+
+const getErrorMessage = (field: 'width' | 'height', unit: DimensionUnit) =>
+    `Invalid ${field}. Please enter number in range ${getRangeMessage(unit)}.`;
+
+const getMinMaxByUnit = (unit: DimensionUnit) => ({
+    min: dimensionSpec[unit].min.toString(),
+    max: dimensionSpec[unit].max.toString(),
+});
+
 const DiagramSizes: React.FC = () => {
     const { plugin } = useSettingsContext();
     const [expandedHeight, setExpandedHeight] = useState(
-        plugin.settings.diagramExpandedHeight
+        plugin.settings.diagramExpanded.height
     );
     const [expandedWidth, setExpandedWidth] = useState(
-        plugin.settings.diagramExpandedWidth
+        plugin.settings.diagramExpanded.width
+    );
+    const [expandedHeightUnit, setExpandedHeightUnit] = useState(
+        plugin.settings.diagramExpanded.heightUnit
+    );
+    const [expandedWidthUnit, setExpandedWidthUnit] = useState(
+        plugin.settings.diagramExpanded.widthUnit
     );
     const [foldedHeight, setFoldedHeight] = useState(
-        plugin.settings.diagramFoldedHeight
+        plugin.settings.diagramFolded.height
     );
     const [foldedWidth, setFoldedWidth] = useState(
-        plugin.settings.diagramFoldedWidth
+        plugin.settings.diagramFolded.width
     );
-
+    const [foldedHeightUnit, setFoldedHeightUnit] = useState(
+        plugin.settings.diagramFolded.heightUnit
+    );
+    const [foldedWidthUnit, setFoldedWidthUnit] = useState(
+        plugin.settings.diagramFolded.widthUnit
+    );
     const [preserveDiagramOriginalSize, setPreserveDiagramOriginalSize] =
         useState(plugin.settings.preserveDiagramOriginalSize);
 
-    const isDimensionInValidRange = (dimension: string) => {
-        const n = parseInt(dimension, 10);
-        return n >= 100 && n <= 1000;
-    };
-
-    const isValidNumber = (dimension: string) => dimension.match(/^\d+$/);
+    const isValidNumber = (value: string) => /^\d+$/.test(value);
 
     const createSettingInputs = (componentType: ComponentType) => {
         const prefix =
@@ -56,118 +99,162 @@ const DiagramSizes: React.FC = () => {
             componentType === ComponentType.Folded
                 ? foldedWidth
                 : expandedWidth;
+        const heightUnit =
+            componentType === ComponentType.Folded
+                ? foldedHeightUnit
+                : expandedHeightUnit;
+        const widthUnit =
+            componentType === ComponentType.Folded
+                ? foldedWidthUnit
+                : expandedWidthUnit;
+        const setHeight =
+            componentType === ComponentType.Folded
+                ? setFoldedHeight
+                : setExpandedHeight;
+        const setWidth =
+            componentType === ComponentType.Folded
+                ? setFoldedWidth
+                : setExpandedWidth;
+        const setHeightUnit =
+            componentType === ComponentType.Folded
+                ? setFoldedHeightUnit
+                : setExpandedHeightUnit;
+        const setWidthUnit =
+            componentType === ComponentType.Folded
+                ? setFoldedWidthUnit
+                : setExpandedWidthUnit;
 
         return (
             <ReactObsidianSetting
                 name={`${prefix} diagram container size`}
                 addMultiDesc={(multiDesc) => {
                     multiDesc.addDescriptions([
-                        `Set the container dimensions for ${prefix.toLowerCase()} state in pixels.`,
+                        `Set the container dimensions for ${prefix.toLowerCase()} state.`,
+                        `px: 100-1000, %: 10-100`,
                         'Click Save button to apply changes.',
                     ]);
                     return multiDesc;
                 }}
                 addTexts={[
                     (inputHeight) => {
-                        inputHeight.setValue(height.toString());
-                        inputHeight.inputEl.id = `input${prefix.toLowerCase()}Height`;
+                        const wrapper = inputHeight.inputEl.parentElement;
+                        if (wrapper) {
+                            const label = document.createElement('label');
+                            label.textContent = 'Height:';
+                            wrapper.insertBefore(label, inputHeight.inputEl);
+                        }
+
+                        inputHeight.setValue(height);
+                        inputHeight.setPlaceholder('height');
                         inputHeight.inputEl.type = 'number';
-                        inputHeight.inputEl.min = '100';
-                        inputHeight.inputEl.max = '1000';
-                        inputHeight.inputEl.ariaLabel = `${prefix} height in pixels`;
-
+                        const { min, max } = getMinMaxByUnit(heightUnit);
+                        inputHeight.inputEl.min = min;
+                        inputHeight.inputEl.max = max;
+                        inputHeight.inputEl.ariaLabel = `${prefix} height`;
                         inputHeight.inputEl.onblur = () => {
-                            if (!isValidNumber(inputHeight.inputEl.value)) {
+                            if (!isValidNumber(inputHeight.getValue())) {
                                 plugin.showNotice('Please enter valid number');
-                                return;
-                            }
-
-                            if (
-                                !isDimensionInValidRange(
-                                    inputHeight.inputEl.value
-                                )
-                            ) {
-                                plugin.showNotice(
-                                    'Invalid range. Please enter number in range 100-1000px'
-                                );
+                            } else {
+                                setHeight(inputHeight.getValue());
                             }
                         };
                         return inputHeight;
                     },
                     (inputWidth) => {
-                        inputWidth.setValue(width.toString());
-                        inputWidth.inputEl.id = `input${prefix.toLowerCase()}Width`;
+                        const wrapper = inputWidth.inputEl.parentElement;
+                        if (wrapper) {
+                            const label = document.createElement('label');
+                            label.textContent = 'Width:';
+                            wrapper.insertBefore(label, inputWidth.inputEl);
+                        }
+
+                        inputWidth.setValue(width);
+                        inputWidth.setPlaceholder('width');
                         inputWidth.inputEl.type = 'number';
-                        inputWidth.inputEl.min = '100';
-                        inputWidth.inputEl.max = '1000';
-                        inputWidth.inputEl.ariaLabel = `${prefix} width in pixels`;
+                        const { min, max } = getMinMaxByUnit(widthUnit);
+                        inputWidth.inputEl.min = min;
+                        inputWidth.inputEl.max = max;
+                        inputWidth.inputEl.ariaLabel = `${prefix} width`;
                         inputWidth.inputEl.onblur = () => {
-                            if (!isValidNumber(inputWidth.inputEl.value)) {
+                            if (!isValidNumber(inputWidth.getValue())) {
                                 plugin.showNotice('Please enter valid number');
-                                return;
-                            }
-                            if (
-                                !isDimensionInValidRange(
-                                    inputWidth.inputEl.value
-                                )
-                            ) {
-                                plugin.showNotice(
-                                    'Invalid range. Please enter number in range 100-1000px'
-                                );
+                            } else {
+                                setWidth(inputWidth.getValue());
                             }
                         };
                         return inputWidth;
                     },
                 ]}
+                addDropdowns={[
+                    (dropdown) => {
+                        dropdown.addOptions({ px: 'px', '%': '%' });
+                        dropdown.setValue(heightUnit);
+                        dropdown.onChange((value) => {
+                            if (value === 'px' || value === '%') {
+                                setHeightUnit(value);
+                            }
+                        });
+                        return dropdown;
+                    },
+                    (dropdown) => {
+                        dropdown.addOptions({ px: 'px', '%': '%' });
+                        dropdown.setValue(widthUnit);
+                        dropdown.onChange((value) => {
+                            if (value === 'px' || value === '%') {
+                                setWidthUnit(value);
+                            }
+                        });
+                        return dropdown;
+                    },
+                ]}
                 addButtons={[
                     (button) => {
                         button.setIcon('save');
-                        button.onClick(async (cb) => {
-                            const inputWidth: HTMLInputElement | null =
-                                document.querySelector(
-                                    `#input${prefix.toLowerCase()}Width`
-                                );
-                            const inputHeight: HTMLInputElement | null =
-                                document.querySelector(
-                                    `#input${prefix.toLowerCase()}Height`
-                                );
+                        button.onClick(async () => {
+                            const heightInvalid =
+                                !isValidNumber(height) ||
+                                !isDimensionInValidRange(height, heightUnit);
+                            const widthInvalid =
+                                !isValidNumber(width) ||
+                                !isDimensionInValidRange(width, widthUnit);
 
-                            if (!inputWidth || !inputHeight) {
-                                return;
-                            }
-
-                            if (
-                                !isValidNumber(inputWidth.value) ||
-                                !isValidNumber(inputHeight.value)
-                            ) {
-                                plugin.showNotice('Please enter valid numbers');
-                                return;
-                            }
-
-                            if (
-                                !isDimensionInValidRange(inputWidth.value) ||
-                                !isDimensionInValidRange(inputHeight.value)
-                            ) {
+                            if (heightInvalid && widthInvalid) {
                                 plugin.showNotice(
-                                    'Invalid range. Please enter number in range 100-1000px'
+                                    `Invalid height and width.\nHeight must be ${getRangeMessage(heightUnit)}, width must be ${getRangeMessage(widthUnit)}.`
                                 );
                                 return;
                             }
 
-                            const width = parseInt(inputWidth.value, 10);
-                            const height = parseInt(inputHeight.value, 10);
+                            if (heightInvalid) {
+                                plugin.showNotice(
+                                    getErrorMessage('height', heightUnit)
+                                );
+                                return;
+                            }
+
+                            if (widthInvalid) {
+                                plugin.showNotice(
+                                    getErrorMessage('width', widthUnit)
+                                );
+                                return;
+                            }
 
                             if (componentType === ComponentType.Folded) {
-                                setFoldedWidth(width);
-                                setFoldedHeight(height);
-                                plugin.settings.diagramFoldedHeight = height;
-                                plugin.settings.diagramFoldedWidth = width;
+                                plugin.settings.diagramFolded.height = height;
+                                plugin.settings.diagramFolded.heightUnit =
+                                    heightUnit;
+                                plugin.settings.diagramFolded.width = width;
+                                plugin.settings.diagramFolded.widthUnit =
+                                    widthUnit;
                             } else {
-                                setExpandedWidth(width);
-                                setExpandedHeight(height);
-                                plugin.settings.diagramExpandedHeight = height;
-                                plugin.settings.diagramExpandedWidth = width;
+                                plugin.settings.diagramExpanded.height = height;
+                                plugin.settings.diagramExpanded.heightUnit =
+                                    heightUnit;
+                                plugin.settings.diagramExpanded.width = width;
+                                plugin.settings.diagramExpanded.widthUnit =
+                                    widthUnit;
                             }
+
                             await plugin.settingsManager.saveSettings();
                             plugin.showNotice('Saved successfully');
                         });
@@ -188,7 +275,6 @@ const DiagramSizes: React.FC = () => {
                     multidesc.addDescriptions([
                         'Note: You need to reopen all the open Markdown views with diagrams in them to apply these settings.',
                     ]);
-
                     return multidesc;
                 }}
                 setHeading={true}
@@ -207,7 +293,6 @@ const DiagramSizes: React.FC = () => {
                             setPreserveDiagramOriginalSize(value);
                             await plugin.settingsManager.saveSettings();
                         });
-
                         return toggle;
                     },
                 ]}

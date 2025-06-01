@@ -27,6 +27,15 @@ export interface PanelsConfig {
     zoom: PanelConfig;
 }
 
+export type DimensionUnit = 'px' | '%';
+
+export interface DimensionSetting {
+    width: string;
+    widthUnit: DimensionUnit;
+    height: string;
+    heightUnit: DimensionUnit;
+}
+
 export interface DefaultSettings {
     supported_diagrams: DiagramData[];
     panelsConfig: PanelsConfig;
@@ -35,9 +44,7 @@ export interface DefaultSettings {
     preserveDiagramOriginalSize: boolean;
     automaticFoldingOnFocusChange: boolean;
     hideOnMouseOutDiagram: boolean;
-    diagramExpandedHeight: number;
-    diagramExpandedWidth: number;
-    diagramFoldedHeight: number;
-    diagramFoldedWidth: number;
+    diagramExpanded: DimensionSetting;
+    diagramFolded: DimensionSetting;
     addHidingButton: boolean;
 }

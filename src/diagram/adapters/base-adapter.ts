@@ -186,10 +186,10 @@ export abstract class BaseAdapter {
             foldedWidth = diagramOriginalSize.width / 2;
             foldedHeight = diagramOriginalSize.height / 2;
         } else {
-            expandedWidth = this.diagram.plugin.settings.diagramExpandedWidth;
-            expandedHeight = this.diagram.plugin.settings.diagramExpandedHeight;
-            foldedWidth = this.diagram.plugin.settings.diagramFoldedWidth;
-            foldedHeight = this.diagram.plugin.settings.diagramFoldedHeight;
+            expandedWidth = parseInt(this.diagram.plugin.settings.diagramExpanded.width, 10);
+            expandedHeight = parseInt(this.diagram.plugin.settings.diagramExpanded.height, 10);
+            foldedWidth = parseInt(this.diagram.plugin.settings.diagramFolded.width, 10);
+            foldedHeight = parseInt(this.diagram.plugin.settings.diagramFolded.height, 10);
         }
 
         this.diagram.size = {

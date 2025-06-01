@@ -61,10 +61,18 @@ export default class SettingsManager {
             preserveDiagramOriginalSize: false,
             automaticFoldingOnFocusChange: false,
             hideOnMouseOutDiagram: false,
-            diagramExpandedWidth: 400,
-            diagramExpandedHeight: 400,
-            diagramFoldedWidth: 200,
-            diagramFoldedHeight: 200,
+            diagramExpanded: {
+                width: '400',
+                widthUnit: 'px',
+                height: '400',
+                heightUnit: 'px',
+            },
+            diagramFolded: {
+                width: '200',
+                widthUnit: 'px',
+                height: '200',
+                heightUnit: 'px',
+            },
             addHidingButton: true,
         };
     }
