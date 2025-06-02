@@ -206,8 +206,6 @@ export abstract class BaseAdapter {
         el.parentNode?.insertBefore(container, el);
         container.appendChild(el);
 
-        this.diagram.updateDiagramSizeBasedOnStatus(container);
-
         container.id = await this.genID(
             sourceData.lineStart,
             sourceData.lineEnd,
@@ -219,6 +217,8 @@ export abstract class BaseAdapter {
         );
 
         container.setAttribute('tabindex', '0');
+
+        this.diagram.updateDiagramSizeBasedOnStatus(container);
 
         return container;
     }
