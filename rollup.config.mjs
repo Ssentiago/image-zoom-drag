@@ -7,6 +7,7 @@ import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
 import { visualizer } from 'rollup-plugin-visualizer';
 import alias from '@rollup/plugin-alias';
+import watch from 'rollup-plugin-watch';
 
 const baseConfig = {
     input: 'src/main.ts',
@@ -74,6 +75,11 @@ const developmentConfig = {
                     dest: 'test-vault/.obsidian/plugins/Diagram Zoom Drag/',
                 },
             ],
+        }),
+        watch({
+            dir: '.',
+            include: ['styles.css'],
+            exclude: ['*~'],
         }),
     ],
 };
