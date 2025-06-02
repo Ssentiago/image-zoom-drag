@@ -13,4 +13,11 @@ export interface PanelsChangedVisibility extends DiagramZoomDragEvent {
     };
 }
 
+export interface FoldStateChanged extends DiagramZoomDragEvent {
+    data: {
+        containerID: string;
+        folded: boolean;
+    };
+}
+
 export interface ItemsPerPageChanged extends DiagramZoomDragEvent {}
