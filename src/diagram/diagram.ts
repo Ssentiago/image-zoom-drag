@@ -89,14 +89,11 @@ export class Diagram {
     updateDiagramSizeBasedOnStatus(el: HTMLElement): void {
         const isFolded = el.hasClass('folded');
         const size = isFolded ? this.size.folded : this.size.expanded;
-        const setting = isFolded ? this.plugin.settings.diagramFolded : this.plugin.settings.diagramExpanded;
+        const setting = isFolded
+            ? this.plugin.settings.diagramFolded
+            : this.plugin.settings.diagramExpanded;
 
-        el.style.height = `${size.height}${this.plugin.settings.preserveDiagramOriginalSize ? 'px' : setting.heightUnit}`;
-        el.style.width = `${size.width}${this.plugin.settings.preserveDiagramOriginalSize ? 'px' : setting.widthUnit}`;
-        
-        if (this.plugin.isInLivePreviewMode && el.parentElement) {
-            el.parentElement.style.height = `${size.height}${setting.heightUnit}`;
-            el.parentElement.style.width = `${size.width}${setting.widthUnit}`;
-        }
+        el.style.height = `${size.height}${setting.heightUnit}`;
+        el.style.width = `${size.width}${setting.widthUnit}`;
     }
 }
