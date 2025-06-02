@@ -41,7 +41,6 @@ export interface DefaultSettings {
     panelsConfig: PanelsConfig;
     diagramsPerPage: number;
     foldByDefault: boolean;
-    preserveDiagramOriginalSize: boolean;
     automaticFoldingOnFocusChange: boolean;
     hideOnMouseOutDiagram: boolean;
     diagramExpanded: DimensionSetting;
