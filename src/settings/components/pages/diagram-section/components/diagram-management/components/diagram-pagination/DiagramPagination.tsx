@@ -64,7 +64,6 @@ const DiagramPagination: React.FC = () => {
     const endIndex = startIndex + diagramsPerPage;
 
     const handleDelete = async (index: number) => {
-        debugger;
         const newDiagrams = [...diagrams];
         newDiagrams.splice(index, 1);
 
