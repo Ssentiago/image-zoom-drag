@@ -1,0 +1,5 @@
+{
+  "dotPath": "dot",
+  "renderer": "dot",
+  "imageFormat": "png"
+}

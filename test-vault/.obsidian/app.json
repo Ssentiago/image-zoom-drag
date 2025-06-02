@@ -1,3 +1,5 @@
 {
-  "livePreview": false
+  "livePreview": true,
+  "showLineNumber": false,
+  "defaultViewMode": "preview"
 }
