@@ -63,7 +63,7 @@ export class ControlPanel {
 
         if (
             this.diagram.plugin.settings.hideOnMouseOutDiagram ||
-            this.diagram.activeContainer?.hasClass('folded')
+            this.diagram.activeContainer?.dataset.folded === 'true'
         ) {
             [move, zoom, service].forEach((panel) => {
                 panel.panel.removeClass('visible');

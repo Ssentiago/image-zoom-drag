@@ -213,9 +213,9 @@ export abstract class BaseAdapter {
             sourceData.lineEnd,
             diagram.diagram
         );
-        container.toggleClass(
-            'folded',
-            this.diagram.plugin.settings.foldByDefault
+        container.setAttribute(
+            'data-folded',
+            this.diagram.plugin.settings.foldByDefault.toString()
         );
 
         container.setAttribute('tabindex', '0');

@@ -87,7 +87,7 @@ export class Diagram {
     }
 
     updateDiagramSizeBasedOnStatus(el: HTMLElement): void {
-        const isFolded = el.hasClass('folded');
+        const isFolded = el.dataset.folded === 'true';
         const size = isFolded ? this.size.folded : this.size.expanded;
         const setting = isFolded
             ? this.plugin.settings.diagramFolded
