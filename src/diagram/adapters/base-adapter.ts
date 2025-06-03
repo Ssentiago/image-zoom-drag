@@ -3,6 +3,7 @@ import { MarkdownPostProcessorContext } from 'obsidian';
 import { DiagramData } from '../../settings/typing/interfaces';
 import hash from 'hash.js';
 import { HTMLElementWithCMView } from './typing/interfaces';
+import { DiagramSize } from '../state/typing/interfaces';
 
 export abstract class BaseAdapter {
     constructor(protected diagram: Diagram) {}
@@ -146,42 +147,14 @@ export abstract class BaseAdapter {
         };
     }
 
-    initDiagramSize(el: HTMLElement): boolean {
+    initDiagramSize(el: HTMLElement): DiagramSize | undefined {
         const diagramOriginalSize = this.getElSize(el);
 
         if (!diagramOriginalSize) {
-            return false;
+            return;
         }
 
-        const expandedWidth = parseInt(
-            this.diagram.plugin.settings.diagramExpanded.width,
-            10
-        );
-        const expandedHeight = parseInt(
-            this.diagram.plugin.settings.diagramExpanded.height,
-            10
-        );
-        const foldedWidth = parseInt(
-            this.diagram.plugin.settings.diagramFolded.width,
-            10
-        );
-        const foldedHeight = parseInt(
-            this.diagram.plugin.settings.diagramFolded.height,
-            10
-        );
-
-        this.diagram.size = {
-            expanded: {
-                width: expandedWidth,
-                height: expandedHeight,
-            },
-            folded: {
-                width: foldedWidth,
-                height: foldedHeight,
-            },
-        };
-
-        return true;
+        return diagramOriginalSize;
     }
 
     async createDiagramWrapper(
@@ -218,8 +191,6 @@ export abstract class BaseAdapter {
 
         container.setAttribute('tabindex', '0');
 
-        this.diagram.updateDiagramSizeBasedOnStatus(container);
-
         return container;
     }
 
@@ -246,15 +217,20 @@ export abstract class BaseAdapter {
             source: string;
             lineStart: number;
             lineEnd: number;
-        }
+        },
+        size: DiagramSize
     ): void {
         const el = diagram.element;
-        this.diagram.state.initializeContainer(container.id, sourceData.source);
+        this.diagram.state.initializeContainer(
+            container.id,
+            sourceData.source,
+            size
+        );
 
         this.diagram.controlPanel.initialize(container, diagram.diagram);
         this.diagram.events.initialize(container, diagram.diagram);
         this.diagram.contextMenu.initialize(container, diagram.diagram);
-
+        this.diagram.updateDiagramSizeBasedOnStatus(container);
         this.diagram.actions.fitToContainer(el, container);
     }
 }
