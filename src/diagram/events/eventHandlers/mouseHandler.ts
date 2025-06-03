@@ -230,7 +230,7 @@ export class MouseHandler {
         if (!this.diagramEvents.diagram.plugin.settings.hideOnMouseOutDiagram) {
             return;
         }
-        if (container.hasClass('folded')) {
+        if (container.dataset.folded === 'true') {
             return;
         }
         const panelsData = this.diagramEvents.diagram.state.panelsData;
@@ -258,7 +258,7 @@ export class MouseHandler {
         if (!this.diagramEvents.diagram.plugin.settings.hideOnMouseOutDiagram) {
             return;
         }
-        if (container.hasClass('folded')) {
+        if (container.dataset.folded === 'true') {
             return;
         }
         const panelsData = this.diagramEvents.diagram.state.panelsData;

@@ -1,4 +1,6 @@
 import Events from '../events';
+import { FoldStateChanged } from '../../../events-management/typing/interface';
+import { EventID } from '../../../events-management/typing/constants';
 
 export class FocusHandler {
     constructor(private readonly diagramEvents: Events) {}
@@ -43,12 +45,9 @@ export class FocusHandler {
             this.diagramEvents.diagram.plugin.settings
                 .automaticFoldingOnFocusChange
         ) {
-            container.removeClass('folded');
-            if (this.diagramEvents.diagram.plugin.isInLivePreviewMode) {
-                container.parentElement?.removeClass('folded');
-            }
+            this.diagramEvents.diagram.activeContainer = container;
+            this.publishFoldStateChange(container, false);
         }
-        this.diagramEvents.diagram.activeContainer = container;
     }
 
     /**
@@ -63,10 +62,23 @@ export class FocusHandler {
             this.diagramEvents.diagram.plugin.settings
                 .automaticFoldingOnFocusChange
         ) {
-            container.addClass('folded');
-            if (this.diagramEvents.diagram.plugin.isInLivePreviewMode) {
-                container.parentElement?.addClass('folded');
-            }
+            this.publishFoldStateChange(container, true);
         }
+    }
+
+    private publishFoldStateChange(
+        container: HTMLElement,
+        folded: boolean
+    ): void {
+        const containerID = container.id;
+        this.diagramEvents.diagram.plugin.publisher.publish({
+            eventID: EventID.FoldStateChanged,
+            timestamp: new Date(),
+            emitter: this.diagramEvents.diagram.plugin.app.workspace,
+            data: {
+                containerID,
+                folded,
+            },
+        } as FoldStateChanged);
     }
 }

@@ -5,7 +5,7 @@ import Events from './events/events';
 import { DiagramActions } from './actions/diagram-actions';
 import { ContextMenu } from './context-menu/context-menu';
 import { MarkdownPostProcessorContext } from 'obsidian';
-import { PanelsData } from './state/typing/interfaces';
+import { DiagramSize, PanelsData } from './state/typing/interfaces';
 import { AdapterFactory } from './adapters/adapter-factory';
 
 export class Diagram {
@@ -24,10 +24,7 @@ export class Diagram {
     source!: string;
     panelsData!: PanelsData;
     livePreviewObserver!: MutationObserver | undefined;
-    size!: {
-        expanded: { width: number; height: number };
-        folded: { width: number; height: number };
-    };
+    size!: DiagramSize;
 
     constructor(public plugin: DiagramZoomDragPlugin) {
         this.state = new State(this);
@@ -87,16 +84,30 @@ export class Diagram {
     }
 
     updateDiagramSizeBasedOnStatus(el: HTMLElement): void {
-        const isFolded = el.hasClass('folded');
-        const size = isFolded ? this.size.folded : this.size.expanded;
-        const setting = isFolded ? this.plugin.settings.diagramFolded : this.plugin.settings.diagramExpanded;
+        const isFolded = el.dataset.folded === 'true';
+        const setting = isFolded
+            ? this.plugin.settings.diagramFolded
+            : this.plugin.settings.diagramExpanded;
+        const originalDiagramSize = this.plugin.diagram.size;
+        const heightValue = parseFloat(setting.height);
+        const widthValue = parseFloat(setting.width);
+        const heightInPx =
+            setting.heightUnit === '%'
+                ? (heightValue / 100) * originalDiagramSize.height
+                : heightValue;
+        const widthInPx =
+            setting.widthUnit === '%'
+                ? (widthValue / 100) * originalDiagramSize.width
+                : widthValue;
 
-        el.style.height = `${size.height}${this.plugin.settings.preserveDiagramOriginalSize ? 'px' : setting.heightUnit}`;
-        el.style.width = `${size.width}${this.plugin.settings.preserveDiagramOriginalSize ? 'px' : setting.widthUnit}`;
-        
-        if (this.plugin.isInLivePreviewMode && el.parentElement) {
-            el.parentElement.style.height = `${size.height}${setting.heightUnit}`;
-            el.parentElement.style.width = `${size.width}${setting.widthUnit}`;
+        el.style.height = `${heightInPx}px`;
+        el.style.width = `${widthInPx}px`;
+
+        if (this.plugin.isInLivePreviewMode) {
+            const parent = el.closest('.live-preview-parent') as HTMLElement;
+            parent.style.setProperty('height', `${heightInPx}px`, 'important');
+            parent.style.setProperty('width', `${widthInPx}px`, 'important');
+            console.log('set parent' + '');
         }
     }
 }

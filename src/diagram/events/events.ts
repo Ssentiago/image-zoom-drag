@@ -2,7 +2,6 @@ import { Diagram } from '../diagram';
 import { MouseHandler } from './eventHandlers/mouseHandler';
 import { TouchHandler } from './eventHandlers/touchHandler';
 import { KeyboardHandler } from './eventHandlers/keyboardHandler';
-import { Folding } from './observers/folding';
 import { FocusHandler } from './eventHandlers/focus-handler';
 import { DiagramData } from '../../settings/typing/interfaces';
 
@@ -11,14 +10,12 @@ export default class Events {
     private readonly touch: TouchHandler;
     private readonly keyboard: KeyboardHandler;
     private readonly focus: FocusHandler;
-    private readonly foldingObserver: Folding;
 
     constructor(public diagram: Diagram) {
         this.mouse = new MouseHandler(this);
         this.touch = new TouchHandler(this);
         this.keyboard = new KeyboardHandler(this);
         this.focus = new FocusHandler(this);
-        this.foldingObserver = new Folding();
     }
 
     /**
@@ -37,7 +34,5 @@ export default class Events {
         this.touch.initialize(container);
         this.keyboard.initialize(container);
         this.focus.initialize(container);
-
-        this.foldingObserver.observe(container);
     }
 }

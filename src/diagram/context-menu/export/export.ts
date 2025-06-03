@@ -40,8 +40,6 @@ export class Export {
         fetch(img.src)
             .then((response) => response.blob())
             .then((blob) => {
-                debugger;
-
                 this.downloadFile(blob, `png`);
             })
             .catch((error) => {

@@ -2,16 +2,18 @@ import { Diagram } from '../diagram';
 import { MarkdownPostProcessorContext } from 'obsidian';
 import { DiagramData } from '../../settings/typing/interfaces';
 import hash from 'hash.js';
+import { HTMLElementWithCMView } from './typing/interfaces';
+import { DiagramSize } from '../state/typing/interfaces';
 
 export abstract class BaseAdapter {
     constructor(protected diagram: Diagram) {}
 
     abstract initialize(
-        el: HTMLElement,
+        el: Element,
         context?: MarkdownPostProcessorContext
     ): Promise<void>;
 
-    protected async checkForDiagram(element: HTMLElement) {
+    protected async isThatADiagram(element: Element) {
         const diagram = this.querySelectorWithData(element);
 
         const svg = diagram?.element.querySelector('svg');
@@ -22,34 +24,19 @@ export abstract class BaseAdapter {
         }
     }
 
-    /**
-     * Searches for a diagram element within the provided container element.
-     *
-     * This method iterates over the list of supported diagrams and checks if
-     * the diagram is enabled. If the diagram is enabled, it searches for an
-     * element within the container element that matches the diagram's selector.
-     * If an element is found, it returns an object containing the element and
-     * the diagram data. Otherwise, it returns null.
-     *
-     * @param container - The container element to search for the diagram.
-     * @returns An object containing the diagram element and the diagram data, or
-     * null if no diagram is found.
-     */
     protected querySelectorWithData(
-        container: HTMLElement
+        element: Element
     ): { diagram: DiagramData; element: HTMLElement } | null {
         for (const diagram of this.diagram.plugin.settings.supported_diagrams) {
             if (!diagram.on) {
                 continue;
             }
 
-            const element: HTMLElement | null = container.matches(
-                diagram.selector
-            )
-                ? container
-                : container.querySelector(diagram.selector);
-            if (element) {
-                return { element, diagram };
+            const diagramElement: HTMLElement | null =
+                element.closest(diagram.selector) ||
+                element.querySelector(diagram.selector);
+            if (diagramElement) {
+                return { element: diagramElement, diagram };
             }
         }
         return null;
@@ -125,10 +112,9 @@ export abstract class BaseAdapter {
                 lineEnd: 0,
             };
         }
-
         const { lineStart: ls, lineEnd: le, text } = sectionsInfo;
-        const lineStart = ls;
-        const lineEnd = le;
+        const lineStart = ls + 1;
+        const lineEnd = le - 1;
         const lines = text.split('\n');
         const source = lines.slice(lineStart, lineEnd + 1).join('\n');
 
@@ -139,17 +125,14 @@ export abstract class BaseAdapter {
         };
     }
 
-    protected sourceExtractionWithoutContext(el: HTMLElement):
-        | {
-              source: 'No source available';
-              lineStart: 0;
-              lineEnd: 0;
-          }
-        | { source: any; lineStart: any; lineEnd: any } {
-        const e = this.diagram.plugin.context.view?.editor as unknown as any;
-        const startPos = e.cm.posAtDOM(el.parentElement);
-
-        if (!startPos) {
+    protected sourceExtractionWithoutContext(el: HTMLElement): {
+        source: string;
+        lineStart: number;
+        lineEnd: number;
+    } {
+        const parent = el.parentElement as HTMLElementWithCMView;
+        const widgetData = parent.cmView?.deco?.widget;
+        if (!widgetData) {
             return {
                 source: 'No source available',
                 lineStart: 0,
@@ -157,53 +140,21 @@ export abstract class BaseAdapter {
             };
         }
 
-        const data = this.diagram.plugin.context.view?.editor
-            .getValue()
-            .slice(startPos);
-        const source = data?.match(/^"?(```.+?```)/ms)?.[1] ?? 'No source';
-        const endPos = startPos + source.length;
-        const lineStart = e.cm.state.doc.lineAt(startPos).number;
-        const lineEnd = e.cm.state.doc.lineAt(endPos).number;
-
         return {
-            source: source,
-            lineStart: lineStart,
-            lineEnd: lineEnd,
+            source: widgetData.code,
+            lineStart: widgetData.lineStart,
+            lineEnd: widgetData.lineEnd,
         };
     }
 
-    initDiagramSize(el: HTMLElement): boolean {
+    initDiagramSize(el: HTMLElement): DiagramSize | undefined {
         const diagramOriginalSize = this.getElSize(el);
 
         if (!diagramOriginalSize) {
-            return false;
-        }
-        let expandedWidth, expandedHeight, foldedWidth, foldedHeight;
-
-        if (this.diagram.plugin.settings.preserveDiagramOriginalSize) {
-            expandedWidth = diagramOriginalSize.width;
-            expandedHeight = diagramOriginalSize.height;
-            foldedWidth = diagramOriginalSize.width / 2;
-            foldedHeight = diagramOriginalSize.height / 2;
-        } else {
-            expandedWidth = parseInt(this.diagram.plugin.settings.diagramExpanded.width, 10);
-            expandedHeight = parseInt(this.diagram.plugin.settings.diagramExpanded.height, 10);
-            foldedWidth = parseInt(this.diagram.plugin.settings.diagramFolded.width, 10);
-            foldedHeight = parseInt(this.diagram.plugin.settings.diagramFolded.height, 10);
+            return;
         }
 
-        this.diagram.size = {
-            expanded: {
-                width: expandedWidth,
-                height: expandedHeight,
-            },
-            folded: {
-                width: foldedWidth,
-                height: foldedHeight,
-            },
-        };
-
-        return true;
+        return diagramOriginalSize;
     }
 
     async createDiagramWrapper(
@@ -218,19 +169,24 @@ export abstract class BaseAdapter {
         const el = diagram.element;
 
         container.addClass('diagram-container');
+        const renderingMode = this.diagram.plugin.isInPreviewMode
+            ? 'preview'
+            : 'live-preview';
+        container.setAttribute(
+            'data-diagram-zoom-drag-rendering-mode',
+            `${renderingMode}`
+        );
         el.parentNode?.insertBefore(container, el);
         container.appendChild(el);
-
-        this.diagram.updateDiagramSizeBasedOnStatus(container);
 
         container.id = await this.genID(
             sourceData.lineStart,
             sourceData.lineEnd,
             diagram.diagram
         );
-        container.toggleClass(
-            'folded',
-            this.diagram.plugin.settings.foldByDefault
+        container.setAttribute(
+            'data-folded',
+            this.diagram.plugin.settings.foldByDefault.toString()
         );
 
         container.setAttribute('tabindex', '0');
@@ -261,15 +217,20 @@ export abstract class BaseAdapter {
             source: string;
             lineStart: number;
             lineEnd: number;
-        }
+        },
+        size: DiagramSize
     ): void {
         const el = diagram.element;
-        this.diagram.state.initializeContainer(container.id, sourceData.source);
+        this.diagram.state.initializeContainer(
+            container.id,
+            sourceData.source,
+            size
+        );
 
         this.diagram.controlPanel.initialize(container, diagram.diagram);
         this.diagram.events.initialize(container, diagram.diagram);
         this.diagram.contextMenu.initialize(container, diagram.diagram);
-
+        this.diagram.updateDiagramSizeBasedOnStatus(container);
         this.diagram.actions.fitToContainer(el, container);
     }
 }

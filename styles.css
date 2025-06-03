@@ -80,8 +80,11 @@ Partially replaces by Obsidian styles.
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    margin-bottom: 40px;
     cursor: grab;
+}
+
+.diagram-container[data-diagram-zoom-drag-rendering-mode='preview'] {
+    margin-bottom: 40px;
 }
 
 
@@ -137,15 +140,17 @@ Partially replaces by Obsidian styles.
 }
 
 .live-preview-parent {
+    all: unset !important;          /* Полный сброс стилей */
+    display: block !important;      /* Блочный поток */
+    width: auto !important;         /* Подстраивается под детей */
+    height: auto !important;        /* Подстраивается под детей */
+    min-width: 0 !important;        /* Разрешает сжатие */
+    min-height: 0 !important;       /* Разрешает сжатие */
+    overflow: visible !important;   /* Отключает обрезку */
+    contain: style !important;      /* Блокирует влияние внешних стилей */
+    padding-bottom: 28px !important;
     transition: all 0.3s ease;
 }
-
-.live-preview-parent.folded {
-    transition: all 0.3s ease;
-}
-
 .live-preview {
-    width: 100% !important;
-    height: calc(100% - 24px) !important;
-    margin-top: 24px;
+    margin-top: 28px;
 }

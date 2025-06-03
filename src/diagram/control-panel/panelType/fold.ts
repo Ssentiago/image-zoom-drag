@@ -1,9 +1,13 @@
 import { PanelType } from '../typing/interfaces';
 import { Diagram } from '../../diagram';
 import { ControlPanel } from '../control-panel';
+import { updateButton } from '../../../helpers/helpers';
+import { EventID } from '../../../events-management/typing/constants';
+import { FoldStateChanged } from '../../../events-management/typing/interface';
 
 export class FoldPanel implements PanelType {
     panel!: HTMLElement;
+    private container!: HTMLElement;
 
     constructor(
         private readonly diagram: Diagram,
@@ -15,7 +19,19 @@ export class FoldPanel implements PanelType {
      * This method creates the HTML element of the fold panel and assigns it to the `panel` property.
      */
     initialize(): void {
+        this.container = this.diagram.activeContainer!;
         this.panel = this.createPanel();
+        this.diagram.plugin.observer.subscribe(
+            this.diagram.plugin.app.workspace,
+            EventID.FoldStateChanged,
+            async (event: FoldStateChanged) => {
+                const { containerID, folded } = event.data;
+                if (containerID !== this.container.id) {
+                    return;
+                }
+                this.changeFoldState(this.container, folded);
+            }
+        );
     }
     /**
      * Return an array of objects representing the buttons in the fold panel.
@@ -39,16 +55,13 @@ export class FoldPanel implements PanelType {
         active?: boolean;
         id?: string;
     }> {
-        const isFolded = this.diagram.activeContainer!.hasClass('folded');
+        const isFolded =
+            this.diagram.activeContainer?.dataset.folded === 'true';
         return [
             {
                 icon: isFolded ? 'unfold-vertical' : 'fold-vertical',
                 action: (): void => {
-                    container.classList.toggle('folded');
-                    if (this.diagram.plugin.isInLivePreviewMode) {
-                        container.parentElement?.classList.toggle('folded');
-                    }
-                    this.diagram.updateDiagramSizeBasedOnStatus(container);
+                    this.toggleFoldState(container);
                 },
                 title: isFolded ? 'Expand diagram' : 'Fold diagram',
                 id: 'diagram-fold-button',
@@ -77,7 +90,7 @@ export class FoldPanel implements PanelType {
             }
         );
 
-        const foldButtons = this.getButtons(this.diagram.activeContainer!);
+        const foldButtons = this.getButtons(this.container);
 
         foldButtons.forEach((button) => {
             const btn = this.diagramControlPanel.createButton(
@@ -91,5 +104,39 @@ export class FoldPanel implements PanelType {
         });
 
         return foldPanel;
+    }
+
+    toggleFoldState(container: HTMLElement): void {
+        const isCurrentlyFolded = container.dataset.folded === 'true';
+        container.setAttribute('data-folded', `${!isCurrentlyFolded}`);
+        this.diagram.updateDiagramSizeBasedOnStatus(container);
+        this.handleFoldStateChange(container, !isCurrentlyFolded);
+    }
+
+    changeFoldState(container: HTMLElement, isFolded: boolean): void {
+        container.setAttribute('data-folded', `${isFolded}`);
+        this.diagram.updateDiagramSizeBasedOnStatus(container);
+        this.handleFoldStateChange(container, isFolded);
+    }
+
+    handleFoldStateChange(container: HTMLElement, isFolded: boolean): void {
+        const panels: NodeListOf<HTMLElement> = container.querySelectorAll(
+            '.diagram-zoom-drag-panel:not(.diagram-fold-panel)'
+        );
+        panels.forEach((panel) => {
+            panel.toggleClass('hidden', isFolded);
+            panel.toggleClass('visible', !isFolded);
+        });
+
+        const button: HTMLElement | null = container.querySelector(
+            '#diagram-fold-button'
+        );
+        if (button) {
+            updateButton(
+                button,
+                isFolded ? 'unfold-vertical' : 'fold-vertical',
+                isFolded ? 'Expand diagram' : 'Fold diagram'
+            );
+        }
     }
 }

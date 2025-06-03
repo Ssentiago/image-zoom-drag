@@ -83,8 +83,6 @@ const DiagramSizes: React.FC = () => {
     const [foldedWidthUnit, setFoldedWidthUnit] = useState(
         plugin.settings.diagramFolded.widthUnit
     );
-    const [preserveDiagramOriginalSize, setPreserveDiagramOriginalSize] =
-        useState(plugin.settings.preserveDiagramOriginalSize);
 
     const isValidNumber = (value: string) => /^\d+$/.test(value);
 
@@ -262,7 +260,6 @@ const DiagramSizes: React.FC = () => {
                     },
                 ]}
                 noBorder={true}
-                setDisabled={preserveDiagramOriginalSize}
             />
         );
     };
@@ -280,36 +277,8 @@ const DiagramSizes: React.FC = () => {
                 setHeading={true}
             />
 
-            <ReactObsidianSetting
-                name={"Preserve diagram's original size"}
-                addToggles={[
-                    (toggle: ToggleComponent) => {
-                        toggle.setValue(
-                            plugin.settings.preserveDiagramOriginalSize
-                        );
-                        toggle.onChange(async (value: boolean) => {
-                            toggle.setValue(value);
-                            plugin.settings.preserveDiagramOriginalSize = value;
-                            setPreserveDiagramOriginalSize(value);
-                            await plugin.settingsManager.saveSettings();
-                        });
-                        return toggle;
-                    },
-                ]}
-                addMultiDesc={(multidesc: MultiDescComponent) => {
-                    multidesc.addDescriptions([
-                        'Render diagrams in their original size and ignores any size settings from the plugin.',
-                        'Enable this to prevent resizing by custom width or height options.',
-                    ]);
-                    return multidesc;
-                }}
-            />
-            <SmoothAnimatedItem $isVisible={!preserveDiagramOriginalSize}>
-                {createSettingInputs(ComponentType.Expanded)}
-            </SmoothAnimatedItem>
-            <SmoothAnimatedItem $isVisible={!preserveDiagramOriginalSize}>
-                {createSettingInputs(ComponentType.Folded)}
-            </SmoothAnimatedItem>
+            {createSettingInputs(ComponentType.Expanded)}
+            {createSettingInputs(ComponentType.Folded)}
         </>
     );
 };

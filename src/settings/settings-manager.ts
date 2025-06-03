@@ -58,7 +58,6 @@ export default class SettingsManager {
             },
             diagramsPerPage: 5,
             foldByDefault: false,
-            preserveDiagramOriginalSize: false,
             automaticFoldingOnFocusChange: false,
             hideOnMouseOutDiagram: false,
             diagramExpanded: {
