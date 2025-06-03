@@ -63,8 +63,11 @@ export class MarkdownPreviewAdapter extends BaseAdapter {
             contextElement: diagram.element,
             context: context,
         });
-        this.initDiagramSize(diagram.element);
+        const size = this.initDiagramSize(diagram.element);
+        if (size === undefined) {
+            return;
+        }
         const container = await this.createDiagramWrapper(diagram, sourceData);
-        this.postInitDiagram(diagram, container, sourceData);
+        this.postInitDiagram(diagram, container, sourceData, size);
     }
 }

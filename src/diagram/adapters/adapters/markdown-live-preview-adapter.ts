@@ -62,11 +62,14 @@ export class MarkdownLivePreviewAdapter extends BaseAdapter {
             return;
         }
         const sourceData = this.sourceExtractionWithoutContext(diagram.element);
-        this.initDiagramSize(diagram.element);
+        const size = this.initDiagramSize(diagram.element);
+        if (size === undefined) {
+            return;
+        }
 
         diagram.element.parentElement?.addClass('live-preview-parent');
         const container = await this.createDiagramWrapper(diagram, sourceData);
         container.addClass('live-preview');
-        this.postInitDiagram(diagram, container, sourceData);
+        this.postInitDiagram(diagram, container, sourceData, size);
     }
 }
