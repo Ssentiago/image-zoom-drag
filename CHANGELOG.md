@@ -1,3 +1,89 @@
+# 5.2.0
+## Features
+- Add support for setting diagram units in percentages (thanks to @NINE-J for the idea and great work on initial implementation!). Also #46 mentioned a similar idea.
+- Remove the setting for rendering diagrams at their original size, as it is no longer relevant (just set width and height to 100%). Relative sizes for diagrams are calculated based on their original size during rendering, provided by Obsidian
+
+## Bug Fixes
+- Resolve all visual issues with diagram rendering:
+    - Live Preview:
+        - Sometimes diagrams might not render when opening a note in Live Preview mode if it contains multiple diagrams. Fixed.
+        - Sometimes diagrams might not render when opening a note in Preview mode and then switching to Live Preview. Fixed.
+        - As a result, issue #48 are likely resolved. If not, please let us know.
+    - Preview:
+        - In some edge cases, diagrams might not render. Fixed.
+
+# 5.1.0
+## Features
+- Added an option to render diagrams in their original size (#48, may also resolve #46)
+
+## Bug Fixes
+- Fixed an issue where diagrams opened in a new window were not rendered in Markdown Live Preview mode (#45)
+
+## Minor
+- Renamed several text fields in the Settings Page for clarity
+- Added animations to the Settings Page
+
+# 5.0.1
+## Minor
+
+- Manifest update
+
+# 5.0.0
+## Features
+
+### Diagram Support
+- Full support for both Preview and Live Preview modes
+- Consistent behavior and features across both modes
+
+### New features
+- Added context menu for diagram container with options:
+    - Export diagram
+    - Copy diagram
+    - Copy diagram source
+  > Note: Export and Copy functions may have issues with some diagrams (known problem with Mehrmaid). Perhaps this will be fixed in the future
+- Improved Fullscreen Experience (#36)
+    - Simplified zoom: now works with just mouse wheel (no CTRL needed)
+    - Collapsed diagram mode now only displays fullscreen and fold buttons
+
+### Settings Page Overhaul
+#### Diagram/Settings
+- Diagram collapse setting (relocated from other sections)
+- New size adjustment options:
+    - Control diagram size in expanded state
+    - Control diagram size in collapsed state
+      (#36, #26)
+
+#### Diagram/Management
+- Core functionality preserved:
+    - Add new diagram
+    - Diagram per page
+    - Diagram pagination
+- Users can now enter any valid css selectors they want #36
+- Enhanced pagination features:
+    - Enable/disable specific diagrams (disabled ones are ignored by plugin) #36
+    - Edit existing diagrams (name and selector)
+    - Configure diagram-specific controls (service, zoom, move)
+- Improved user guide:
+    - Clearer and more comprehensive instructions
+
+#### Panels/Settings
+> Important: This section is not available on mobile devices
+- Hide panels when mouse leaves diagram (relocated)
+- New: Optional button in service panel to hide other panels
+- Removed: "hide panels when mouse leaves them" option
+
+#### Panels/Management
+- Complete panel layout customization:
+    - Enable/disable specific panels (applies globally)
+    - Configure panel creation positions
+    - Flexible positioning system with mouse and touch support
+    - Intuitive drag-and-drop interface for both desktop and mobile devices
+
+#### About
+- Direct links to:
+    - Plugin repository
+    - Feedback submission
+
 # 4.2.7
 ## Features
 - Added the `Toggle panel visibility` command to the command palette, allowing users to toggle the panel state in the active diagram.
