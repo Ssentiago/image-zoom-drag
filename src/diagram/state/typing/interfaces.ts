@@ -14,7 +14,13 @@ export interface PanelsData {
     controlPanel?: HTMLElement;
 }
 
+export interface DiagramSize {
+    width: number;
+    height: number;
+}
+
 interface ContainerData {
+    size: DiagramSize;
     dx: number;
     dy: number;
     scale: number;

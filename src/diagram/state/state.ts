@@ -4,13 +4,19 @@ import { FoldPanel } from '../control-panel/panelType/fold';
 import { ZoomPanel } from '../control-panel/panelType/zoom';
 import { ServicePanel } from '../control-panel/panelType/service';
 import { ContainerID, LeafID } from './typing/types';
-import { Data, PanelsData } from './typing/interfaces';
+import { Data, DiagramSize, PanelsData } from './typing/interfaces';
 
 export class State {
     data: Map<LeafID, Data> = new Map();
 
     constructor(public diagram: Diagram) {
         Object.defineProperties(this.diagram, {
+            size: {
+                get: () => this.size,
+                set: (value) => {
+                    this.size = value;
+                },
+            },
             dx: {
                 get: () => this.dx,
                 set: (value) => {
@@ -82,12 +88,17 @@ export class State {
      * @param containerID - The ID of the container to initialize.
      * @param source - The source of the diagram to be set.
      */
-    initializeContainer(containerID: string, source: string): void {
+    initializeContainer(
+        containerID: string,
+        source: string,
+        size: DiagramSize
+    ): void {
         const leafID = this.diagram.plugin.context.leafID;
 
         const viewData = this.data.get(leafID!);
         if (viewData) {
             viewData.containers[containerID] = {
+                size,
                 dx: 0,
                 dy: 0,
                 scale: 1,
@@ -211,6 +222,14 @@ export class State {
         if (viewData.containers[activeContainer.id]) {
             viewData.containers[activeContainer.id][field] = value;
         }
+    }
+
+    get size() {
+        return this.getData('size') ?? { height: 0, width: 0 };
+    }
+
+    set size(value: { height: number; width: number }) {
+        this.setData('size', value);
     }
 
     /**
