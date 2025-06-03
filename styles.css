@@ -140,16 +140,16 @@ Partially replaces by Obsidian styles.
 }
 
 .live-preview-parent {
-    all: unset !important; /* Полный сброс стилей */
-    display: block !important; /* Блочный поток */
-    width: auto !important; /* Подстраивается под детей */
-    height: auto !important; /* Подстраивается под детей */
-    min-width: 0 !important; /* Разрешает сжатие */
-    min-height: 0 !important; /* Разрешает сжатие */
-    overflow: visible !important; /* Отключает обрезку */
-    contain: style !important; /* Блокирует влияние внешних стилей */
+    all: unset !important;          /* Полный сброс стилей */
+    display: block !important;      /* Блочный поток */
+    width: auto !important;         /* Подстраивается под детей */
+    height: auto !important;        /* Подстраивается под детей */
+    min-width: 0 !important;        /* Разрешает сжатие */
+    min-height: 0 !important;       /* Разрешает сжатие */
+    overflow: visible !important;   /* Отключает обрезку */
+    contain: style !important;      /* Блокирует влияние внешних стилей */
+    padding-bottom: 28px !important;
     transition: all 0.3s ease;
-
 }
 .live-preview {
     margin-top: 28px;
