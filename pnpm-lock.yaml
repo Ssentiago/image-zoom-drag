@@ -27,8 +27,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-obsidian-setting:
-        specifier: ^1.0.42
-        version: 1.0.42(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^1.0.43
+        version: 1.0.43(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-router-dom:
         specifier: ^7.6.2
         version: 7.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1876,8 +1876,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-obsidian-setting@1.0.42:
-    resolution: {integrity: sha512-t7wEjGEDfXeVq9sRHTLBgTWwsrcmSgJ24b6zGWs7T8Uvktl5OxHCBsV+BoPC2Mja2AGlV3+S/SZdwsCYa4Iwwg==}
+  react-obsidian-setting@1.0.43:
+    resolution: {integrity: sha512-VgI3jdAPsfbFlCF6B7T0T6wRJOUve1ipke8e7icIOoQ7z9B9VHnenbgvXVyxTxlXwdFOVGHzYxcWjx6m4p9Qbw==}
 
   react-router-dom@7.6.2:
     resolution: {integrity: sha512-Q8zb6VlTbdYKK5JJBLQEN06oTUa/RAbG/oQS1auK1I0TbJOXktqm+QENEVJU6QvWynlXPRBXI3fiOQcSEA78rA==}
@@ -4182,7 +4182,7 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-obsidian-setting@1.0.42(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-obsidian-setting@1.0.43(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       prettier: 3.5.3
       styled-components: 6.1.19(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

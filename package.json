@@ -56,7 +56,7 @@
         "preact": "^10.26.9",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
-        "react-obsidian-setting": "^1.0.42",
+        "react-obsidian-setting": "^1.0.43",
         "react-router-dom": "^7.6.2",
         "styled-components": "^6.1.19"
     },
