@@ -1,12 +1,18 @@
-import Events from '../events';
+import { Component } from 'obsidian';
 
-export class TouchHandler {
+import Events from '../events';
+import { Handler } from '../types/interfaces';
+
+export class TouchHandler extends Component implements Handler {
     private startX!: number;
     private startY!: number;
     private initialDistance!: number;
     private isDragging = false;
     private isPinching = false;
-    constructor(private readonly diagramEvents: Events) {}
+
+    constructor(private readonly diagramEvents: Events) {
+        super();
+    }
 
     /**
      * Adds touch event listeners to the given container element.
@@ -18,29 +24,18 @@ export class TouchHandler {
      *
      * @param container - The container element to add the touch event listeners to.
      */
-    initialize(container: HTMLElement): void {
-        if (!this.diagramEvents.diagram.plugin.context.view) {
-            return;
-        }
+    initialize(): void {
+        const container = this.diagramEvents.diagram.container;
 
-        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
-            container,
-            'touchstart',
-            this.touchStart.bind(this, container),
-            { passive: false }
-        );
-        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
-            container,
-            'touchmove',
-            this.touchMove.bind(this, container),
-            { passive: false }
-        );
-        this.diagramEvents.diagram.plugin.context.view.registerDomEvent(
-            container,
-            'touchend',
-            this.touchEnd.bind(this, container),
-            { passive: false }
-        );
+        this.registerDomEvent(container, 'touchstart', this.touchStart, {
+            passive: false,
+        });
+        this.registerDomEvent(container, 'touchmove', this.touchMove, {
+            passive: false,
+        });
+        this.registerDomEvent(container, 'touchend', this.touchEnd, {
+            passive: false,
+        });
     }
 
     /**
@@ -60,13 +55,10 @@ export class TouchHandler {
      * @param container - The container element that received the touch event.
      * @param e - The `TouchEvent` object that represents the touch event.
      */
-    private touchStart(container: HTMLElement, e: TouchEvent): void {
+    private readonly touchStart = (e: TouchEvent): void => {
         if (this.diagramEvents.diagram.nativeTouchEventsEnabled) {
             return;
         }
-
-        this.diagramEvents.diagram.activeContainer = container;
-
         const target = e.target as HTMLElement;
 
         // we got touch to a button panel - returning
@@ -84,7 +76,7 @@ export class TouchHandler {
             this.isPinching = true;
             this.initialDistance = this.calculateDistance(e.touches);
         }
-    }
+    };
 
     /**
      * Handles the `touchmove` event on the given container element.
@@ -106,18 +98,15 @@ export class TouchHandler {
      * @param container - The container element that received the touch event.
      * @param e - The `TouchEvent` object that represents the touch event.
      */
-    private touchMove(container: HTMLElement, e: TouchEvent): void {
+    private readonly touchMove = (e: TouchEvent): void => {
         if (this.diagramEvents.diagram.nativeTouchEventsEnabled) {
             return;
         }
-        this.diagramEvents.diagram.activeContainer = container;
 
         e.preventDefault();
         e.stopPropagation();
 
-        const element: HTMLElement | null = container.querySelector(
-            this.diagramEvents.diagram.compoundSelector
-        );
+        const element = this.diagramEvents.diagram.context.diagramElement;
 
         if (!element) {
             return;
@@ -127,7 +116,7 @@ export class TouchHandler {
             const dx = e.touches[0].clientX - this.startX;
             const dy = e.touches[0].clientY - this.startY;
 
-            this.diagramEvents.diagram.actions.moveElement(container, dx, dy);
+            this.diagramEvents.diagram.actions.moveElement(dx, dy);
 
             this.startX = e.touches[0].clientX;
             this.startY = e.touches[0].clientY;
@@ -135,11 +124,11 @@ export class TouchHandler {
             const currentDistance = this.calculateDistance(e.touches);
             const factor = currentDistance / this.initialDistance;
 
-            this.diagramEvents.diagram.actions.zoomElement(container, factor);
+            this.diagramEvents.diagram.actions.zoomElement(factor);
 
             this.initialDistance = currentDistance;
         }
-    }
+    };
 
     /**
      * Handles the `touchend` event on the given container element.
@@ -154,12 +143,11 @@ export class TouchHandler {
      * @param container - The container element that received the touch event.
      * @param e - The `TouchEvent` object that represents the touch event.
      */
-    private touchEnd(container: HTMLElement, e: TouchEvent): void {
+    private readonly touchEnd = (e: TouchEvent): void => {
         if (this.diagramEvents.diagram.nativeTouchEventsEnabled) {
             return;
         }
-
-        this.diagramEvents.diagram.activeContainer = container;
+        const container = this.diagramEvents.diagram.container;
 
         const target = e.target as HTMLElement;
 
@@ -173,7 +161,7 @@ export class TouchHandler {
 
         this.isDragging = false;
         this.isPinching = false;
-    }
+    };
 
     /**
      * Calculates the distance between the two touch points.
