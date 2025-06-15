@@ -1,8 +1,8 @@
+import { confirm, input, select } from '@inquirer/prompts';
+import chalk from 'chalk';
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import semver from 'semver';
-import { confirm, input, select } from '@inquirer/prompts';
-import chalk from 'chalk';
 
 const MANIFEST_PATH = 'manifest.json';
 const PACKAGE_PATH = 'package.json';
