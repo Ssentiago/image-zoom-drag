@@ -1,113 +1,105 @@
+import { Component } from 'obsidian';
+
 import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
-import { State } from './state/state';
+import { DiagramActions } from './actions/diagram-actions';
 import { ControlPanel } from './control-panel/control-panel';
 import Events from './events/events';
-import { DiagramActions } from './actions/diagram-actions';
-import { ContextMenu } from './context-menu/context-menu';
-import { MarkdownPostProcessorContext } from 'obsidian';
-import { DiagramSize, PanelsData } from './state/typing/interfaces';
-import { AdapterFactory } from './adapters/adapter-factory';
+import { updateDiagramSize } from './helpers';
+import { DiagramContext, FileStats } from './types/interfaces';
 
-export class Diagram {
-    readonly state: State;
-    readonly controlPanel: ControlPanel;
-    readonly events: Events;
-    readonly actions: DiagramActions;
-    readonly contextMenu: ContextMenu;
+export default class Diagram extends Component {
+    container: HTMLElement;
+    originalParent: HTMLElement;
+    id!: string;
+    dx = 0;
+    dy = 0;
+    scale = 1;
+    nativeTouchEventsEnabled = false;
+    context: DiagramContext;
+    fileStats: FileStats;
 
-    activeContainer: HTMLElement | undefined = undefined;
+    actions: DiagramActions;
+    controlPanel: ControlPanel;
+    events: Events;
 
-    dx!: number;
-    dy!: number;
-    scale!: number;
-    nativeTouchEventsEnabled!: boolean;
-    source!: string;
-    panelsData!: PanelsData;
-    livePreviewObserver!: MutationObserver | undefined;
-    size!: DiagramSize;
+    constructor(
+        public plugin: DiagramZoomDragPlugin,
+        container: HTMLElement,
+        context: DiagramContext,
+        fileStats: FileStats
+    ) {
+        super();
 
-    constructor(public plugin: DiagramZoomDragPlugin) {
-        this.state = new State(this);
+        this.container = container;
+        this.originalParent = container.parentNode as HTMLElement;
+
+        this.context = context;
+        this.fileStats = fileStats;
+
         this.actions = new DiagramActions(this);
-        this.events = new Events(this);
         this.controlPanel = new ControlPanel(this);
-        this.contextMenu = new ContextMenu(this);
+        this.events = new Events(this);
+
+        this.addChild(this.events);
+        this.addChild(this.controlPanel);
+
+        this.load();
+
+        this.plugin.logger.debug('Diagram created', {
+            id: this.id,
+            name: this.context.diagramData.name,
+        });
     }
 
-    /**
-     * Generates a compound CSS selector that matches all currently enabled diagrams.
-     *
-     * This getter constructs a comma-separated list of selectors for each diagram
-     * that is enabled in the plugin's settings. The resulting string can be used
-     * to apply styles or query all enabled diagram elements at once.
-     *
-     * @returns {string} A compound CSS selector string.
-     */
-    get compoundSelector(): string {
-        const diagrams = this.plugin.settings.supported_diagrams;
-        return diagrams.reduce<string>((acc, diagram) => {
-            if (diagram.on) {
-                return acc ? `${acc}, ${diagram.selector}` : diagram.selector;
-            }
-            return acc;
-        }, '');
+    initialize(): void {
+        this.plugin.logger.debug(`Initialize diagram with id ${this.id}`);
+        this.controlPanel.initialize();
+        this.events.initialize();
+
+        updateDiagramSize(
+            this.container,
+            this.context.size,
+            this.plugin.settings.data.diagrams.size,
+            this.plugin.context.inLivePreviewMode
+        );
+
+        this.actions.fitToContainer(
+            this.context.diagramElement,
+            this.container
+        );
+
+        this.plugin.logger.debug('Diagram initialized successfully', {
+            id: this.id,
+        });
     }
 
-    async initialize(
-        element: HTMLElement,
-        context: MarkdownPostProcessorContext
-    ): Promise<void>;
+    restoreOriginalDom(): void {
+        this.plugin.logger.debug('Restoring original DOM for diagram', {
+            id: this.id,
+        });
 
-    async initialize(element: HTMLElement): Promise<void>;
+        const element = this.context.diagramElement;
+        element.setCssStyles({
+            transform: 'none',
+            transition: 'none',
+        });
 
-    /**
-     * Initializes the diagram based on the provided element and context.
-     *
-     * This method determines the rendering mode by checking the presence of a context.
-     * If a context is provided, it initializes the diagram in preview mode by invoking
-     * the `initializePreview` method. Otherwise, it initializes in live preview mode
-     * by calling `initializeLivePreview`.
-     *
-     * @param {HTMLElement} element - The HTML element representing the diagram container.
-     * @param {MarkdownPostProcessorContext} [context] - Optional context indicating
-     *        that rendering is in preview mode. If not provided, live preview mode is assumed.
-     * @returns {Promise<void>} A promise that resolves once initialization is complete.
-     */
-    async initialize(
-        element: HTMLElement,
-        context?: MarkdownPostProcessorContext
-    ): Promise<void> {
-        const adapter = AdapterFactory.getSuitableAdapter(this);
-        if (adapter) {
-            await adapter.initialize(element, context);
-        }
+        const originalParent = this.originalParent;
+
+        originalParent.removeClass('live-preview-parent');
+        element.removeClass('diagram-content');
+
+        this.container.remove();
+
+        this.originalParent.style.removeProperty('height');
+        this.originalParent.style.removeProperty('width');
+
+        originalParent.appendChild(element);
     }
 
-    updateDiagramSizeBasedOnStatus(el: HTMLElement): void {
-        const isFolded = el.dataset.folded === 'true';
-        const setting = isFolded
-            ? this.plugin.settings.diagramFolded
-            : this.plugin.settings.diagramExpanded;
-        const originalDiagramSize = this.plugin.diagram.size;
-        const heightValue = parseFloat(setting.height);
-        const widthValue = parseFloat(setting.width);
-        const heightInPx =
-            setting.heightUnit === '%'
-                ? (heightValue / 100) * originalDiagramSize.height
-                : heightValue;
-        const widthInPx =
-            setting.widthUnit === '%'
-                ? (widthValue / 100) * originalDiagramSize.width
-                : widthValue;
-
-        el.style.height = `${heightInPx}px`;
-        el.style.width = `${widthInPx}px`;
-
-        if (this.plugin.isInLivePreviewMode) {
-            const parent = el.closest('.live-preview-parent') as HTMLElement;
-            parent.style.setProperty('height', `${heightInPx}px`, 'important');
-            parent.style.setProperty('width', `${widthInPx}px`, 'important');
-            console.log('set parent' + '');
-        }
+    onunload(): void {
+        this.restoreOriginalDom();
+        this.plugin.logger.debug('Diagram unloaded', { id: this.id });
+        super.onunload();
     }
 }
