@@ -1,43 +1,26 @@
-import React from 'react';
-import { useSettingsContext } from '../../core/context';
+import { FC } from 'react';
+
 import { ReactObsidianSetting } from 'react-obsidian-setting';
 
-/**
- * The About component renders settings options for visiting the GitHub page and
- * providing feedback for the plugin. It also displays the current version and license
- * information.
- *
- * @returns A React fragment containing settings buttons and version information.
- */
-const About: React.FC = () => {
+import { useSettingsContext } from '../../core/SettingsContext';
+import { FooterContent, Info, Slogan } from './About.styled';
+
+const About: FC = () => {
     const { plugin } = useSettingsContext();
 
     return (
         <>
             <ReactObsidianSetting
-                name={'Visit GitHub page of this plugin'}
+                name={'GitHub page'}
+                setupSettingManually={(setting) => setting.setName('Hello')}
                 addButtons={[
                     (button) => {
                         button.setIcon('github');
                         button.setTooltip('Go to GitHub page of this plugin');
-                        button.onClick((cb) => {
-                            open(
-                                'https://github.com/Ssentiago/diagram-zoom-drag/'
-                            );
-                        });
-                        return button;
-                    },
-                ]}
-            />
-            <ReactObsidianSetting
-                name={'Do you have any feedback?'}
-                addButtons={[
-                    (button) => {
-                        button.setIcon('message-circle-question');
-                        button.setTooltip('Leave feedback');
                         button.onClick(() => {
-                            open(
-                                'https://github.com/Ssentiago/diagram-zoom-drag/issues'
+                            window.open(
+                                'https://github.com/Ssentiago/diagram-zoom-drag/',
+                                '_blank'
                             );
                         });
                         return button;
@@ -45,35 +28,34 @@ const About: React.FC = () => {
                 ]}
             />
 
-            <div
-                style={{
-                    position: 'absolute',
-                    bottom: 10,
-                    left: '50%',
-                }}
-            >
-                <div
-                    style={{
-                        fontSize: 'small',
-                        color: 'gray',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div>Current version: {plugin.manifest.version}</div>
-                    <div>
-                        •{' '}
-                        <a
-                            href="https://github.com/Ssentiago/diagram-zoom-drag/blob/main/LICENSE"
-                            target="_blank"
-                        >
-                            Apache-2.0 License
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <FooterContent>
+                <Slogan>Make Obsidian Diagrams Interactify!</Slogan>
+                <Info>
+                    {plugin.manifest.version}
+                    <span>•</span>
+                    <a
+                        href='https://github.com/Ssentiago/diagram-zoom-drag/blob/main/LICENSE'
+                        target='_blank'
+                    >
+                        Apache-2.0
+                    </a>
+                    <span>•</span>
+                    by{' '}
+                    <a
+                        href={'https://github.com/gitcpy'}
+                        target={'_blank'}
+                    >
+                        gitcpy
+                    </a>{' '}
+                    and{' '}
+                    <a
+                        href={'https://github.com/Ssentiago'}
+                        target={'_blank'}
+                    >
+                        Ssentiago
+                    </a>
+                </Info>
+            </FooterContent>
         </>
     );
 };
