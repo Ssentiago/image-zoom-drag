@@ -28,3 +28,24 @@ export const PaginationButton = styled.button`
         cursor: not-allowed;
     }
 `;
+
+export const UndoButton = styled.button`
+    margin-right: auto; /* Прижимаем к левому краю */
+    &:disabled {
+        background-color: var(--color-base-50);
+        cursor: not-allowed;
+    }
+`;
+
+export const RedoButton = styled.button`
+    margin-left: auto; /* Прижимаем к правому краю */
+    &:disabled {
+        background-color: var(--color-base-50);
+        cursor: not-allowed;
+    }
+`;
+export const PaginationControls = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+`;
