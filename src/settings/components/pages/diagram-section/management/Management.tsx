@@ -12,15 +12,13 @@ const Management: FC = () => {
     const { diagrams, saveDiagrams } = useDiagramManagerContext();
 
     return (
-        <DiagramManagerProvider>
-            <DiagramHistoryProvider
-                state={diagrams}
-                updateState={saveDiagrams}
-            >
-                <AddNewDiagram />
-                <AvailableDiagrams />
-            </DiagramHistoryProvider>
-        </DiagramManagerProvider>
+        <DiagramHistoryProvider
+            state={diagrams}
+            updateState={saveDiagrams}
+        >
+            <AddNewDiagram />
+            <AvailableDiagrams />
+        </DiagramHistoryProvider>
     );
 };
 

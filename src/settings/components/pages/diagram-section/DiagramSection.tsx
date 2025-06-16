@@ -6,6 +6,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { MiniNavbar } from './DiagramSection.styled';
 import Management from './management/Management';
+import { DiagramManagerProvider } from './management/context/DiagramManagerContext';
 import Settings from './settings/Settings';
 
 const DiagramSection: FC = () => {
@@ -13,7 +14,7 @@ const DiagramSection: FC = () => {
     const location = useLocation();
 
     return (
-        <>
+        <DiagramManagerProvider>
             <MiniNavbar>
                 <ReactObsidianSetting
                     addButtons={[
@@ -63,7 +64,7 @@ const DiagramSection: FC = () => {
                     element={<Management />}
                 />
             </Routes>
-        </>
+        </DiagramManagerProvider>
     );
 };
 export default DiagramSection;
