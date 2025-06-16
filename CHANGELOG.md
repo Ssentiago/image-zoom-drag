@@ -1,3 +1,19 @@
+# 5.3.0
+## Features
+- Button presets: Mobile, desktop, and presentation mode presets for panel buttons
+- Enhanced scrolling: Horizontal diagram scrolling with `SHIFT + WHEEL` and vertical scrolling with `SHIFT + ALT + WHEEL`
+- Debug page: Settings page with logging configuration and issue template generator
+- Panel behavior settings: Configure panel visibility (always visible, on hover, on click) with separate service panel override
+- Settings animations: Smooth transitions between settings pages
+- Isolated diagram state: Automatic resource cleanup when closing tabs or disabling plugin
+- Automatic settings migration: Seamless updates from previous plugin versions
+- Button configuration modal: Enable/disable specific buttons in each panel
+- Panel position modals: Visual configuration for panel positioning on diagrams
+
+## Bug Fixes
+- Fixed issue where images sometimes failed to copy/save from context menu
+- Fixed resource cleanup bugs where MutationObservers weren't properly disposed, causing UI glitches
+
 # 5.2.0
 ## Features
 - Add support for setting diagram units in percentages (thanks to @NINE-J for the idea and great work on initial implementation!). Also #46 mentioned a similar idea.
@@ -149,20 +165,20 @@ Rename to diagram-zom-drag
 
 - Add support for [Mehrmaid](https://github.com/huterguier/obsidian-mehrmaid) diagrams
 - Reorganize control panel:
-  - **Service panel** at the top right corner:
+  - Service panel at the top right corner:
     - Hide / show action: hide / show other panels
     - Open in fullscreen mode / exit fullscreen mode: enables or disables fullscreen mode for the diagram
 
-  - **Zoom panel** at the right edge at the center:
+  - Zoom panel at the right edge at the center:
     - Zoom in: zoom in the diagram
     - Reset zoom and position: reset zoom and position of the diagram
     - Zoom out: zoom out the diagram
 
-  - **Move panel** at the bottom:
+  - Move panel at the bottom:
     - All actions move the diagram to the specified side
 
 - Implement diagram management with keyboard (replicates the move panel's buttons behavior):
-  - **Keyboard:**
+  - Keyboard:
     - `CTRL` + `+`/`=`: zoom in
     - `CTRL` + `-`: zoom out
     - `CTRL` + `0`: reset zoom and position
