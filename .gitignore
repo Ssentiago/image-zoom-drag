@@ -7,3 +7,5 @@ bundle*
 /test-vault/.obsidian/plugins/Diagram Zoom Drag/
 
 .yarn
+
+dependency-graph.svg

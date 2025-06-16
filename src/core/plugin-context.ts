@@ -1,21 +1,81 @@
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
-import { LeafID } from '../diagram/state/typing/types';
 
-interface IPluginContext {
-    leaf: WorkspaceLeaf | undefined;
-    view: MarkdownView | undefined;
-    leafID: LeafID | undefined;
-}
+import DiagramZoomDragPlugin from './diagram-zoom-drag-plugin';
+import { LeafID } from './types/definitions';
+import { IPluginContext } from './types/interfaces';
 
 export class PluginContext implements IPluginContext {
     leaf: WorkspaceLeaf | undefined;
     view: MarkdownView | undefined;
 
-    get leafID(): undefined | string {
+    constructor(private readonly plugin: DiagramZoomDragPlugin) {}
+
+    get leafID(): undefined | LeafID {
         return this.leaf && (this.leaf.id as LeafID);
     }
 
-    get isValid(): boolean {
-        return this.leaf !== undefined && this.view !== undefined;
+    /**
+     * Whether the context is active.
+     *
+     * The context is active if:
+     * 1. The context is associated with a leaf.
+     * 2. The context is associated with a view.
+     * 3. The view is associated with a file.
+     *
+     * @readonly
+     */
+    get active(): boolean {
+        return (
+            this.leaf !== undefined &&
+            this.view !== undefined &&
+            this.view.file !== null
+        );
+    }
+
+    /**
+     * Checks if the current view is in preview mode.
+     */
+    get inPreviewMode(): boolean {
+        const viewState = this.view?.getState();
+        return viewState?.mode === 'preview';
+    }
+
+    /**
+     * Checks if the current view is in live preview mode.
+     */
+    get inLivePreviewMode(): boolean {
+        const viewState = this.view?.getState();
+        return !viewState?.source && viewState?.mode === 'source';
+    }
+
+    /**
+     * Initializes the view context with the currently active view.
+     */
+    initialize(onInitialize: (leafID: LeafID) => void): void {
+        const view =
+            this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+        if (!view) {
+            return;
+        }
+        this.leaf = view.leaf;
+        this.view = view;
+
+        onInitialize(this.leafID!);
+    }
+
+    /**
+     * Cleans up the view context if the leaf is no longer alive.
+     */
+    cleanup(onCleanup: (leafID: LeafID) => void): void {
+        if (!this.leaf) {
+            return;
+        }
+
+        const isLeafAlive = this.plugin.app.workspace.getLeafById(this.leafID!);
+        if (isLeafAlive === null) {
+            onCleanup(this.leafID!);
+            this.view = undefined;
+            this.leaf = undefined;
+        }
     }
 }

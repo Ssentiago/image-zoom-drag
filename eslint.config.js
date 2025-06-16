@@ -1,5 +1,8 @@
-import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+
 export default [
     {
         files: ['**/*.ts', '**/*.tsx'],
@@ -13,39 +16,39 @@ export default [
         },
         plugins: {
             '@typescript-eslint': tsPlugin,
+            react: reactPlugin,
+            'react-hooks': reactHooksPlugin,
         },
         rules: {
             'arrow-body-style': ['error', 'as-needed'],
-            'no-unused-vars': 'off',
-            // "@typescript-eslint/no-unused-vars": ["error", {"argsIgnorePattern": "^_"}], // Disables unused variables, ignoring arguments starting with _
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                { argsIgnorePattern: '^_' },
+            ], // Disables unused variables, ignoring arguments starting with _
 
             '@typescript-eslint/ban-ts-comment': 'off', // Allows comments like @ts-ignore
             'no-prototype-builtins': 'off', // Allows prototype methods to be used directly
-            '@typescript-eslint/no-empty-function': 'off', // Allow empty functions
-
+            '@typescript-eslint/member-delimiter-style': [
+                'error',
+                {
+                    multiline: { delimiter: 'semi' },
+                    singleline: { delimiter: 'semi' },
+                },
+            ],
             '@typescript-eslint/explicit-function-return-type': 'warn', // Requires explicit indication of the function return type
             '@typescript-eslint/no-inferrable-types': 'warn', // Warns about overspecifying types that can be inferred automatically
             '@typescript-eslint/no-namespace': 'error', // Disables the use of namespaces
             '@typescript-eslint/no-var-requires': 'error', // Disables the use of require for imports
             '@typescript-eslint/consistent-type-assertions': 'warn', // Ensures consistent use of casting
-            // "@typescript-eslint/no-unused-expressions": "warn", // Warns about unused expressions
+            '@typescript-eslint/no-unused-expressions': 'warn', // Warns about unused expressions
             '@typescript-eslint/consistent-type-definitions': [
                 'error',
                 'interface',
             ], // Requires the use of interfaces instead of types
-            // "@typescript-eslint/no-explicit-any": "warn", // Warns about using type any
-            // "@typescript-eslint/no-misused-promises": "error", // Prohibits the misuse of promises
-            // "@typescript-eslint/no-non-null-assertion": "warn", // Warns about using the !
-            '@typescript-eslint/prefer-optional-chain': 'warn', // Prefers to use optional chaining
-            '@typescript-eslint/ban-types': [
-                'error',
-                {
-                    types: {
-                        Function: false, // Allows use of Function
-                    },
-                    extendDefaults: true,
-                },
-            ],
+            '@typescript-eslint/no-explicit-any': 'warn', // Warns about using type any
+            '@typescript-eslint/no-misused-promises': 'error', // Prohibits the misuse of promises
+            '@typescript-eslint/no-non-null-assertion': 'warn', // Warns about using the !
+            '@typescript-eslint/prefer-optional-chain': 'warn', // Prefers to use optional chaining,
             '@typescript-eslint/no-unnecessary-condition': 'warn', // Warns about conditions that are always true or false
             '@typescript-eslint/prefer-nullish-coalescing': 'warn', // Prefers to use the ?? operator
             '@typescript-eslint/no-floating-promises': 'error', // Requires promise processing
@@ -78,8 +81,10 @@ export default [
             'prefer-arrow-callback': 'warn', // Prefers arrow functions for callbacks
             'prefer-rest-params': 'error', // Prefers rest parameters instead of arguments
             'prefer-spread': 'error', // Prefers spread operator instead of .apply()
-
             'no-console': 'warn', // Warns about using console.log
+            'react/prop-types': 'off', // TypeScript заменяет PropTypes
+            'react-hooks/rules-of-hooks': 'error',
+            'react-hooks/exhaustive-deps': 'warn',
         },
     },
     {

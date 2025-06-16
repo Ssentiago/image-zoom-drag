@@ -1,12 +1,11 @@
+import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
-import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
+import esbuild from 'rollup-plugin-esbuild';
 import { visualizer } from 'rollup-plugin-visualizer';
-import alias from '@rollup/plugin-alias';
 import watch from 'rollup-plugin-watch';
 
 const baseConfig = {
@@ -16,7 +15,9 @@ const baseConfig = {
         json(),
         replace({
             preventAssignment: true,
-            'process.env.NODE_ENV': JSON.stringify('production'),
+            'process.env.NODE_ENV': JSON.stringify(
+                process.env.NODE_ENV || 'development'
+            ),
         }),
         alias({
             entries: [
@@ -46,7 +47,15 @@ const baseConfig = {
         commonjs({
             include: 'node_modules/**',
         }),
-        typescript(),
+        esbuild({
+            include: /\.[jt]sx?$/,
+            exclude: [],
+            target: 'es2023',
+            jsx: 'automatic',
+            jsxImportSource: 'preact',
+            minify: process.env.NODE_ENV === 'production',
+            sourcemap: process.env.NODE_ENV === 'development',
+        }),
     ],
 };
 
@@ -101,17 +110,17 @@ const productionConfig = {
                 { src: './manifest.json', dest: 'dist/' },
             ],
         }),
-        terser({
-            compress: true,
-            mangle: true,
-        }),
         visualizer({
-            open: false,
             filename: 'bundle-analysis.html',
+            gzipSize: true,
+            brotliSize: true,
+            open: false,
         }),
     ],
 };
 
 const config =
-    process.env.PRODUCTION === '1' ? productionConfig : developmentConfig;
+    process.env.NODE_ENV === 'development'
+        ? developmentConfig
+        : productionConfig;
 export default config;

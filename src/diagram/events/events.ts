@@ -1,38 +1,40 @@
-import { Diagram } from '../diagram';
-import { MouseHandler } from './eventHandlers/mouseHandler';
-import { TouchHandler } from './eventHandlers/touchHandler';
-import { KeyboardHandler } from './eventHandlers/keyboardHandler';
-import { FocusHandler } from './eventHandlers/focus-handler';
-import { DiagramData } from '../../settings/typing/interfaces';
+import { Component } from 'obsidian';
 
-export default class Events {
+import Diagram from '../diagram';
+import { ContextMenu } from './handlers/context-menu/context-menu';
+import { FocusHandler } from './handlers/focus-handler';
+import { KeyboardHandler } from './handlers/keyboardhandler';
+import { MouseHandler } from './handlers/mousehandler';
+import { TouchHandler } from './handlers/touchhandler';
+
+export default class Events extends Component {
     private readonly mouse: MouseHandler;
     private readonly touch: TouchHandler;
     private readonly keyboard: KeyboardHandler;
     private readonly focus: FocusHandler;
+    private readonly contextMenu: ContextMenu;
 
     constructor(public diagram: Diagram) {
+        super();
+
         this.mouse = new MouseHandler(this);
         this.touch = new TouchHandler(this);
         this.keyboard = new KeyboardHandler(this);
         this.focus = new FocusHandler(this);
+        this.contextMenu = new ContextMenu(this);
+
+        this.addChild(this.mouse);
+        this.addChild(this.touch);
+        this.addChild(this.keyboard);
+        this.addChild(this.focus);
+        this.addChild(this.contextMenu);
     }
 
-    /**
-     * Initializes all the event handlers and observers for the given container
-     * element.
-     *
-     * The event handlers are initialized in the order of mouse, touch, keyboard,
-     * and focus. The folding observer is initialized last.
-     *
-     * @param container - The container element to add the event handlers and
-     * observers to.
-     * @param diagramData
-     */
-    initialize(container: HTMLElement, diagramData: DiagramData): void {
-        this.mouse.initialize(container);
-        this.touch.initialize(container);
-        this.keyboard.initialize(container);
-        this.focus.initialize(container);
+    initialize(): void {
+        this.mouse.initialize();
+        this.touch.initialize();
+        this.keyboard.initialize();
+        this.focus.initialize();
+        this.contextMenu.initialize();
     }
 }

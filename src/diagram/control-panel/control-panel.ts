@@ -1,171 +1,58 @@
-import { Diagram } from '../diagram';
-import { MovePanel } from './panelType/move';
-import { ZoomPanel } from './panelType/zoom';
-import { FoldPanel } from './panelType/fold';
-import { ServicePanel } from './panelType/service';
-import { updateButton } from '../../helpers/helpers';
-import { DiagramData } from '../../settings/typing/interfaces';
+import Diagram from 'diagram/diagram';
+import { Component } from 'obsidian';
 
-export class ControlPanel {
-    constructor(public diagram: Diagram) {}
+import { TriggerType } from '../types/constants';
+import { FoldPanel } from './panels/fold';
+import { MovePanel } from './panels/move';
+import { ServicePanel } from './panels/service';
+import { ZoomPanel } from './panels/zoom';
+import { IControlPanel } from './types/interfaces';
 
-    /**
-     * Initializes the control panel for the diagram.
-     *
-     * This method creates the control panel and its associated panels (move, fold, zoom, and service).
-     * It then assigns the control panel and its associated panels to the panels data object,
-     * which is then stored in the state.
-     *
-     * @param container - The container element that will contain the control panel.
-     * @param diagramData - The data for the diagram.
-     */
-    initialize(container: HTMLElement, diagramData: DiagramData): void {
-        this.diagram.activeContainer = container;
+export class ControlPanel extends Component implements IControlPanel {
+    fold!: FoldPanel;
+    move!: MovePanel;
+    zoom!: ZoomPanel;
+    service!: ServicePanel;
+    controlPanel!: HTMLElement;
 
-        const controlPanel = container.createDiv();
-        controlPanel.addClass('diagram-zoom-drag-control-panel');
-
-        const move = new MovePanel(this.diagram, this);
-        const zoom = new ZoomPanel(this.diagram, this);
-        const fold = new FoldPanel(this.diagram, this);
-        const service = new ServicePanel(this.diagram, this);
-
-        this.diagram.state.initializeContainerPanels(
-            controlPanel,
-            move,
-            fold,
-            zoom,
-            service
-        );
-
-        fold.initialize();
-
-        if (
-            this.diagram.plugin.settings.panelsConfig.move.enabled &&
-            diagramData.panels.move.on
-        ) {
-            move.initialize();
-        }
-
-        if (
-            this.diagram.plugin.settings.panelsConfig.zoom.enabled &&
-            diagramData.panels.zoom.on
-        ) {
-            zoom.initialize();
-        }
-
-        if (
-            this.diagram.plugin.settings.panelsConfig.service.enabled &&
-            diagramData.panels.service.on
-        ) {
-            service.initialize();
-        }
-
-        if (
-            this.diagram.plugin.settings.hideOnMouseOutDiagram ||
-            this.diagram.activeContainer?.dataset.folded === 'true'
-        ) {
-            [move, zoom, service].forEach((panel) => {
-                panel.panel.removeClass('visible');
-                panel.panel.addClass('hidden');
-            });
-        }
-
-        this.diagram.activeContainer?.appendChild(controlPanel);
+    constructor(public diagram: Diagram) {
+        super();
     }
 
-    /**
-     * Creates a new panel element with the given CSS class and styles.
-     *
-     * This function is used to create the various control panels used in the diagram.
-     * The control panels are created by calling this function with the desired CSS class
-     * (e.g. 'move-panel', 'zoom-panel', etc.) and an object containing the styles for the
-     * panel.
-     *
-     * @param cssClass The CSS class to add to the panel element.
-     * @param styles An object containing the styles for the panel.
-     * @returns The created panel element.
-     */
-    createPanel(cssClass: string, styles: object): HTMLElement {
-        const controlPanel = this.diagram.panelsData?.controlPanel;
-        const panel = controlPanel!.createEl('div');
-        panel.addClass(cssClass);
-        panel.addClass('diagram-zoom-drag-panel');
-        panel.setCssStyles(styles);
-        return panel;
+    initialize(): void {
+        this.controlPanel = this.diagram.container.createDiv();
+        this.controlPanel.addClass('diagram-zoom-drag-control-panel');
+
+        this.move = new MovePanel(this);
+        this.zoom = new ZoomPanel(this);
+        this.fold = new FoldPanel(this);
+        this.service = new ServicePanel(this);
+
+        [this.move, this.zoom, this.fold, this.service].forEach((panel) => {
+            this.addChild(panel);
+            panel.initialize();
+        });
+
+        this.diagram.container.appendChild(this.controlPanel);
     }
 
-    /**
-     * Creates a new button element with the given icon, action, title, and properties.
-     *
-     * This function is used to create buttons for the control panels used in the diagram.
-     * The buttons are created with the given icon and title, and the action is called when the button is clicked.
-     * The button is also styled according to the given properties.
-     *
-     * @param icon The icon to display on the button.
-     * @param action The action to call when the button is clicked.
-     * @param title The title of the button.
-     * @param active Whether the button is active or not. If not active, the button is hidden.
-     * @param id The id of the button element.
-     * @returns The created button element.
-     */
-    createButton(
-        icon: string,
-        action: () => void,
-        title: string,
-        active = true,
-        id: string | undefined = undefined
-    ): HTMLElement {
-        const button = document.createElement('button');
-        button.className = 'button';
-        button.id = id ?? '';
+    private get panels() {
+        return [this.move, this.zoom, this.fold, this.service];
+    }
 
-        if (active) {
-            button.setCssStyles({
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-muted)',
-                cursor: 'pointer',
-                padding: '4px',
-                borderRadius: '3px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                transition: 'background-color 0.2s ease',
-            });
-            updateButton(button, icon, title);
+    show(triggerType: TriggerType = TriggerType.FORCE): void {
+        this.panels.forEach((panel) => panel.show(triggerType));
+    }
 
-            this.diagram.plugin.context.view!.registerDomEvent(
-                button,
-                'click',
-                action
-            );
+    hide(triggerType: TriggerType = TriggerType.FORCE) {
+        this.panels.forEach((panel) => panel.hide(triggerType));
+    }
 
-            this.diagram.plugin.context.view!.registerDomEvent(
-                button,
-                'mouseenter',
-                () => {
-                    button.setCssStyles({
-                        color: 'var(--interactive-accent)',
-                    });
-                }
-            );
+    get hasVisiblePanels(): boolean {
+        return this.panels.some((panel) => panel.isVisible());
+    }
 
-            this.diagram.plugin.context.view!.registerDomEvent(
-                button,
-                'mouseleave',
-                () => {
-                    button.setCssStyles({
-                        color: 'var(--text-muted)',
-                    });
-                }
-            );
-        } else {
-            button.setCssStyles({
-                visibility: 'hidden',
-            });
-        }
-
-        return button;
+    onunload(): void {
+        super.onunload();
     }
 }

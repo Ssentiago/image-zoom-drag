@@ -1,8 +1,8 @@
+import { confirm, input, select } from '@inquirer/prompts';
+import chalk from 'chalk';
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import semver from 'semver';
-import { confirm, input, select } from '@inquirer/prompts';
-import chalk from 'chalk';
 
 const MANIFEST_PATH = 'manifest.json';
 const PACKAGE_PATH = 'package.json';
@@ -31,6 +31,20 @@ function changeReleaseInJson(jsonPath: string, release: string) {
     } catch (err: any) {
         console.error('Error reading JSON file:', err);
         process.exit(1);
+    }
+}
+
+function checkChangelogSection(version: string): boolean {
+    try {
+        const changelogContent = fs.readFileSync(CHANGELOG_PATH, 'utf8');
+        const versionPattern = new RegExp(
+            `^#\\s+\\[?${version.replace(/\./g, '\\.')}\\]?\\s*$`,
+            'm'
+        );
+        return versionPattern.test(changelogContent);
+    } catch (err) {
+        console.error('Error reading changelog:', err);
+        return false;
     }
 }
 
@@ -227,8 +241,20 @@ async function setRelease() {
             case 'n':
                 console.log('See you later!');
                 process.exit(0);
+                break;
             case 'r':
                 continue;
+        }
+
+        const hasUpdatedChangelog = checkChangelogSection(RELEASE_VERSION);
+
+        if (!hasUpdatedChangelog) {
+            console.log(
+                chalk.yellow(
+                    `Changelog section for ${RELEASE_VERSION} not found. Please update the changelog.`
+                )
+            );
+            return;
         }
 
         changeReleaseInJson(PACKAGE_PATH, RELEASE_VERSION);
