@@ -16,29 +16,30 @@ jobs:
         with:
           node-version: '22.4.1'
 
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Build
-        run: yarn build
+        run: pnpm build
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ github.ref_name }}"
+          CHANGELOG=$(sed -n "/^## \[*${VERSION}\]*$/,/^## /p" CHANGELOG.md | head -n -1 | tail -n +2)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
           files: dist/*
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
