@@ -178,3 +178,9 @@ export type EventsWrapper<T> = {
     $deep: string;
     $children: string;
 };
+
+export interface SettingsEventPayload {
+    eventName: string;
+    oldValue: any;
+    newValue: any;
+}

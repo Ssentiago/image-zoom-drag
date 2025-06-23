@@ -20,7 +20,11 @@ const ResetSettings: FC = () => {
                     button.onClick(async () => {
                         setCurrentPath(location.pathname);
                         await plugin.settings.resetSettings();
-                        plugin.settings.eventBus.emit('settings-reset');
+                        plugin.settings.eventBus.emit('settings-reset', {
+                            eventName: 'settings-reset',
+                            oldValue: undefined,
+                            newValue: undefined
+                        });
                         forceReload();
                         plugin.showNotice(
                             'Settings have been reset to default.'
