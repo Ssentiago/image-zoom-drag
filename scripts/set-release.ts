@@ -2,6 +2,7 @@ import { confirm, input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
+import prettier from 'prettier';
 import semver from 'semver';
 
 const MANIFEST_PATH = 'manifest.json';
@@ -22,12 +23,17 @@ interface JsonFile {
  * @throws If there is an error reading the JSON file, it will be logged to console
  *          and the process will exit with code 1.
  */
-function changeReleaseInJson(jsonPath: string, release: string) {
+async function changeReleaseInJson(jsonPath: string, release: string) {
     try {
         const json = fs.readFileSync(jsonPath, 'utf8');
         const data: JsonFile = JSON.parse(json);
         data.version = release;
-        fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2));
+
+        const formatted = await prettier.format(JSON.stringify(data), {
+            parser: 'json',
+        });
+
+        fs.writeFileSync(jsonPath, formatted);
     } catch (err: any) {
         console.error('Error reading JSON file:', err);
         process.exit(1);
@@ -257,8 +263,8 @@ async function setRelease() {
             return;
         }
 
-        changeReleaseInJson(PACKAGE_PATH, RELEASE_VERSION);
-        changeReleaseInJson(MANIFEST_PATH, RELEASE_VERSION);
+        await changeReleaseInJson(PACKAGE_PATH, RELEASE_VERSION);
+        await changeReleaseInJson(MANIFEST_PATH, RELEASE_VERSION);
 
         console.log(
             chalk.green(
