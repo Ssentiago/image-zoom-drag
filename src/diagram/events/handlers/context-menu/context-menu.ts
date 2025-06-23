@@ -5,11 +5,13 @@ import { Handler } from '../../types/interfaces';
 import { CopyDiagram } from './context-actions/copy-diagram';
 import { CopyDiagramSource } from './context-actions/copy-diagram-source';
 import { Export } from './context-actions/export';
+import Info from './context-actions/info/info';
 
 export class ContextMenu extends Component implements Handler {
     private readonly export: Export;
     private readonly copy: CopyDiagram;
     private readonly copySource: CopyDiagramSource;
+    private readonly info: Info;
 
     constructor(public readonly events: Events) {
         super();
@@ -17,10 +19,12 @@ export class ContextMenu extends Component implements Handler {
         this.export = new Export(this);
         this.copy = new CopyDiagram(this);
         this.copySource = new CopyDiagramSource(this);
+        this.info = new Info(this);
 
         this.addChild(this.export);
         this.addChild(this.copy);
         this.addChild(this.copySource);
+        this.addChild(this.info);
     }
 
     initialize(): void {
@@ -67,6 +71,14 @@ export class ContextMenu extends Component implements Handler {
             item.setTitle('Copy diagram source');
             item.onClick(async () => {
                 await this.copySource.copy();
+            });
+        });
+
+        menu.addItem((item) => {
+            item.setIcon('info');
+            item.setTitle('Info');
+            item.onClick(async () => {
+                this.info.showInfo();
             });
         });
 
