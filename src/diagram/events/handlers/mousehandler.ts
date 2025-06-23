@@ -16,7 +16,8 @@ export class MouseHandler extends Component implements Handler {
     }
 
     initialize(): void {
-        const { container } = this.events.diagram;
+        this.load();
+        const { container } = this.events.diagram.context;
 
         this.registerDomEvent(container, 'wheel', this.wheel, {
             passive: true,
@@ -45,15 +46,15 @@ export class MouseHandler extends Component implements Handler {
     }
 
     get elements() {
-        const container = this.events.diagram.container;
-        const element = this.events.diagram.context.diagramElement;
-        return { container, element };
+        const container = this.events.diagram.context.container;
+        const content = this.events.diagram.context.content;
+        return { container, content };
     }
 
     private readonly wheel = (event: WheelEvent): void => {
         if (
             !event.ctrlKey &&
-            document.fullscreenElement !== this.events.diagram.container
+            document.fullscreenElement !== this.events.diagram.context.content
         ) {
             return;
         }
@@ -62,23 +63,31 @@ export class MouseHandler extends Component implements Handler {
             return;
         }
 
-        const { element } = this.elements;
+        const { content, container } = this.elements;
 
-        const rect = element.getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const offsetY = event.clientY - rect.top;
+        const viewportCenterX = event.clientX;
+        const viewportCenterY = event.clientY;
+
+        const contentRect = content.getBoundingClientRect();
+        const contentCenterX = contentRect.left + contentRect.width / 2;
+        const contentCenterY = contentRect.top + contentRect.height / 2;
+
+        const offsetX =
+            (viewportCenterX - contentCenterX) / this.events.diagram.scale;
+        const offsetY =
+            (viewportCenterY - contentCenterY) / this.events.diagram.scale;
+
+        const factor = event.deltaY < 0 ? 1.1 : 0.9;
 
         const prevScale = this.events.diagram.scale;
         this.events.diagram.scale += event.deltaY * -0.001;
         this.events.diagram.scale = Math.max(0.125, this.events.diagram.scale);
 
-        const dx = offsetX * (1 - this.events.diagram.scale / prevScale);
-        const dy = offsetY * (1 - this.events.diagram.scale / prevScale);
+        const scaleDiff = this.events.diagram.scale - prevScale;
+        this.events.diagram.dx -= offsetX * scaleDiff;
+        this.events.diagram.dy -= offsetY * scaleDiff;
 
-        this.events.diagram.dx += dx;
-        this.events.diagram.dy += dy;
-
-        element.setCssStyles({
+        content.setCssStyles({
             transform: `translate(${this.events.diagram.dx}px, ${this.events.diagram.dy}px) scale(${this.events.diagram.scale})`,
         });
     };
@@ -108,7 +117,7 @@ export class MouseHandler extends Component implements Handler {
         if (event.button !== 0) {
             return;
         }
-        const { container, element } = this.elements;
+        const { container, content } = this.elements;
 
         container.focus({ preventScroll: true });
         this.isDragging = true;
@@ -117,7 +126,7 @@ export class MouseHandler extends Component implements Handler {
 
         this.initialX = this.events.diagram.dx;
         this.initialY = this.events.diagram.dy;
-        element.setCssStyles({
+        content.setCssStyles({
             cursor: 'grabbing',
         });
         event.preventDefault();
@@ -127,22 +136,22 @@ export class MouseHandler extends Component implements Handler {
         if (!this.isDragging) {
             return;
         }
-        const { element } = this.elements;
+        const { content } = this.elements;
 
         const dx = event.clientX - this.startX;
         const dy = event.clientY - this.startY;
         this.events.diagram.dx = this.initialX + dx;
         this.events.diagram.dy = this.initialY + dy;
-        element.setCssStyles({
+        content.setCssStyles({
             transform: `translate(${this.events.diagram.dx}px, ${this.events.diagram.dy}px) scale(${this.events.diagram.scale})`,
         });
     };
 
     private readonly mouseUp = (event: MouseEvent): void => {
-        const { element } = this.elements;
+        const { content } = this.elements;
 
         this.isDragging = false;
-        element.setCssStyles({ cursor: 'grab' });
+        content.setCssStyles({ cursor: 'grab' });
     };
 
     private readonly mouseLeave = (event: MouseEvent): void => {

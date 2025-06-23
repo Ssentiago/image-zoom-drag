@@ -9,7 +9,8 @@ export class KeyboardHandler extends Component implements Handler {
     }
 
     initialize(): void {
-        const container = this.events.diagram.container;
+        this.load();
+        const { container } = this.events.diagram.context;
 
         this.registerDomEvent(container, 'keydown', this.keyDown);
     }

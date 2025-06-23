@@ -21,6 +21,7 @@ export const useUserGuideVideo = () => {
                 plugin.logger.error(
                     `Error downloading video: ${response.status}`
                 );
+                return false;
             }
 
             await plugin.app.vault.adapter.writeBinary(
@@ -36,9 +37,6 @@ export const useUserGuideVideo = () => {
     };
 
     const loadVideo = async (): Promise<boolean> => {
-        const isFirstPluginStart =
-            await plugin.pluginStateChecker.isFirstPluginStart();
-
         const pluginDir = plugin.manifest.dir;
 
         if (!pluginDir) {
@@ -49,14 +47,12 @@ export const useUserGuideVideo = () => {
         const videoPath = normalizePath(`${assetsPath}/user-guide-video.mp4`);
         const existsAssetsPath =
             await plugin.app.vault.adapter.exists(assetsPath);
+        const existsVideo = await plugin.app.vault.adapter.exists(videoPath);
 
         !existsAssetsPath && (await plugin.app.vault.adapter.mkdir(assetsPath));
 
-        if (isFirstPluginStart) {
+        if (!existsVideo) {
             await downloadVideo(videoPath);
-        } else {
-            const exists = await plugin.app.vault.adapter.exists(videoPath);
-            !exists && (await downloadVideo(videoPath));
         }
 
         return plugin.app.vault.adapter.exists(videoPath);

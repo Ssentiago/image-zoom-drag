@@ -5,11 +5,13 @@ import { Handler } from '../../types/interfaces';
 import { CopyDiagram } from './context-actions/copy-diagram';
 import { CopyDiagramSource } from './context-actions/copy-diagram-source';
 import { Export } from './context-actions/export';
+import Info from './context-actions/info/info';
 
 export class ContextMenu extends Component implements Handler {
     private readonly export: Export;
     private readonly copy: CopyDiagram;
     private readonly copySource: CopyDiagramSource;
+    private readonly info: Info;
 
     constructor(public readonly events: Events) {
         super();
@@ -17,10 +19,18 @@ export class ContextMenu extends Component implements Handler {
         this.export = new Export(this);
         this.copy = new CopyDiagram(this);
         this.copySource = new CopyDiagramSource(this);
+        this.info = new Info(this);
+
+        this.addChild(this.export);
+        this.addChild(this.copy);
+        this.addChild(this.copySource);
+        this.addChild(this.info);
     }
 
     initialize(): void {
-        const container = this.events.diagram.container;
+        this.load();
+
+        const { container } = this.events.diagram.context;
 
         this.registerDomEvent(container, 'contextmenu', this.onContextMenu, {
             capture: true,
@@ -29,18 +39,19 @@ export class ContextMenu extends Component implements Handler {
     }
 
     private readonly onContextMenu = (event: MouseEvent) => {
-        const container = this.events.diagram.container;
+        const { element } = this.events.diagram.context;
 
         event.preventDefault();
         event.stopPropagation();
 
-        const isThisSvg = container.querySelector('svg');
+        const isThisSvg = element.matches('svg');
 
-        this.events.diagram.container.focus();
+        this.events.diagram.context.content.focus();
 
         const menu = new Menu();
 
         menu.addItem((item) => {
+            item.setIcon('download');
             item.setTitle('Export diagram image');
             item.onClick(async () => {
                 await this.export.export();
@@ -48,6 +59,7 @@ export class ContextMenu extends Component implements Handler {
         });
 
         menu.addItem((item) => {
+            item.setIcon('copy');
             item.setTitle(`Copy diagram ${!isThisSvg ? 'image' : 'SVG code'}`);
             item.onClick(async () => {
                 await this.copy.copy();
@@ -55,9 +67,18 @@ export class ContextMenu extends Component implements Handler {
         });
 
         menu.addItem((item) => {
+            item.setIcon('file-text');
             item.setTitle('Copy diagram source');
             item.onClick(async () => {
                 await this.copySource.copy();
+            });
+        });
+
+        menu.addItem((item) => {
+            item.setIcon('info');
+            item.setTitle('Info');
+            item.onClick(async () => {
+                this.info.showInfo();
             });
         });
 

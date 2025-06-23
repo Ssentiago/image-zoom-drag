@@ -104,7 +104,23 @@ export interface Panels {
     };
 }
 
+export enum ActivationMode {
+    Immediate = 'immediate',
+    Lazy = 'lazy',
+}
+
+export interface Interactive {
+    markdown: {
+        autoDetect: boolean;
+        activationMode: ActivationMode;
+    };
+    picker: {
+        enabled: boolean;
+    };
+}
+
 export interface Diagrams {
+    interactive: Interactive;
     settingsPagination: {
         perPage: number;
     };
@@ -162,3 +178,9 @@ export type EventsWrapper<T> = {
     $deep: string;
     $children: string;
 };
+
+export interface SettingsEventPayload {
+    eventName: string;
+    oldValue: any;
+    newValue: any;
+}

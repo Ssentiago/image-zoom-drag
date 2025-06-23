@@ -10,23 +10,13 @@ export class FocusHandler extends Component implements Handler {
     }
 
     initialize(): void {
-        if (!this.events.diagram.plugin.context.view) {
-            return;
-        }
+        this.load();
 
-        const container = this.events.diagram.container;
+        const { container } = this.events.diagram.context;
 
-        this.events.diagram.plugin.context.view.registerDomEvent(
-            container,
-            'focusin',
-            this.focusIn
-        );
+        this.registerDomEvent(container, 'focusin', this.focusIn);
 
-        this.events.diagram.plugin.context.view.registerDomEvent(
-            container,
-            'focusout',
-            this.focusOut
-        );
+        this.registerDomEvent(container, 'focusout', this.focusOut);
     }
 
     private readonly focusIn = (): void => {

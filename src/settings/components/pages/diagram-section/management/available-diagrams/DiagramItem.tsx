@@ -8,6 +8,7 @@ import {
 } from 'obsidian';
 import { ReactObsidianSetting } from 'react-obsidian-setting';
 
+import { SupportedDiagrams } from '../../../../../../diagram/types/constants';
 import { useDiagramValidation } from '../hooks/useDiagramValidation';
 import { useDiagramOperations } from './hooks/useDiagramOperations';
 import { DiagramItemProps } from './types/interfaces';
@@ -124,7 +125,10 @@ export const DiagramItem: FC<DiagramItemProps> = ({
                 },
             ]}
             addButtons={[
-                diagram.name !== 'Default' &&
+                ![
+                    SupportedDiagrams.IMG_SVG,
+                    SupportedDiagrams.Default,
+                ].contains(diagram.selector as SupportedDiagrams) &&
                     ((button: ButtonComponent): ButtonComponent => {
                         button.setIcon('edit');
                         button.setTooltip(`Edit ${diagram.name} diagram`);
@@ -136,7 +140,10 @@ export const DiagramItem: FC<DiagramItemProps> = ({
                         });
                         return button;
                     }),
-                diagram.name !== 'Default' &&
+                ![
+                    SupportedDiagrams.IMG_SVG,
+                    SupportedDiagrams.Default,
+                ].contains(diagram.selector as SupportedDiagrams) &&
                     ((button: ButtonComponent): ButtonComponent => {
                         button.setIcon('trash');
                         button.setTooltip(`Delete ${diagram.name} diagram`);

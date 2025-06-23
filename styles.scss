@@ -1,0 +1,190 @@
+.diagram-zoom-drag-settings {
+    padding: 16px;
+    overflow-y: scroll;
+    height: 100%;
+    width: 100%;
+
+    .invalid {
+        $error-color: #ef4444;
+        $error-alpha: 0.08;
+        $error-shadow-alpha: 0.2;
+        $error-focus-alpha: 0.3;
+
+        border: 2px solid $error-color !important;
+        background-color: rgba($error-color, $error-alpha) !important;
+        box-shadow: inset 0 1px 3px rgba($error-color, $error-shadow-alpha) !important;
+        transition: all 0.2s ease !important;
+        animation: error-pulse 0.5s ease-out !important;
+
+        &:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba($error-color, $error-focus-alpha) !important;
+        }
+    }
+}
+
+@keyframes error-pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.diagram-container {
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: grab !important;
+
+    &[data-diagram-zoom-drag-rendering-mode='preview'] {
+        margin-bottom: 40px !important;
+    }
+
+    &[data-diagram-zoom-drag-rendering-mode='live-preview'] {
+        margin-top: 28px;
+    }
+
+    &.is-fullscreen {
+        background-color: var(--background-primary);
+    }
+}
+
+.diagram-content {
+    position: relative !important;
+    transform-origin: center !important;
+    cursor: grab !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    &:active {
+        cursor: grabbing !important;
+    }
+}
+
+.diagram-zoom-drag-panel {
+    position: absolute;
+    display: grid;
+    gap: 5px;
+    background: rgba(var(--background-primary-rgb), 0.7);
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+    transform: translateY(0);
+    opacity: 1;
+
+    &.visible {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    &.hidden {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(10px);
+        cursor: grab;
+    }
+
+    &.hidden > button {
+        cursor: grab;
+        pointer-events: none;
+    }
+}
+
+// This is a wrapping so that .cm-Preview-Block does not try to influence the size of subsidiaries
+// and also stretched under them
+.live-preview-parent {
+    all: unset !important; /* Full reset of styles */
+    display: block !important; /* Block flow */
+    width: auto !important; /* Adjusts to children */
+    height: auto !important; /* It is adjusted for children */
+    min-width: 0 !important; /* Allows compression */
+    min-height: 0 !important; /* Allows compression */
+    overflow: visible !important; /* Disconnects pruning */
+    contain: style !important; /* Blocks the influence of external styles */
+    padding-bottom: 28px !important;
+    transition: all 0.3s ease;
+}
+
+.picker-mode-tooltip {
+    position: fixed;
+    background: var(--background-primary);
+    border: 1px solid var(--interactive-accent);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    z-index: 10001;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    box-shadow: var(--shadow-s);
+}
+
+.picker-mode {
+    cursor: crosshair !important;
+
+    * {
+        cursor: crosshair !important;
+    }
+
+    .interactive-candidate:not([data-interactive-mode='interactive']):not(
+            .cm-preview-code-block .interactive-candidate
+        ),
+    .diagram-container:not(.live-preview-parent .diagram-container),
+    .live-preview-parent:not(.cm-preview-code-block .live-preview-parent),
+    .cm-preview-code-block {
+        outline: 2px dashed var(--interactive-accent) !important;
+        outline-offset: 2px !important;
+        position: relative !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 4px;
+            background: linear-gradient(
+                45deg,
+                rgba(var(--interactive-accent-rgb), 0.1),
+                rgba(var(--interactive-accent-rgb), 0.05)
+            );
+            opacity: 0;
+            animation: pulseGlow 2s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        &:hover {
+            outline-color: var(--interactive-accent-hover) !important;
+            outline-offset: 0px !important;
+            transform: scale(1.02) !important;
+        }
+    }
+}
+
+@keyframes pulseGlow {
+    0%,
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}

@@ -32,15 +32,16 @@ export class FoldPanel extends BasePanel<FoldButtons> {
     }
 
     getButtonsConfig() {
-        const isFolded = this.diagram.container.dataset.folded === 'true';
+        const isFolded =
+            this.diagram.context.container.dataset.folded === 'true';
 
         return [
             {
                 icon: isFolded ? 'unfold-vertical' : 'fold-vertical',
                 action: (): void => {
                     const isFolded =
-                        this.controlPanel.diagram.container.dataset.folded ===
-                        'true';
+                        this.controlPanel.diagram.context.container.dataset
+                            .folded === 'true';
 
                     isFolded ? this.unfold() : this.fold();
 
@@ -61,10 +62,10 @@ export class FoldPanel extends BasePanel<FoldButtons> {
     }
 
     fold() {
-        this.diagram.container.setAttribute('data-folded', 'true');
+        this.diagram.context.container.setAttribute('data-folded', 'true');
 
         updateDiagramSize(
-            this.diagram.container,
+            this.diagram.context,
             this.diagram.context.size,
             this.diagram.plugin.settings.data.diagrams.size,
             this.diagram.plugin.context.inLivePreviewMode
@@ -74,10 +75,10 @@ export class FoldPanel extends BasePanel<FoldButtons> {
     }
 
     unfold() {
-        this.diagram.container.setAttribute('data-folded', 'false');
+        this.diagram.context.container.setAttribute('data-folded', 'false');
 
         updateDiagramSize(
-            this.diagram.container,
+            this.diagram.context,
             this.diagram.context.size,
             this.diagram.plugin.settings.data.diagrams.size,
             this.diagram.plugin.context.inLivePreviewMode

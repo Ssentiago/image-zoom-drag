@@ -1,1 +1,10 @@
-{}
+{
+  "diagram-zoom-drag:diagram-zoom-drag-toggle-manual-mode": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "["
+    }
+  ]
+}

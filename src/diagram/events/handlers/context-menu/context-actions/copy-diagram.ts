@@ -1,27 +1,21 @@
-import { requestUrl } from 'obsidian';
+import { Component, requestUrl } from 'obsidian';
 
 import { ContextMenu } from '../context-menu';
 
-export class CopyDiagram {
-    constructor(private readonly contextMenu: ContextMenu) {}
+export class CopyDiagram extends Component {
+    constructor(private readonly contextMenu: ContextMenu) {
+        super();
+    }
 
     async copy() {
         const { plugin } = this.contextMenu.events.diagram;
-        const element = this.contextMenu.events.diagram.context.diagramElement;
-
-        const svg = element.querySelector('svg');
-        const img = element.querySelector('img');
+        const element = this.contextMenu.events.diagram.context.element;
 
         try {
-            if (svg) {
-                await this.copySvg(svg);
-            } else if (img) {
-                await this.copyImg(img);
+            if (element instanceof SVGElement) {
+                await this.copySvg(element);
             } else {
-                console.error(
-                    'Neither SVG nor IMG element found in the container'
-                );
-                return;
+                await this.copyImg(element);
             }
 
             plugin.showNotice('Copied');
@@ -31,18 +25,37 @@ export class CopyDiagram {
         }
     }
     private async copyImg(img: HTMLImageElement): Promise<void> {
-        try {
+        const fetchImg = async (): Promise<Blob> => {
             const response = await requestUrl(img.src);
-            const blob = new Blob([response.arrayBuffer], {
-                type: 'image/png',
+            return new Blob([response.arrayBuffer], { type: 'image/png' });
+        };
+
+        const drawLocalImage = async (): Promise<Blob> => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d')!;
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0);
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => resolve(blob!), 'image/png');
             });
+        };
+
+        try {
+            let blob: Blob;
+            try {
+                blob = await fetchImg();
+            } catch {
+                blob = await drawLocalImage();
+            }
 
             await navigator.clipboard.write([
-                new ClipboardItem({
-                    'image/png': blob,
-                }),
+                new ClipboardItem({ 'image/png': blob }),
             ]);
         } catch (error: any) {
+            this.contextMenu.events.diagram.plugin.showNotice(
+                'Failed to copy image'
+            );
             this.contextMenu.events.diagram.plugin.logger.debug(
                 `Error copy image: ${error.message}`
             );

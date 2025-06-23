@@ -1,5 +1,3 @@
-
-
 ```mermaid
 graph TD
     A[Start] --> B[Process 1]
@@ -8,7 +6,4 @@ graph TD
     C -->|No| E[Process 3]
     D --> F[End]
     E --> F
-
 ```
-
-

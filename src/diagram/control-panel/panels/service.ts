@@ -23,7 +23,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
     get enabled(): boolean {
         return (
             this.diagram.plugin.settings.data.panels.local.panels.service.on &&
-            this.diagram.context.diagramData.panels.service.on
+            this.diagram.context.options.panels.service.on
         );
     }
 
@@ -42,11 +42,10 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
 
     getButtonsConfig() {
         const buttons = [];
-        const container = this.diagram.container;
+        const container = this.diagram.context.container;
         const serviceButtons =
             this.diagram.plugin.settings.data.panels.local.panels.service
                 .buttons;
-
         if (serviceButtons.hide) {
             buttons.push({
                 id: ServiceButtons.Hide,
@@ -179,7 +178,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
         }
 
         this.registerDomEvent(
-            this.diagram.container,
+            this.diagram.context.container,
             'fullscreenchange',
             this.onFullScreenChange
         );

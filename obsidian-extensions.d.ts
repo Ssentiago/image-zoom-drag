@@ -12,4 +12,7 @@ declare module 'obsidian' {
             enabledPlugins: Set<string>;
         };
     }
+    interface Component {
+        _loaded: boolean;
+    }
 }

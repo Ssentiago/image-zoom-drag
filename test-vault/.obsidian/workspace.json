@@ -1,14 +1,14 @@
 {
   "main": {
-    "id": "75ce99fe45b071da",
+    "id": "74d8cfcfdf0f9dc1",
     "type": "split",
     "children": [
       {
-        "id": "4c37d555faae44cd",
+        "id": "0bc43364ab579108",
         "type": "tabs",
         "children": [
           {
-            "id": "7afec5f27d5ef8fc",
+            "id": "2904fd391665fbc5",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -23,15 +23,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "c86d034f3f281551",
+    "id": "559da8d0beaec989",
     "type": "split",
     "children": [
       {
-        "id": "6678621caf5d905c",
+        "id": "0eae4f44c364d2c9",
         "type": "tabs",
         "children": [
           {
-            "id": "bef88c7675a15120",
+            "id": "1faa5528614f8f06",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -44,7 +44,7 @@
             }
           },
           {
-            "id": "78bd335c2c75cca8",
+            "id": "88fecc087033645c",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -61,7 +61,7 @@
             }
           },
           {
-            "id": "315a0eaebd0aedc1",
+            "id": "357f96a464def1c3",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -74,23 +74,23 @@
       }
     ],
     "direction": "horizontal",
-    "width": 261.5
+    "width": 293.5
   },
   "right": {
-    "id": "dfece06dc10863e1",
+    "id": "19e6ddb71608ebad",
     "type": "split",
     "children": [
       {
-        "id": "96f852399fa98bd9",
+        "id": "e6cbc5d9b9875d63",
         "type": "tabs",
         "children": [
           {
-            "id": "13d715657f2e44e6",
+            "id": "f8cea768e03311d4",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Untitled 3.md",
+                "file": "simple mermaid.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,25 +100,25 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Untitled 3"
+              "title": "Backlinks for simple mermaid"
             }
           },
           {
-            "id": "ccccc7f3b5c07df8",
+            "id": "587ce8bec54769c3",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Untitled 3.md",
+                "file": "simple mermaid.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Untitled 3"
+              "title": "Outgoing links from simple mermaid"
             }
           },
           {
-            "id": "45e0677ad0579a41",
+            "id": "bce6cc63356ef9b4",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -133,59 +133,52 @@
             }
           },
           {
-            "id": "9f4ff39a28603aa5",
+            "id": "d5b0eef764625193",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled 3.md",
+                "file": "simple mermaid.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Untitled 3"
+              "title": "Outline of simple mermaid"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 490.5,
+    "width": 300,
     "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
-      "obsidian-mobile-emulator-toggle:Switch to PC emulation": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "diagram-zoom-drag:Picker mode": false
     }
   },
-  "active": "7afec5f27d5ef8fc",
+  "active": "2904fd391665fbc5",
   "lastOpenFiles": [
-    "two simple mermaid and one huge.md",
-    "one huge mermaid and two mehrmaids.md",
-    "huge plantuml.md",
-    "three simple mermaids.md",
-    "simple mermaid.md",
+    "two embed local images.md",
+    "some mermaids.md",
+    "one mermaid.md",
     "mehrmaid.md",
-    "many huge mermaids.md",
+    "huge plantuml.md",
     "very huge mermaid.md",
-    "latex.md",
+    "two simple mermaid and one huge.md",
+    "three simple mermaids.md",
+    "one huge mermaid and two mehrmaids.md",
+    "one embed internal image.md",
     "graphviz.md",
-    "Untitled 9.md",
-    "Untitled 8.md",
-    "Untitled 5.md",
-    "bear-facing-right-svgrepo-com.svg",
-    "Test-2024-09-14_01-47-35.svg",
-    "Untitled-2024-09-14_01-49-41.svg",
-    "Untitled-2024-09-14_01-48-09.svg",
-    "Test-2024-09-14_01-30-09.svg",
-    "Test-2024-09-14_01-29-09.svg",
-    "Test-2024-09-14_01-25-49.svg"
+    "Pasted image 20250616233435.png",
+    "simple mermaid.md"
   ]
 }

@@ -1,16 +1,12 @@
-import Diagram from 'diagram/diagram';
 import EventEmitter2 from 'eventemitter2';
-import {
-    MarkdownPostProcessorContext,
-    MarkdownView,
-    Notice,
-    Plugin,
-} from 'obsidian';
+import { MarkdownPostProcessorContext, Notice, Plugin } from 'obsidian';
 
-import { MarkdownLivePreviewAdapter } from '../adapters/markdown-live-preview-adapter';
-import { MarkdownPreviewAdapter } from '../adapters/markdown-preview-adapter';
+import { LivePreviewAdapter } from '../adapters/markdown-view-adapters/live-preview-adapter';
+import { PreviewAdapter } from '../adapters/markdown-view-adapters/preview-adapter';
+import InteractiveElement from '../diagram/interactiveElement';
 import { TriggerType } from '../diagram/types/constants';
 import Logger from '../logger/logger';
+import PickerMode from '../modes/picker-mode/picker-mode';
 import SettingsManager from '../settings/settings-manager';
 import { SettingsTab } from '../settings/settings-tab';
 import { PluginContext } from './plugin-context';
@@ -22,9 +18,9 @@ export default class DiagramZoomDragPlugin extends Plugin {
     state!: State;
     settings!: SettingsManager;
     pluginStateChecker!: PluginStateChecker;
-    diagram!: Diagram;
     logger!: Logger;
     eventBus!: EventEmitter2;
+    private pickerMode!: PickerMode;
 
     /**
      * Initializes the plugin when it is loaded.
@@ -42,17 +38,9 @@ export default class DiagramZoomDragPlugin extends Plugin {
         this.logger.info('Plugin loaded successfully');
     }
 
-    /**
-     * Unloads the plugin and cleans up resources.
-     *
-     * This function is called automatically by Obsidian when the plugin is unloaded.
-     * It unsubscribes all event listeners and cleans up any other resources that the plugin may have allocated.
-     *
-     * @returns {void} Void.
-     */
-    onunload(): void {
+    async onunload(): Promise<void> {
         this.logger.debug('Plugin unloading...');
-        this.state.clear();
+        await this.state.clear();
         this.eventBus.removeAllListeners();
         this.logger.info('Plugin unloaded successfully');
     }
@@ -121,6 +109,8 @@ export default class DiagramZoomDragPlugin extends Plugin {
      */
     async initializeUI(): Promise<void> {
         this.setupCommands();
+        this.pickerMode = new PickerMode(this);
+        this.addChild(this.pickerMode);
         this.logger.debug('UI initialized');
     }
     /**
@@ -138,34 +128,65 @@ export default class DiagramZoomDragPlugin extends Plugin {
     }
 
     private setupInternalEventHandlers(): void {
-        this.eventBus.on('diagram.created', (diagram: Diagram) => {
+        this.eventBus.on('diagram.created', (diagram: InteractiveElement) => {
             const leafID = this.context.leafID;
             if (!leafID) {
-                this.logger.error('No active leaf found.');
+                this.logger.warn('No active leaf found.');
+                this.state.pushOrphanDiagram(diagram);
+                this.logger.debug('orphan diagram was added to state');
                 return;
             }
             this.state.pushDiagram(leafID, diagram);
             this.logger.debug('Diagram added to state', {
                 leafID,
-                diagramName: diagram.context.diagramData.name,
+                diagramName: diagram.context.options.name,
             });
         });
     }
 
-    /**
-     * Sets up Obsidian workspace event handlers for diagram functionality.
-     * Handles view initialization, mode switching, and cleanup across different markdown view states.
-     */
     private setupObsidianEventHandlers(): void {
-        this.app.workspace.onLayoutReady(() => {
-            const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-            const wasUserOnMarkdownViewBeforePluginStart = view !== null;
-            if (wasUserOnMarkdownViewBeforePluginStart) {
-                this.showNotice(
-                    'Diagram Zoom Drag: Please reload this view to enable diagram functionality.'
-                );
+        const onLeafEvent = async (
+            event: 'active-leaf-change' | 'layout-change'
+        ) => {
+            this.context.cleanup((leafID) => this.state.cleanupLeaf(leafID));
+            this.context.initialize((leafID) =>
+                this.state.initializeLeaf(leafID)
+            );
+
+            if (!this.settings.data.diagrams.interactive.markdown.autoDetect) {
+                return;
             }
-        });
+
+            if (!this.context.active) {
+                return;
+            }
+
+            if (event === 'layout-change') {
+                await this.state.cleanupDiagramsOnFileChange(
+                    this.context.leafID!,
+                    this.context.view!.file!.stat
+                );
+                await this.state.cleanOrphan();
+            }
+
+            if (!this.context.inLivePreviewMode) {
+                return;
+            }
+
+            const adapter = new LivePreviewAdapter(this, {
+                ...this.context.view!.file!.stat,
+            });
+            const sourceContainer = this.context.view!.contentEl.querySelector(
+                '.markdown-source-view'
+            ) as HTMLElement;
+
+            await adapter.initialize(
+                this.context.leafID!,
+                sourceContainer,
+                this.state.hasObserver(this.context.leafID!)
+            );
+            this.logger.debug('Initialized adapter for Live Preview Mode...');
+        };
 
         this.registerMarkdownPostProcessor(
             async (
@@ -176,18 +197,26 @@ export default class DiagramZoomDragPlugin extends Plugin {
                     this.state.initializeLeaf(leafID)
                 );
 
+                if (
+                    !this.settings.data.diagrams.interactive.markdown.autoDetect
+                ) {
+                    return;
+                }
+
                 if (this.context.active && this.context.inPreviewMode) {
                     this.logger.debug(
                         'Calling withing the Markdown PostProcessor...'
                     );
-                    const adapter = new MarkdownPreviewAdapter(this, {
+                    const adapter = new PreviewAdapter(this, {
                         ...this.context.view!.file!.stat,
                     });
+
                     await adapter.initialize(
                         this.context.leafID!,
                         element,
                         context
                     );
+
                     this.logger.debug(
                         'Initialized adapter for Preview Mode...'
                     );
@@ -197,69 +226,17 @@ export default class DiagramZoomDragPlugin extends Plugin {
 
         this.registerEvent(
             this.app.workspace.on('layout-change', async () => {
-                this.context.cleanup((leafID) =>
-                    this.state.cleanupLeaf(leafID)
-                );
+                this.logger.debug('Calling withing the layout-change-event...');
 
-                this.context.initialize((leafID) =>
-                    this.state.initializeLeaf(leafID)
-                );
-
-                if (!this.context.active) {
-                    return;
-                }
-
-                await this.state.cleanupDiagramsOnFileChange(
-                    this.context.leafID!,
-                    this.context.view!.file!.stat
-                );
-
-                if (this.context.inLivePreviewMode) {
-                    this.logger.debug(
-                        'Calling withing the layout-change-event...'
-                    );
-                    const adapter = new MarkdownLivePreviewAdapter(this, {
-                        ...this.context.view!.file!.stat,
-                    });
-                    await adapter.initialize(
-                        this.context.leafID!,
-                        this.context.view!.containerEl,
-                        undefined,
-                        this.state.hasObserver(this.context.leafID!)
-                    );
-                    this.logger.debug(
-                        'Initialized adapter for Live Preview Mode...'
-                    );
-                }
+                await onLeafEvent('layout-change');
             })
         );
         this.registerEvent(
             this.app.workspace.on('active-leaf-change', async () => {
-                this.context.cleanup((leafID) =>
-                    this.state.cleanupLeaf(leafID)
+                this.logger.debug(
+                    'Called withing the active-leaf-change event...'
                 );
-
-                this.context.initialize((leafID) =>
-                    this.state.initializeLeaf(leafID)
-                );
-
-                if (this.context.active && this.context.inLivePreviewMode) {
-                    this.logger.debug(
-                        'Called withing the active-leaf-change event...'
-                    );
-                    const adapter = new MarkdownLivePreviewAdapter(this, {
-                        ...this.context.view!.file!.stat,
-                    });
-                    await adapter.initialize(
-                        this.context.leafID!,
-                        this.context.view!.containerEl,
-                        undefined,
-                        this.state.hasObserver(this.context.leafID!)
-                    );
-                    this.logger.debug(
-                        'Initialized adapter for Live Preview Mode...'
-                    );
-                }
+                await onLeafEvent('active-leaf-change');
             })
         );
     }
@@ -278,13 +255,16 @@ export default class DiagramZoomDragPlugin extends Plugin {
     private setupCommands(): void {
         this.addCommand({
             id: 'diagram-zoom-drag-toggle-panels-management-state',
-            name: 'Toggle control panels visibility for all diagrams in current note',
+            name: 'Toggle control panels visibility for all the active diagrams in current note',
             checkCallback: (checking: boolean) => {
+                const diagrams = this.state.getDiagrams(this.context.leafID!);
+
                 if (checking) {
                     return (
                         (this.context.inLivePreviewMode ||
                             this.context.inPreviewMode) &&
-                        this.context.active
+                        this.context.active &&
+                        diagrams.some((d) => d.active)
                     );
                 }
                 if (!this.context.active) {
@@ -293,13 +273,19 @@ export default class DiagramZoomDragPlugin extends Plugin {
                     );
                     return;
                 }
-                const diagrams = this.state.getDiagrams(this.context.leafID!);
 
-                const anyVisible = diagrams.some(
+                if (!diagrams.some((d) => d.active)) {
+                    this.showNotice('No active diagrams found');
+                    return;
+                }
+
+                const filteredD = diagrams.filter((d) => d.active);
+
+                const anyVisible = filteredD.some(
                     (diagram) => diagram.controlPanel.hasVisiblePanels
                 );
 
-                diagrams.forEach((diagram) =>
+                filteredD.forEach((diagram) =>
                     anyVisible
                         ? diagram.controlPanel.hide(TriggerType.FORCE)
                         : diagram.controlPanel.show(TriggerType.FORCE)

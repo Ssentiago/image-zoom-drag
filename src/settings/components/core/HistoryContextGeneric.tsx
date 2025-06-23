@@ -63,7 +63,11 @@ const createHistoryContext = <T extends readonly unknown[]>() => {
 
         useEffect(() => {
             return () => {
-                plugin.settings.eventBus.emit('settings-clear-history');
+                plugin.settings.eventBus.emit('settings-clear-history', {
+                    eventName: 'settings-clear-history',
+                    oldValue: undefined,
+                    newValue: undefined,
+                });
             };
         }, [plugin]);
 

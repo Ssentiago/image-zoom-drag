@@ -1,6 +1,6 @@
-import Diagram from 'diagram/diagram';
 import { Component } from 'obsidian';
 
+import InteractiveElement from '../interactiveElement';
 import { TriggerType } from '../types/constants';
 import { FoldPanel } from './panels/fold';
 import { MovePanel } from './panels/move';
@@ -15,12 +15,13 @@ export class ControlPanel extends Component implements IControlPanel {
     service!: ServicePanel;
     controlPanel!: HTMLElement;
 
-    constructor(public diagram: Diagram) {
+    constructor(public diagram: InteractiveElement) {
         super();
     }
 
     initialize(): void {
-        this.controlPanel = this.diagram.container.createDiv();
+        this.load();
+        this.controlPanel = this.diagram.context.container.createDiv();
         this.controlPanel.addClass('diagram-zoom-drag-control-panel');
 
         this.move = new MovePanel(this);
@@ -33,7 +34,7 @@ export class ControlPanel extends Component implements IControlPanel {
             panel.initialize();
         });
 
-        this.diagram.container.appendChild(this.controlPanel);
+        this.diagram.context.container.appendChild(this.controlPanel);
     }
 
     private get panels() {
@@ -52,7 +53,8 @@ export class ControlPanel extends Component implements IControlPanel {
         return this.panels.some((panel) => panel.isVisible());
     }
 
-    onunload(): void {
+    onunload() {
         super.onunload();
+        this.controlPanel?.remove();
     }
 }

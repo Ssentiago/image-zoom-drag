@@ -3,6 +3,7 @@ import { createRoot, Root } from 'react-dom/client';
 
 import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
 import SettingsRoot from './components/SettingsRoot';
+import { SettingsEventPayload } from './types/interfaces';
 
 export class SettingsTab extends PluginSettingTab {
     private root: Root | undefined = undefined;
@@ -16,6 +17,13 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     display(): void {
+        this.plugin.settings.eventBus.on(
+            '**',
+            (payload: SettingsEventPayload) => {
+                this.plugin.eventBus.emit(payload.eventName, payload);
+            }
+        );
+
         this.root = createRoot(this.containerEl);
         this.root.render(
             <SettingsRoot
