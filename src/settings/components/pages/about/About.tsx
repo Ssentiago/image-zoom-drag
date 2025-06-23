@@ -12,7 +12,6 @@ const About: FC = () => {
         <>
             <ReactObsidianSetting
                 name={'GitHub page'}
-                setupSettingManually={(setting) => setting.setName('Hello')}
                 addButtons={[
                     (button) => {
                         button.setIcon('github');
