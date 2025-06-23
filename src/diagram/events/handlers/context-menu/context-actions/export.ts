@@ -1,25 +1,19 @@
-import { moment, requestUrl } from 'obsidian';
+import { Component, moment, requestUrl } from 'obsidian';
 
 import { ContextMenu } from '../context-menu';
 
-export class Export {
-    constructor(private readonly contextMenu: ContextMenu) {}
+export class Export extends Component {
+    constructor(private readonly contextMenu: ContextMenu) {
+        super();
+    }
 
     async export() {
-        const element = this.contextMenu.events.diagram.context.diagramElement;
+        const element = this.contextMenu.events.diagram.context.element;
 
-        const svg = element.querySelector('svg');
-        const img = element.querySelector('img');
-
-        if (svg) {
-            this.exportSVG(svg);
-        } else if (img) {
-            await this.exportIMG(img);
+        if (element instanceof SVGElement) {
+            this.exportSVG(element);
         } else {
-            this.contextMenu.events.diagram.plugin.showNotice(
-                "Oops! We couldn't find any elements to export. " +
-                    'It seems something is wrong with this diagram?'
-            );
+            await this.exportIMG(element);
         }
     }
 
@@ -33,13 +27,31 @@ export class Export {
     }
 
     private async exportIMG(img: HTMLImageElement): Promise<void> {
-        try {
+        const fetchImg = async (): Promise<Blob> => {
             const response = await requestUrl(img.src);
-            const blob = new Blob([response.arrayBuffer], {
-                type: 'image/png',
-            });
+            return new Blob([response.arrayBuffer], { type: 'image/png' });
+        };
 
-            this.downloadFile(blob, `png`);
+        const drawLocalImage = async (): Promise<Blob> => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d')!;
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0);
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => resolve(blob!), 'image/png');
+            });
+        };
+
+        try {
+            let blob: Blob;
+            try {
+                blob = await fetchImg();
+            } catch {
+                blob = await drawLocalImage();
+            }
+
+            this.downloadFile(blob, '.png');
         } catch (error: any) {
             this.contextMenu.events.diagram.plugin.showNotice(
                 'Error exporting image'
