@@ -97,7 +97,7 @@ const baseConfig = {
 const developmentConfig = {
     ...baseConfig,
     output: {
-        dir: 'test-vault/.obsidian/plugins/Diagram Zoom Drag',
+        dir: 'test-vault/.obsidian/plugins/Interactify',
         sourcemap: false,
         format: 'cjs',
         exports: 'auto',
@@ -108,15 +108,15 @@ const developmentConfig = {
             targets: [
                 {
                     src: './styles.css',
-                    dest: 'test-vault/.obsidian/plugins/Diagram Zoom Drag/',
+                    dest: 'test-vault/.obsidian/plugins/Interactify/',
                 },
                 {
                     src: './manifest.json',
-                    dest: 'test-vault/.obsidian/plugins/Diagram Zoom Drag/',
+                    dest: 'test-vault/.obsidian/plugins/Interactify/',
                 },
                 {
                     src: './.hotreload',
-                    dest: 'test-vault/.obsidian/plugins/Diagram Zoom Drag/',
+                    dest: 'test-vault/.obsidian/plugins/Interactify/',
                 },
             ],
         }),
@@ -143,12 +143,6 @@ const productionConfig = {
                 { src: './styles.css', dest: 'dist/' },
                 { src: './manifest.json', dest: 'dist/' },
             ],
-        }),
-        visualizer({
-            filename: 'bundle-analysis.html',
-            gzipSize: true,
-            brotliSize: true,
-            open: false,
         }),
     ],
 };

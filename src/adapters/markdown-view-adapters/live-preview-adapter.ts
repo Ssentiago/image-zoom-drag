@@ -1,16 +1,16 @@
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../../core/interactify-plugin';
 import { LeafID } from '../../core/types/definitions';
 import {
-    DiagramContext,
+    UnitContext,
     FileStats,
     SourceData,
-} from '../../diagram/types/interfaces';
-import { DiagramAdapters } from '../types/constants';
+} from '../../interactify-unit/types/interfaces';
+import { InteractifyAdapters } from '../types/constants';
 import { HTMLElementWithCMView } from '../types/interfaces';
 import { BaseMdViewAdapter } from './base-md-view-adapter';
 
 export class LivePreviewAdapter extends BaseMdViewAdapter {
-    constructor(plugin: DiagramZoomDragPlugin, fileStats: FileStats) {
+    constructor(plugin: InteractifyPlugin, fileStats: FileStats) {
         super(plugin, fileStats);
     }
 
@@ -62,7 +62,7 @@ export class LivePreviewAdapter extends BaseMdViewAdapter {
                 continue;
             }
 
-            await this.processDiagram({
+            await this.processUnit({
                 ...context,
                 livePreviewWidget: child as HTMLElementWithCMView,
             });
@@ -86,7 +86,7 @@ export class LivePreviewAdapter extends BaseMdViewAdapter {
                         continue;
                     }
 
-                    await this.processDiagram({
+                    await this.processUnit({
                         ...context,
                         livePreviewWidget: elementWithCmView,
                     });
@@ -158,18 +158,14 @@ export class LivePreviewAdapter extends BaseMdViewAdapter {
         return df;
     }
 
-    async processDiagram(context: Partial<DiagramContext>): Promise<void> {
-        await this.baseDiagramProcessing(
-            DiagramAdapters.LivePreview,
+    async processUnit(context: Partial<UnitContext>): Promise<void> {
+        await this.baseUnitProcessing(
+            InteractifyAdapters.LivePreview,
             context,
             (ctx) => {
-                const sourceData = this.getSource(ctx.livePreviewWidget);
+                context.sourceData = this.getSource(ctx.livePreviewWidget);
 
-                if (context.livePreviewWidget !== context.element) {
-                    context.livePreviewWidget!.addClass('live-preview-parent');
-                }
-
-                context.sourceData = sourceData;
+                context.livePreviewWidget!.addClass('live-preview-parent');
             }
         );
     }

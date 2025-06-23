@@ -1,6 +1,6 @@
 import { moment, normalizePath, Platform } from 'obsidian';
 
-import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../core/interactify-plugin';
 
 export default class Logger {
     private readonly maxEntries = 2000;
@@ -8,7 +8,7 @@ export default class Logger {
     private isStorageAvailable = true;
     logsDir!: string;
 
-    constructor(public plugin: DiagramZoomDragPlugin) {
+    constructor(public plugin: InteractifyPlugin) {
         this.storageKey = `${plugin.manifest.id}-logs`;
         this.checkStorageAvailability();
     }
@@ -43,7 +43,7 @@ export default class Logger {
 
             await this.rotateLogFiles(this.logsDir);
         } catch (error) {
-            console.error('DiagramZoomDrag: Error in the file:', error);
+            console.error('Interactify: Error in the file:', error);
         }
     }
 
@@ -51,7 +51,7 @@ export default class Logger {
         const pluginDir = this.plugin.manifest.dir;
         if (pluginDir === undefined) {
             throw new Error(
-                `DiagramZoomDrag: It was not possible to get the way to the plugin. Path:${pluginDir}`
+                `Interactify: It was not possible to get the way to the plugin. Path:${pluginDir}`
             );
         }
         this.logsDir = normalizePath(`${pluginDir}/logs`);
@@ -82,13 +82,11 @@ export default class Logger {
 
                 if (stat && now - stat.mtime > maxAge) {
                     await this.plugin.app.vault.adapter.remove(filePath);
-                    console.log(
-                        `DiagramZoomDrag: Remove the old log-file${file}`
-                    );
+                    console.log(`Interactify: Remove the old log-file${file}`);
                 }
             }
         } catch (error) {
-            console.error('DiagramZoomDrag: Log Rotation Error:', error);
+            console.error('Interactify: Log Rotation Error:', error);
         }
     }
 
@@ -235,7 +233,7 @@ export default class Logger {
             localStorage.removeItem('test');
         } catch {
             this.isStorageAvailable = false;
-            console.warn('Diagram Zoom Drag: Localstorage is not available');
+            console.warn('Interactify: Localstorage is not available');
         }
     }
 

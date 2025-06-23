@@ -1,4 +1,4 @@
-import { EventPath } from '../types/interfaces';
+import { EventPath } from './types/interfaces';
 
 export function createEventsWrapper(obj: any, path: string[] = []) {
     return new Proxy(obj, {

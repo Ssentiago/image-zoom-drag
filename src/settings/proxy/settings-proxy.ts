@@ -1,7 +1,7 @@
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../../core/interactify-plugin';
 
 export function createSettingsProxy(
-    plugin: DiagramZoomDragPlugin,
+    plugin: InteractifyPlugin,
     obj: any,
     path: any[] = []
 ) {

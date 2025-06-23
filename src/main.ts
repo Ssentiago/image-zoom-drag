@@ -1,3 +1,3 @@
-import DiagramZoomDragPlugin from './core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from './core/interactify-plugin';
 
-export default DiagramZoomDragPlugin;
+export default InteractifyPlugin;

@@ -1,19 +1,19 @@
 import { App, PluginSettingTab } from 'obsidian';
 import { createRoot, Root } from 'react-dom/client';
 
-import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
-import SettingsRoot from './components/SettingsRoot';
+import InteractifyPlugin from '../core/interactify-plugin';
 import { SettingsEventPayload } from './types/interfaces';
+import SettingsRoot from './ui/SettingsRoot';
 
 export class SettingsTab extends PluginSettingTab {
     private root: Root | undefined = undefined;
 
     constructor(
         public app: App,
-        public plugin: DiagramZoomDragPlugin
+        public plugin: InteractifyPlugin
     ) {
         super(app, plugin);
-        this.containerEl.addClass('diagram-zoom-drag-settings');
+        this.containerEl.addClass('interactify-settings');
     }
 
     display(): void {

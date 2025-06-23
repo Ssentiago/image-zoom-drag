@@ -1,15 +1,15 @@
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
 
-import InteractiveElement from '../../diagram/interactiveElement';
+import InteractifyUnit from '../../interactify-unit/interactify-unit';
 import { LeafID } from './definitions';
 
 export interface Data {
-    diagrams: InteractiveElement[];
+    units: InteractifyUnit[];
     livePreviewObserver: MutationObserver | undefined;
 }
 
 export interface OrphanData {
-    diagrams: InteractiveElement[];
+    units: InteractifyUnit[];
 }
 
 export interface IPluginContext {

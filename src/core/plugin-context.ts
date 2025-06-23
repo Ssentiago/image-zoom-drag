@@ -1,6 +1,6 @@
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
 
-import DiagramZoomDragPlugin from './diagram-zoom-drag-plugin';
+import InteractifyPlugin from './interactify-plugin';
 import { LeafID } from './types/definitions';
 import { IPluginContext } from './types/interfaces';
 
@@ -8,7 +8,7 @@ export class PluginContext implements IPluginContext {
     leaf: WorkspaceLeaf | undefined;
     view: MarkdownView | undefined;
 
-    constructor(private readonly plugin: DiagramZoomDragPlugin) {}
+    constructor(private readonly plugin: InteractifyPlugin) {}
 
     get leafID(): undefined | LeafID {
         return this.leaf && (this.leaf.id as LeafID);

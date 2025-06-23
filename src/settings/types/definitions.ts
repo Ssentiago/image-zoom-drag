@@ -1,1 +1,1 @@
-export type DimensionUnit = 'px' | '%';
+export type DimensionType = 'px' | '%';

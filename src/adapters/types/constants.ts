@@ -1,5 +1,5 @@
-export enum DiagramAdapters {
+export enum InteractifyAdapters {
     LivePreview = 'live-preview',
     Preview = 'preview',
-    PickerModeAdapter = 'picker-mode-adapter',
+    PickerMode = 'picker-mode',
 }

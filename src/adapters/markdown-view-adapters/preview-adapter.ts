@@ -1,18 +1,18 @@
 import { MarkdownPostProcessorContext } from 'obsidian';
 
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../../core/interactify-plugin';
 import { LeafID } from '../../core/types/definitions';
 import {
-    ContextData,
-    DiagramContext,
+    PreviewContextData,
+    UnitContext,
     FileStats,
     SourceData,
-} from '../../diagram/types/interfaces';
-import { DiagramAdapters } from '../types/constants';
+} from '../../interactify-unit/types/interfaces';
+import { InteractifyAdapters } from '../types/constants';
 import { BaseMdViewAdapter } from './base-md-view-adapter';
 
 export class PreviewAdapter extends BaseMdViewAdapter {
-    constructor(plugin: DiagramZoomDragPlugin, fileStats: FileStats) {
+    constructor(plugin: InteractifyPlugin, fileStats: FileStats) {
         super(plugin, fileStats);
     }
 
@@ -40,7 +40,7 @@ export class PreviewAdapter extends BaseMdViewAdapter {
     async processExistingElements(
         leafID: LeafID,
         el: Element,
-        contextData: ContextData
+        contextData: PreviewContextData
     ): Promise<void> {
         let interactiveElements = Array.from(
             contextData.contextEl.querySelectorAll('svg,img')
@@ -57,7 +57,7 @@ export class PreviewAdapter extends BaseMdViewAdapter {
                 if (interactiveElement === undefined) {
                     continue;
                 }
-                await this.processDiagram(interactiveElement, contextData);
+                await this.processUnit(interactiveElement, contextData);
             }
         }
     }
@@ -65,7 +65,7 @@ export class PreviewAdapter extends BaseMdViewAdapter {
     async setupMutationObserver(
         leafID: LeafID,
         el: Element,
-        contextData: ContextData
+        contextData: PreviewContextData
     ): Promise<void> {
         const observer = new MutationObserver(async (mutations) => {
             this.plugin.logger.debug('Preview MutationObserver triggered', {
@@ -81,7 +81,7 @@ export class PreviewAdapter extends BaseMdViewAdapter {
                 for (const context of this.interactiveElementContexts(
                     mutation.addedNodes
                 )) {
-                    await this.processDiagram(context, contextData);
+                    await this.processUnit(context, contextData);
                 }
             }
         });
@@ -99,7 +99,7 @@ export class PreviewAdapter extends BaseMdViewAdapter {
         }, 5000);
     }
 
-    getSource(contextData: ContextData): SourceData {
+    getSource(contextData: PreviewContextData): SourceData {
         const sectionsInfo = contextData.context.getSectionInfo(
             contextData.contextEl
         );
@@ -133,12 +133,12 @@ export class PreviewAdapter extends BaseMdViewAdapter {
         };
     }
 
-    async processDiagram(
-        context: Partial<DiagramContext>,
-        contextData: ContextData
+    async processUnit(
+        context: Partial<UnitContext>,
+        contextData: PreviewContextData
     ): Promise<void> {
-        await this.baseDiagramProcessing(
-            DiagramAdapters.Preview,
+        await this.baseUnitProcessing(
+            InteractifyAdapters.Preview,
             context,
             (ctx) => {
                 ctx.sourceData = this.getSource(contextData);

@@ -1,12 +1,11 @@
-import * as events from 'node:events';
 import { Component } from 'obsidian';
 
 import PickerModeAdapter from '../../adapters/direct-element-adapters/picker-mode-adapter';
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../../core/interactify-plugin';
 import {
     InteractiveInitialization,
     InteractiveMode,
-} from '../../diagram/types/constants';
+} from '../../interactify-unit/types/constants';
 import { SettingsEventPayload } from '../../settings/types/interfaces';
 
 export default class PickerMode extends Component {
@@ -15,7 +14,7 @@ export default class PickerMode extends Component {
     private currentElement: null | Element = null;
     private ribbonButton!: HTMLElement;
 
-    constructor(private readonly plugin: DiagramZoomDragPlugin) {
+    constructor(private readonly plugin: InteractifyPlugin) {
         super();
 
         this.load();
@@ -23,7 +22,7 @@ export default class PickerMode extends Component {
         this.setupEvents();
         this.setupCommands();
 
-        this.plugin.settings.data.diagrams.interactive.picker.enabled &&
+        this.plugin.settings.data.units.interactivity.picker.enabled &&
             this.createRibbon();
     }
 
@@ -41,26 +40,26 @@ export default class PickerMode extends Component {
     private setupEvents(): void {
         const events = this.plugin.settings.events;
         this.plugin.eventBus.on(
-            events.diagrams.interactive.picker.enabled.$path,
+            events.units.interactivity.picker.enabled.$path,
             this.pickerModeToggleHandler
         );
     }
 
     private setupCommands(): void {
         this.plugin.addCommand({
-            id: 'diagram-zoom-drag-toggle-manual-mode',
-            name: 'Toggle manual selection mode',
+            id: 'toggle-picker-mode',
+            name: 'Toggle picker mode',
             checkCallback: (checking) => {
                 if (checking) {
-                    return this.plugin.settings.data.diagrams.interactive.picker
+                    return this.plugin.settings.data.units.interactivity.picker
                         .enabled;
                 }
 
                 if (
-                    !this.plugin.settings.data.diagrams.interactive.picker
+                    !this.plugin.settings.data.units.interactivity.picker
                         .enabled
                 ) {
-                    this.plugin.showNotice('Manual selection mode disabled');
+                    this.plugin.showNotice('Picker mode disabled');
                     return;
                 }
 
@@ -79,7 +78,7 @@ export default class PickerMode extends Component {
         );
     }
 
-    private toggle = (evt?: MouseEvent) => {
+    private readonly toggle = (evt?: MouseEvent) => {
         if (this.isActive) {
             this.deactivate();
         } else {
@@ -89,7 +88,6 @@ export default class PickerMode extends Component {
 
     private createTooltip() {
         this.tooltip = document.createElement('div');
-        this.tooltip.className = 'manual-mode-tooltip';
         this.tooltip.addClass('picker-mode-tooltip');
         document.body.appendChild(this.tooltip);
     }
@@ -192,7 +190,7 @@ export default class PickerMode extends Component {
         const target = e.target as Element;
         const element =
             target.closest('.cm-preview-code-block') ||
-            target.closest('svg,img,.diagram-container');
+            target.closest('svg,img,.interactify-container');
 
         if (!element) return;
 
@@ -212,7 +210,7 @@ export default class PickerMode extends Component {
         const target = e.target as Element;
         const element =
             target.closest('.cm-preview-code-block') ||
-            target.closest('svg,img,.diagram-container');
+            target.closest('svg,img,.interactify-container');
 
         if (element === this.currentElement) {
             this.hideTooltip();
@@ -233,7 +231,7 @@ export default class PickerMode extends Component {
 
         let element =
             event.target.closest('.cm-preview-code-block') ||
-            event.target.closest('svg,img,.diagram-container');
+            event.target.closest('svg,img,.interactify-container');
         if (!element) {
             this.deactivate();
             return;
@@ -269,7 +267,7 @@ export default class PickerMode extends Component {
         this.deactivate();
         super.onunload();
         this.plugin.eventBus.on(
-            this.plugin.settings.events.diagrams.interactive.picker.enabled
+            this.plugin.settings.events.units.interactivity.picker.enabled
                 .$path,
             this.pickerModeToggleHandler
         );

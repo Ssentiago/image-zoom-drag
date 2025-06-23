@@ -1,4 +1,4 @@
-.diagram-zoom-drag-settings {
+.interactify-settings {
     padding: 16px;
     overflow-y: scroll;
     height: 100%;
@@ -35,17 +35,17 @@
     }
 }
 
-.diagram-container {
+.interactify-container {
     transition: all 0.3s ease !important;
     position: relative !important;
     overflow: hidden !important;
     cursor: grab !important;
 
-    &[data-diagram-zoom-drag-rendering-mode='preview'] {
+    &[data-interactify-rendering-mode='preview'] {
         margin-bottom: 40px !important;
     }
 
-    &[data-diagram-zoom-drag-rendering-mode='live-preview'] {
+    &[data-interactify-rendering-mode='live-preview'] {
         margin-top: 28px;
     }
 
@@ -54,7 +54,7 @@
     }
 }
 
-.diagram-content {
+.interactify-content {
     position: relative !important;
     transform-origin: center !important;
     cursor: grab !important;
@@ -69,7 +69,7 @@
     }
 }
 
-.diagram-zoom-drag-panel {
+.interactify-panel {
     position: absolute;
     display: grid;
     gap: 5px;
@@ -142,7 +142,7 @@
     .interactive-candidate:not([data-interactive-mode='interactive']):not(
             .cm-preview-code-block .interactive-candidate
         ),
-    .diagram-container:not(.live-preview-parent .diagram-container),
+    .interactify-container:not(.live-preview-parent .interactify-container),
     .live-preview-parent:not(.cm-preview-code-block .live-preview-parent),
     .cm-preview-code-block {
         outline: 2px dashed var(--interactive-accent) !important;

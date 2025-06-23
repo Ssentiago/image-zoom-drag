@@ -1,11 +1,14 @@
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../../core/interactify-plugin';
 import { LeafID } from '../../core/types/definitions';
-import { DiagramContext, FileStats } from '../../diagram/types/interfaces';
+import {
+    UnitContext,
+    FileStats,
+} from '../../interactify-unit/types/interfaces';
 import BaseAdapter from '../base-adapter';
 
 export abstract class BaseMdViewAdapter extends BaseAdapter {
     protected constructor(
-        protected plugin: DiagramZoomDragPlugin,
+        protected plugin: InteractifyPlugin,
         protected fileStat: FileStats
     ) {
         super(plugin, fileStat);
@@ -28,7 +31,7 @@ export abstract class BaseMdViewAdapter extends BaseAdapter {
     }
     *interactiveElementContexts(
         addedNodes: NodeList
-    ): IterableIterator<Partial<DiagramContext>> {
+    ): IterableIterator<Partial<UnitContext>> {
         for (const addedNode of Array.from(addedNodes)) {
             if (!(addedNode instanceof Element)) {
                 continue;

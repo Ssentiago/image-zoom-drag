@@ -1,14 +1,14 @@
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import InteractifyPlugin from '../../core/interactify-plugin';
 import {
-    DiagramContext,
+    UnitContext,
     FileStats,
     SourceData,
-} from '../../diagram/types/interfaces';
+} from '../../interactify-unit/types/interfaces';
 import BaseAdapter from '../base-adapter';
-import { DiagramAdapters } from '../types/constants';
+import { InteractifyAdapters } from '../types/constants';
 
 export default class PickerModeAdapter extends BaseAdapter {
-    constructor(plugin: DiagramZoomDragPlugin, fileStats: FileStats) {
+    constructor(plugin: InteractifyPlugin, fileStats: FileStats) {
         super(plugin, fileStats);
     }
 
@@ -21,12 +21,12 @@ export default class PickerModeAdapter extends BaseAdapter {
             );
             return;
         }
-        await this.processDiagram(ctx);
+        await this.processUnit(ctx);
     };
 
-    async processDiagram(context: Partial<DiagramContext>): Promise<void> {
-        await this.baseDiagramProcessing(
-            DiagramAdapters.PickerModeAdapter,
+    async processUnit(context: Partial<UnitContext>): Promise<void> {
+        await this.baseUnitProcessing(
+            InteractifyAdapters.PickerMode,
             context,
             (ctx) => {
                 ctx.sourceData = this.getSource();

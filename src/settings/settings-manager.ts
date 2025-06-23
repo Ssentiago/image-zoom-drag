@@ -1,16 +1,16 @@
 import EventEmitter2 from 'eventemitter2';
 import { normalizePath } from 'obsidian';
 
-import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
-import { SupportedDiagrams } from '../diagram/types/constants';
+import InteractifyPlugin from '../core/interactify-plugin';
+import { UnitConfigs } from '../interactify-unit/types/constants';
 import { createEventsWrapper } from './proxy/events-wrapper';
 import { createSettingsProxy } from './proxy/settings-proxy';
+import { EventsWrapper } from './proxy/types/definitions';
 import { SettingsMigration } from './settings-migration';
 import {
     ActivationMode,
     DebugLevel,
     DefaultSettings,
-    EventsWrapper,
     PanelsTriggering,
 } from './types/interfaces';
 
@@ -21,7 +21,7 @@ export default class SettingsManager {
     events!: EventsWrapper<DefaultSettings>;
     data!: DefaultSettings;
 
-    constructor(public readonly plugin: DiagramZoomDragPlugin) {
+    constructor(public readonly plugin: InteractifyPlugin) {
         this.eventBus = new EventEmitter2({
             wildcard: true,
             delimiter: '.',
@@ -32,8 +32,8 @@ export default class SettingsManager {
     get defaultSettings(): DefaultSettings {
         return {
             version: '5.3.0',
-            diagrams: {
-                interactive: {
+            units: {
+                interactivity: {
                     markdown: {
                         autoDetect: true,
                         activationMode: ActivationMode.Immediate,
@@ -71,24 +71,22 @@ export default class SettingsManager {
                         },
                     },
                 },
-                supported_diagrams: Object.entries(SupportedDiagrams).map(
-                    ([key, value]) => ({
-                        name: key,
-                        selector: value,
-                        on: value !== SupportedDiagrams.IMG_SVG,
-                        panels: {
-                            move: {
-                                on: true,
-                            },
-                            zoom: {
-                                on: true,
-                            },
-                            service: {
-                                on: true,
-                            },
+                configs: Object.entries(UnitConfigs).map(([key, value]) => ({
+                    name: key,
+                    selector: value,
+                    on: value !== UnitConfigs.IMG_SVG,
+                    panels: {
+                        move: {
+                            on: true,
                         },
-                    })
-                ),
+                        zoom: {
+                            on: true,
+                        },
+                        service: {
+                            on: true,
+                        },
+                    },
+                })),
             },
             panels: {
                 global: {
@@ -161,7 +159,7 @@ export default class SettingsManager {
 
         if (!migrationResult.success) {
             console.error(
-                `Diagram Zoom Drag: Error loading settings: ${JSON.stringify(migrationResult.errors)}. Resetting to defaults...`
+                `Interactify: Error loading settings: ${JSON.stringify(migrationResult.errors)}. Resetting to defaults...`
             );
             settings = this.defaultSettings;
             needsSave = true;
@@ -196,7 +194,7 @@ export default class SettingsManager {
         const pluginPath = this.plugin.manifest.dir;
 
         if (!pluginPath) {
-            throw new Error('DiagramZoomDrag: `No plugin dir found`');
+            throw new Error('Interactify: `No plugin dir found`');
         }
 
         const configPath = normalizePath(`${pluginPath}/data.json`);

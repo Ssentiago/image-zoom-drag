@@ -1,7 +1,7 @@
-import DiagramZoomDragPlugin from './diagram-zoom-drag-plugin';
+import InteractifyPlugin from './interactify-plugin';
 
 export default class PluginStateChecker {
-    constructor(public plugin: DiagramZoomDragPlugin) {}
+    constructor(public plugin: InteractifyPlugin) {}
 
     /**
      * Determines if the plugin is being opened for the first time.
@@ -14,12 +14,12 @@ export default class PluginStateChecker {
         const pluginMetadata = await this.getPluginMetadata();
 
         const localStoragePluginMetadata = localStorage.getItem(
-            'diagram-zoom-drag-metadata'
+            'interactify-metadata'
         );
 
         if (!localStoragePluginMetadata) {
             localStorage.setItem(
-                'diagram-zoom-drag-metadata',
+                'interactify-metadata',
                 pluginMetadata.toString()
             );
             return true;
@@ -34,7 +34,7 @@ export default class PluginStateChecker {
             pluginMetadata !== localStoragePluginMetadataNumber
         ) {
             localStorage.setItem(
-                'diagram-zoom-drag-metadata',
+                'interactify-metadata',
                 pluginMetadata.toString()
             );
             return true;

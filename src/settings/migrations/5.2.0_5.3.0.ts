@@ -1,4 +1,4 @@
-import { DimensionUnit } from '../types/definitions';
+import { DimensionType } from '../types/definitions';
 import {
     DefaultSettings,
     DimensionSetting,
@@ -6,7 +6,7 @@ import {
 } from '../types/interfaces';
 
 export class MigrateFrom_5_2_0_To_5_3_0 {
-    constructor(private settingsManager: any) {}
+    constructor(private readonly settingsManager: any) {}
 
     private readonly MAP = {
         diagramsPerPage: 'diagrams.settingsPagination.perPage',
@@ -76,11 +76,11 @@ export class MigrateFrom_5_2_0_To_5_3_0 {
         return {
             width: {
                 value: parseInt(input?.width, 10) || 100,
-                unit: (input?.widthUnit as DimensionUnit) || 'px',
+                unit: (input?.widthUnit as DimensionType) || 'px',
             },
             height: {
                 value: parseInt(input?.height, 10) || 100,
-                unit: (input?.heightUnit as DimensionUnit) || 'px',
+                unit: (input?.heightUnit as DimensionType) || 'px',
             },
         };
     }

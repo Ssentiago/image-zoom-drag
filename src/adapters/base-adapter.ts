@@ -1,22 +1,22 @@
-import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
-import DiagramFactory from '../diagram/diagram-factory';
-import InteractiveElement from '../diagram/interactiveElement';
+import InteractifyPlugin from '../core/interactify-plugin';
+import InteractifyUnit from '../interactify-unit/interactify-unit';
+import InteractifyUnitFactory from '../interactify-unit/interactify-unit-factory';
 import {
     InteractiveInitialization,
-    SupportedDiagrams,
-} from '../diagram/types/constants';
+    UnitConfigs,
+} from '../interactify-unit/types/constants';
 import {
-    DiagramContext,
-    DiagramSize,
+    UnitContext,
+    UnitSize,
     FileStats,
-} from '../diagram/types/interfaces';
-import { DiagramData } from '../settings/types/interfaces';
-import { DiagramAdapters } from './types/constants';
+} from '../interactify-unit/types/interfaces';
+import { UnitConfig } from '../settings/types/interfaces';
+import { InteractifyAdapters } from './types/constants';
 import { HTMLElementWithCMView } from './types/interfaces';
 
 export default abstract class BaseAdapter {
     protected constructor(
-        protected plugin: DiagramZoomDragPlugin,
+        protected plugin: InteractifyPlugin,
         protected fileStat: FileStats
     ) {}
 
@@ -27,42 +27,41 @@ export default abstract class BaseAdapter {
     matchInteractiveElement(element: Element):
         | {
               element: HTMLImageElement | SVGElement;
-              options: DiagramData;
+              options: UnitConfig;
           }
         | undefined {
         const interactive = element as HTMLImageElement | SVGElement;
-        const diagrams = this.plugin.settings.data.diagrams.supported_diagrams;
+        const units = this.plugin.settings.data.units.configs;
 
-        const specific = diagrams.filter(
-            (d) =>
-                ![
-                    SupportedDiagrams.IMG_SVG,
-                    SupportedDiagrams.Default,
-                ].includes(d.selector as SupportedDiagrams)
+        const specific = units.filter(
+            (u) =>
+                ![UnitConfigs.IMG_SVG, UnitConfigs.Default].includes(
+                    u.selector as UnitConfigs
+                )
         );
-        const defaults = diagrams.filter((d) =>
-            [SupportedDiagrams.IMG_SVG, SupportedDiagrams.Default].includes(
-                d.selector as SupportedDiagrams
+        const defaults = units.filter((u) =>
+            [UnitConfigs.IMG_SVG, UnitConfigs.Default].includes(
+                u.selector as UnitConfigs
             )
         );
 
-        for (const diagram of [...specific, ...defaults]) {
-            if (!diagram.on) continue;
+        for (const unit of [...specific, ...defaults]) {
+            if (!unit.on) continue;
 
             if (
-                element.matches(diagram.selector) ||
-                element.closest(diagram.selector)
+                element.matches(unit.selector) ||
+                element.closest(unit.selector)
             ) {
                 return {
                     element: interactive,
-                    options: JSON.parse(JSON.stringify(diagram)) as DiagramData,
+                    options: JSON.parse(JSON.stringify(unit)) as UnitConfig,
                 };
             }
         }
         return undefined;
     }
 
-    protected initializationGuard(context: Partial<DiagramContext>): boolean {
+    protected initializationGuard(context: Partial<UnitContext>): boolean {
         if (
             context.element!.dataset.interactiveInitializationStatus !==
             undefined
@@ -130,8 +129,8 @@ export default abstract class BaseAdapter {
 
         return false;
     }
-    protected getElSize(diagramContext: Partial<DiagramContext>): DiagramSize {
-        const el = diagramContext.element;
+    protected getElSize(context: Partial<UnitContext>): UnitSize {
+        const el = context.element;
 
         const rect = el!.getBoundingClientRect();
 
@@ -141,20 +140,20 @@ export default abstract class BaseAdapter {
         };
     }
 
-    protected createDiagram(diagramContext: DiagramContext): void {
-        const diagram = DiagramFactory.createDiagram(
+    protected createUnit(context: UnitContext): void {
+        const unit = InteractifyUnitFactory.createUnit(
             this.plugin,
-            diagramContext,
+            context,
             this.fileStat
         );
-        this.emitCreated(diagram);
+        this.emitCreated(unit);
     }
 
-    protected emitCreated(diagram: InteractiveElement): void {
-        this.plugin.eventBus.emit('diagram.created', diagram);
+    protected emitCreated(unit: InteractifyUnit): void {
+        this.plugin.eventBus.emit('unit.created', unit);
     }
 
-    finalizeContext(ctx: Partial<DiagramContext>): DiagramContext {
+    finalizeContext(ctx: Partial<UnitContext>): UnitContext {
         if (
             !ctx.element ||
             !ctx.sourceData ||
@@ -165,19 +164,19 @@ export default abstract class BaseAdapter {
         ) {
             throw new Error('Incomplete context');
         }
-        return ctx as DiagramContext;
+        return ctx as UnitContext;
     }
 
     async createInteractiveElementWrapper(
-        diagramContext: Partial<DiagramContext>
-    ): Promise<Partial<DiagramContext>> {
+        context: Partial<UnitContext>
+    ): Promise<Partial<UnitContext>> {
         const container = document.createElement('div');
         const content = document.createElement('div');
 
-        container.addClass('diagram-container');
-        content.addClass('diagram-content');
+        container.addClass('interactify-container');
+        content.addClass('interactify-content');
 
-        const el = diagramContext.element!;
+        const el = context.element!;
         const originalParent = el.parentElement as HTMLElement;
 
         const renderingMode = this.plugin.context.inPreviewMode
@@ -185,29 +184,27 @@ export default abstract class BaseAdapter {
             : 'live-preview';
 
         container.setAttribute(
-            'data-diagram-zoom-drag-rendering-mode',
+            'data-interactify-rendering-mode',
             `${renderingMode}`
         );
         container.setAttribute(
             'data-folded',
-            this.plugin.settings.data.diagrams.folding.foldByDefault.toString()
+            this.plugin.settings.data.units.folding.foldByDefault.toString()
         );
         container.setAttribute('tabindex', '0');
 
         return { container, content, originalParent };
     }
 
-    async baseDiagramProcessing(
-        adapter: DiagramAdapters,
-        context: Partial<DiagramContext>,
-        callbackBeforeDiagramCreating: (
-            context: Partial<DiagramContext>
-        ) => void
+    async baseUnitProcessing(
+        adapter: InteractifyAdapters,
+        context: Partial<UnitContext>,
+        callbackBeforeUnitCreating: (context: Partial<UnitContext>) => void
     ) {
         context.adapter = adapter;
 
-        this.plugin.logger.debug(`Processing diagram for adapter: ${adapter}`, {
-            diagramType: context.options!.name,
+        this.plugin.logger.debug(`Processing unit for adapter: ${adapter}`, {
+            unitType: context.options!.name,
         });
 
         const canContinue = this.initializationGuard(context);
@@ -229,11 +226,11 @@ export default abstract class BaseAdapter {
         context.originalParent = originalParent!;
         context.size = size;
 
-        callbackBeforeDiagramCreating(context);
+        callbackBeforeUnitCreating(context);
 
         const fContext = this.finalizeContext(context);
 
-        this.createDiagram(fContext);
+        this.createUnit(fContext);
         this.plugin.logger.debug(
             `Adapter ${adapter} was processed successfully.`
         );

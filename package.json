@@ -1,25 +1,23 @@
 {
-    "name": "diagram-zoom-drag",
+    "name": "interactify",
     "author": "ChenPengyuan(gitcpy) & Ssentiago",
     "license": "Apache-2.0",
     "version": "5.3.0",
     "type": "module",
-    "description": "Add zoom and drag functionality to diagrams from Mermaid, Plantuml, Graphviz, Gravizo and so on",
+    "description": "Make any image or diagram interactive with zoom, drag, and control panels",
     "main": "src/main.ts",
     "scripts": {
         "dev": "NODE_ENV=development rollup -c rollup.config.mjs -w",
         "build": "NODE_ENV=production rollup -c rollup.config.mjs",
-        "lint": "eslint src --ext .ts",
         "start-obsidian": "tsx scripts/start-obsidian.ts",
         "set-release": "tsx scripts/set-release.ts",
-        "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
-        "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
+        "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\""
     },
     "keywords": [],
     "devDependencies": {
         "@inquirer/prompts": "^7.5.3",
         "@rollup/plugin-alias": "^5.1.1",
-        "@rollup/plugin-commonjs": "^28.0.5",
+        "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-replace": "^6.0.2",
@@ -27,28 +25,29 @@
         "@types/react": "19.1.6",
         "@types/react-dom": "18.3.1",
         "@types/semver": "^7.7.0",
-        "@typescript-eslint/eslint-plugin": "^8.34.0",
-        "@typescript-eslint/parser": "^8.34.0",
+        "@typescript-eslint/eslint-plugin": "^8.35.0",
+        "@typescript-eslint/parser": "^8.35.0",
         "chalk": "^5.4.1",
         "dependency-cruiser": "^16.10.3",
         "eslint": "^9.29.0",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-unused-imports": "^4.1.4",
         "nodemon": "^3.1.10",
         "obsidian": "^1.8.7",
-        "prettier": "^3.5.3",
+        "prettier": "^3.6.0",
         "ps-list": "^8.1.1",
         "rollup": "^4.44.0",
+        "rollup-plugin-analyzer": "^4.0.0",
         "rollup-plugin-copy": "^3.5.0",
+        "rollup-plugin-delete": "^3.0.1",
         "rollup-plugin-esbuild": "^6.2.1",
         "rollup-plugin-visualizer": "^6.0.3",
         "rollup-plugin-watch": "^1.0.5",
+        "sass": "^1.89.2",
         "semver": "^7.7.2",
         "tsx": "^4.20.3",
-        "typescript": "5.5.4",
-        "rollup-plugin-analyzer": "^4.0.0",
-        "rollup-plugin-delete": "^3.0.1",
-        "sass": "^1.89.2"
+        "typescript": "5.5.4"
     },
     "dependencies": {
         "eventemitter2": "^6.4.9",
@@ -61,5 +60,5 @@
         "react-router-dom": "^7.6.2",
         "styled-components": "^6.1.19"
     },
-    "repository": "https://github.com/Ssentiago/diagram-zoom-drag.git"
+    "repository": "https://github.com/Ssentiago/Interactify.git"
 }

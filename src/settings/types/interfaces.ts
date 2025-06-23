@@ -1,6 +1,6 @@
-import { DimensionUnit } from './definitions';
+import { DimensionType } from './definitions';
 
-export interface DiagramData {
+export interface UnitConfig {
     name: string;
     selector: string;
     on: boolean;
@@ -15,7 +15,6 @@ export interface DragItem {
     offsetX: number;
     offsetY: number;
 }
-export type EdgePosition = 'top' | 'bottom' | 'left' | 'right';
 
 export interface PanelPosition {
     top?: string;
@@ -38,11 +37,11 @@ export interface PanelsConfig {
 export interface DimensionSetting {
     width: {
         value: number;
-        unit: DimensionUnit;
+        unit: DimensionType;
     };
     height: {
         value: number;
-        unit: DimensionUnit;
+        unit: DimensionType;
     };
 }
 
@@ -109,7 +108,7 @@ export enum ActivationMode {
     Lazy = 'lazy',
 }
 
-export interface Interactive {
+export interface Interactivity {
     markdown: {
         autoDetect: boolean;
         activationMode: ActivationMode;
@@ -119,8 +118,9 @@ export interface Interactive {
     };
 }
 
-export interface Diagrams {
-    interactive: Interactive;
+export interface Units {
+    configs: UnitConfig[];
+    interactivity: Interactivity;
     settingsPagination: {
         perPage: number;
     };
@@ -132,7 +132,6 @@ export interface Diagrams {
         expanded: DimensionSetting;
         folded: DimensionSetting;
     };
-    supported_diagrams: DiagramData[];
 }
 
 export enum DebugLevel {
@@ -151,7 +150,7 @@ interface Debug {
 export interface DefaultSettings {
     version: string;
     panels: Panels;
-    diagrams: Diagrams;
+    units: Units;
     debug: Debug;
 }
 
@@ -161,23 +160,6 @@ export interface MigrationResult {
     data?: DefaultSettings;
     errors?: string[];
 }
-
-export interface EventPath {
-    $path: string;
-
-    toString(): string;
-
-    valueOf(): string;
-}
-
-export type EventsWrapper<T> = {
-    [K in keyof T]: T[K] extends object ? EventsWrapper<T[K]> : EventPath;
-} & {
-    $path: string;
-    $all: string;
-    $deep: string;
-    $children: string;
-};
 
 export interface SettingsEventPayload {
     eventName: string;

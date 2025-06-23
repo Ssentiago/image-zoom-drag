@@ -1,0 +1,198 @@
+{
+  "version": "5.3.0",
+  "diagrams": {
+    "interactive": {
+      "markdown": {
+        "autoDetect": true,
+        "activationMode": "immediate"
+      },
+      "picker": {
+        "enabled": true
+      }
+    },
+    "folding": {
+      "foldByDefault": false,
+      "autoFoldOnFocusChange": false
+    },
+    "settingsPagination": {
+      "perPage": 5
+    },
+    "size": {
+      "expanded": {
+        "width": {
+          "value": 100,
+          "unit": "%"
+        },
+        "height": {
+          "value": 100,
+          "unit": "%"
+        }
+      },
+      "folded": {
+        "width": {
+          "value": 50,
+          "unit": "%"
+        },
+        "height": {
+          "value": 50,
+          "unit": "%"
+        }
+      }
+    },
+    "supported_diagrams": [
+      {
+        "name": "Default",
+        "selector": ".diagram-zoom-drag",
+        "on": true,
+        "panels": {
+          "move": {
+            "on": true
+          },
+          "zoom": {
+            "on": true
+          },
+          "service": {
+            "on": true
+          }
+        }
+      },
+      {
+        "name": "IMG_SVG",
+        "selector": "img,svg",
+        "on": true,
+        "panels": {
+          "move": {
+            "on": true
+          },
+          "zoom": {
+            "on": true
+          },
+          "service": {
+            "on": true
+          }
+        }
+      },
+      {
+        "name": "Mermaid",
+        "selector": ".mermaid",
+        "on": true,
+        "panels": {
+          "move": {
+            "on": true
+          },
+          "zoom": {
+            "on": true
+          },
+          "service": {
+            "on": true
+          }
+        }
+      },
+      {
+        "name": "Mehrmaid",
+        "selector": ".block-language-mehrmaid",
+        "on": true,
+        "panels": {
+          "move": {
+            "on": true
+          },
+          "zoom": {
+            "on": true
+          },
+          "service": {
+            "on": true
+          }
+        }
+      },
+      {
+        "name": "PlantUML",
+        "selector": ".block-language-plantuml",
+        "on": true,
+        "panels": {
+          "move": {
+            "on": true
+          },
+          "zoom": {
+            "on": true
+          },
+          "service": {
+            "on": true
+          }
+        }
+      },
+      {
+        "name": "Graphviz",
+        "selector": ".block-language-dot",
+        "on": true,
+        "panels": {
+          "move": {
+            "on": true
+          },
+          "zoom": {
+            "on": true
+          },
+          "service": {
+            "on": true
+          }
+        }
+      }
+    ]
+  },
+  "panels": {
+    "global": {
+      "triggering": {
+        "mode": "always",
+        "ignoreService": true
+      }
+    },
+    "local": {
+      "preset": "",
+      "panels": {
+        "service": {
+          "on": true,
+          "buttons": {
+            "hide": true,
+            "fullscreen": true
+          },
+          "position": {
+            "top": "0px",
+            "right": "0px"
+          }
+        },
+        "move": {
+          "on": true,
+          "buttons": {
+            "up": true,
+            "down": true,
+            "left": true,
+            "right": true,
+            "upLeft": true,
+            "upRight": true,
+            "downLeft": true,
+            "downRight": true
+          },
+          "position": {
+            "bottom": "0px",
+            "right": "0px"
+          }
+        },
+        "zoom": {
+          "on": true,
+          "buttons": {
+            "in": true,
+            "out": true,
+            "reset": true
+          },
+          "position": {
+            "top": "50%",
+            "right": "0px"
+          }
+        }
+      }
+    }
+  },
+  "debug": {
+    "enabled": false,
+    "level": "none"
+  }
+}
