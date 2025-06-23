@@ -1,12 +1,14 @@
 import { FileStats } from 'obsidian';
 
-import Diagram from '../diagram/diagram';
+import { DiagramAdapters } from '../adapters/types/constants';
+import InteractiveElement from '../diagram/interactiveElement';
 import DiagramZoomDragPlugin from './diagram-zoom-drag-plugin';
 import { LeafID } from './types/definitions';
-import { Data } from './types/interfaces';
+import { Data, OrphanData } from './types/interfaces';
 
 export default class State {
     data = new Map<LeafID, Data>();
+    orphans: OrphanData = { diagrams: [] };
 
     constructor(private readonly plugin: DiagramZoomDragPlugin) {}
 
@@ -36,21 +38,22 @@ export default class State {
      *
      * @param leafID - The ID of the leaf to clean up.
      */
-    cleanupLeaf(leafID: LeafID): void {
+    async cleanupLeaf(leafID: LeafID): Promise<void> {
         const data = this.data.get(leafID);
         if (!data) {
             this.plugin.logger.error(`No data for leaf`, { leafID });
             return;
         }
-
-        data.diagrams.forEach((d, index) => {
-            d.unload();
-            this.plugin.logger.debug(`Unloaded diagram`, {
-                diagramName: d.context.diagramData.name,
-            });
-        });
         data.livePreviewObserver?.disconnect();
         data.livePreviewObserver = undefined;
+
+        for (const diagram of data.diagrams) {
+            await diagram.onDelete();
+            this.plugin.logger.debug(`Unloaded diagram`, {
+                diagramName: diagram.context.options.name,
+            });
+        }
+
         this.data.delete(leafID);
         this.plugin.logger.debug(
             `Data for leaf with id ${leafID} was cleaned successfully.`
@@ -69,11 +72,14 @@ export default class State {
      * state if no data is found for the given leafID. An error will be logged in
      * that case.
      */
-    clear(): void {
+    async clear(): Promise<void> {
         this.plugin.logger.debug('Started to clear state...');
         for (const leafID of this.data.keys()) {
-            this.cleanupLeaf(leafID);
+            await this.cleanupLeaf(leafID);
         }
+
+        await this.cleanOrphan();
+
         this.plugin.logger.debug('State was cleared successfully.');
     }
 
@@ -129,7 +135,7 @@ export default class State {
      * @returns An array of Diagram objects associated with the given leaf, or an
      * empty array if no data exists for the given leaf.
      */
-    getDiagrams(leafID: LeafID): Diagram[] {
+    getDiagrams(leafID: LeafID): InteractiveElement[] {
         return this.data.get(leafID)?.diagrams ?? [];
     }
 
@@ -143,7 +149,7 @@ export default class State {
      * @param leafID - The ID of the leaf for which to push the diagram.
      * @param diagram - The Diagram to push to the state.
      */
-    pushDiagram(leafID: LeafID, diagram: Diagram): void {
+    pushDiagram(leafID: LeafID, diagram: InteractiveElement): void {
         const data = this.data.get(leafID);
         if (!data) {
             this.plugin.logger.error(`No data for leafID: ${leafID}`);
@@ -152,19 +158,16 @@ export default class State {
         data.diagrams.push(diagram);
     }
 
-    /**
-     * Cleans up diagrams associated with a leaf when the file changes.
-     *
-     * This method checks each diagram's file creation time (ctime) against the
-     * current file's ctime. If they differ, the diagram is unloaded and removed
-     * from the state's list of diagrams for the specified leafID. Logs an error
-     * if no data is found for the given leafID.
-     *
-     * @param leafID - The ID of the leaf whose diagrams should be cleaned up.
-     * @param currentFileStats - The current file statistics, used to compare
-     *                           against each diagram's file statistics.
-     * @returns A Promise that resolves when cleanup is complete.
-     */
+    pushOrphanDiagram(diagram: InteractiveElement): void {
+        this.orphans.diagrams.push(diagram);
+    }
+
+    async cleanOrphan() {
+        for (const diagram of this.orphans.diagrams) {
+            await diagram.onDelete();
+        }
+    }
+
     async cleanupDiagramsOnFileChange(
         leafID: LeafID,
         currentFileStats: FileStats
@@ -177,15 +180,20 @@ export default class State {
 
         const currentFileCtime = currentFileStats.ctime;
 
-        data.diagrams = data.diagrams.filter((diagram) => {
-            if (currentFileCtime !== diagram.fileStats.ctime) {
-                diagram.unload();
+        const diagramsToKeep = [];
+        for (const diagram of data.diagrams) {
+            if (
+                diagram.context.adapter === DiagramAdapters.PickerModeAdapter ||
+                currentFileCtime !== diagram.fileStats.ctime
+            ) {
+                await diagram.onDelete();
                 this.plugin.logger.debug(
                     `Cleaned up diagram with id ${diagram.id} due to file change`
                 );
-                return false;
+            } else {
+                diagramsToKeep.push(diagram);
             }
-            return true;
-        });
+        }
+        data.diagrams = diagramsToKeep;
     }
 }
