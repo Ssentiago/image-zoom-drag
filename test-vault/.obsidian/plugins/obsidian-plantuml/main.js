@@ -6980,7 +6980,7 @@ var LocalProcessors = class {
             resolve(stdout);
             return;
           } else if (code === 1) {
-            console.log(stdout);
+            ;
             reject(new Error(`an error occurred`));
           } else {
             reject(new Error(`child exited with code ${code}`));
@@ -7192,7 +7192,7 @@ var DebouncedProcessors = class {
             }));
           }).addItem((item) => {
             item.setTitle("Copy diagram").setIcon("image").onClick(() => __async(this, null, function* () {
-              console.log(el);
+              ;
               const img = el.querySelector("img");
               if (img) {
                 this.renderToBlob(img, "An error occurred while copying image to clipboard", (blob) => __async(this, null, function* () {
@@ -7595,7 +7595,7 @@ var PlantumlPlugin = class extends import_obsidian6.Plugin {
   }
   onload() {
     return __async(this, null, function* () {
-      console.log("loading plugin plantuml");
+      ;
       yield this.loadSettings();
       this.addSettingTab(new PlantUMLSettingsTab(this));
       this.replacer = new Replacer(this);
@@ -7700,7 +7700,7 @@ var PlantumlPlugin = class extends import_obsidian6.Plugin {
   }
   onunload() {
     return __async(this, null, function* () {
-      console.log("unloading plugin plantuml");
+      ;
       this.observer.disconnect();
       this.app.embedRegistry.unregisterExtensions(["puml", "pu"]);
     });
