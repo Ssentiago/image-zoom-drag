@@ -1,13 +1,13 @@
 import { Diagrams } from '../settings/types/interfaces';
-import { DiagramSize } from './types/interfaces';
+import { DiagramContext, DiagramSize } from './types/interfaces';
 
 export function updateDiagramSize(
-    container: HTMLElement,
+    context: DiagramContext,
     originalSize: DiagramSize,
     settingsSizeData: Diagrams['size'],
     inLivePreviewMode: boolean
 ): void {
-    const isFolded = container.dataset.folded === 'true';
+    const isFolded = context.container.dataset.folded === 'true';
 
     const setting = isFolded
         ? settingsSizeData.folded
@@ -23,11 +23,11 @@ export function updateDiagramSize(
             ? (widthValue / 100) * originalSize.width
             : widthValue;
 
-    container.style.height = `${heightInPx}px`;
-    container.style.width = `${widthInPx}px`;
+    context.container.style.height = `${heightInPx}px`;
+    context.container.style.width = `${widthInPx}px`;
 
     if (inLivePreviewMode) {
-        const parent = container.closest('.live-preview-parent') as HTMLElement;
+        const parent = context.livePreviewWidget!;
         parent.style.setProperty('height', `${heightInPx}px`, 'important');
         parent.style.setProperty('width', `${widthInPx}px`, 'important');
     }
