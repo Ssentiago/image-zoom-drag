@@ -7,6 +7,7 @@ import { createEventsWrapper } from './proxy/events-wrapper';
 import { createSettingsProxy } from './proxy/settings-proxy';
 import { SettingsMigration } from './settings-migration';
 import {
+    ActivationMode,
     DebugLevel,
     DefaultSettings,
     EventsWrapper,
@@ -32,6 +33,15 @@ export default class SettingsManager {
         return {
             version: '5.3.0',
             diagrams: {
+                interactive: {
+                    markdown: {
+                        autoDetect: true,
+                        activationMode: ActivationMode.Immediate,
+                    },
+                    picker: {
+                        enabled: false,
+                    },
+                },
                 folding: {
                     foldByDefault: false,
                     autoFoldOnFocusChange: false,
@@ -42,22 +52,22 @@ export default class SettingsManager {
                 size: {
                     expanded: {
                         width: {
-                            value: 400,
-                            unit: 'px',
+                            value: 100,
+                            unit: '%',
                         },
                         height: {
-                            value: 400,
-                            unit: 'px',
+                            value: 100,
+                            unit: '%',
                         },
                     },
                     folded: {
                         width: {
-                            value: 200,
-                            unit: 'px',
+                            value: 50,
+                            unit: '%',
                         },
                         height: {
-                            value: 200,
-                            unit: 'px',
+                            value: 50,
+                            unit: '%',
                         },
                     },
                 },
@@ -65,7 +75,7 @@ export default class SettingsManager {
                     ([key, value]) => ({
                         name: key,
                         selector: value,
-                        on: true,
+                        on: value !== SupportedDiagrams.IMG_SVG,
                         panels: {
                             move: {
                                 on: true,
