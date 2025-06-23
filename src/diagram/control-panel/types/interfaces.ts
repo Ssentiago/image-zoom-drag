@@ -1,8 +1,8 @@
-import Diagram from '../../diagram';
+import InteractiveElement from '../../interactiveElement';
 import { TriggerType } from '../../types/constants';
 
 export interface IControlPanel {
-    diagram: Diagram;
+    diagram: InteractiveElement;
     controlPanel: HTMLElement;
     initialize: () => void;
     show(triggerType: TriggerType): void;

@@ -15,7 +15,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
         return (
             this.controlPanel.diagram.plugin.settings.data.panels.local.panels
                 .zoom.on &&
-            this.controlPanel.diagram.context.diagramData.panels.zoom.on
+            this.controlPanel.diagram.context.options.panels.zoom.on
         );
     }
 

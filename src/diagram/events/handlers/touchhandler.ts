@@ -25,7 +25,8 @@ export class TouchHandler extends Component implements Handler {
      * @param container - The container element to add the touch event listeners to.
      */
     initialize(): void {
-        const container = this.diagramEvents.diagram.container;
+        this.load();
+        const { container } = this.diagramEvents.diagram.context;
 
         this.registerDomEvent(container, 'touchstart', this.touchStart, {
             passive: false,
@@ -106,9 +107,9 @@ export class TouchHandler extends Component implements Handler {
         e.preventDefault();
         e.stopPropagation();
 
-        const element = this.diagramEvents.diagram.context.diagramElement;
+        const content = this.diagramEvents.diagram.context.content;
 
-        if (!element) {
+        if (!content) {
             return;
         }
 
@@ -147,7 +148,7 @@ export class TouchHandler extends Component implements Handler {
         if (this.diagramEvents.diagram.nativeTouchEventsEnabled) {
             return;
         }
-        const container = this.diagramEvents.diagram.container;
+        const container = this.diagramEvents.diagram.context.container;
 
         const target = e.target as HTMLElement;
 

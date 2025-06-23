@@ -14,7 +14,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
     get enabled(): boolean {
         return (
             this.diagram.plugin.settings.data.panels.local.panels.move.on &&
-            this.diagram.context.diagramData.panels.move?.on
+            this.diagram.context.options.panels.move?.on
         );
     }
 

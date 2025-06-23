@@ -1,6 +1,6 @@
 import { Component } from 'obsidian';
 
-import Diagram from '../diagram';
+import InteractiveElement from '../interactiveElement';
 import { ContextMenu } from './handlers/context-menu/context-menu';
 import { FocusHandler } from './handlers/focus-handler';
 import { KeyboardHandler } from './handlers/keyboardhandler';
@@ -14,7 +14,7 @@ export default class Events extends Component {
     private readonly focus: FocusHandler;
     private readonly contextMenu: ContextMenu;
 
-    constructor(public diagram: Diagram) {
+    constructor(public diagram: InteractiveElement) {
         super();
 
         this.mouse = new MouseHandler(this);
@@ -31,6 +31,7 @@ export default class Events extends Component {
     }
 
     initialize(): void {
+        this.load();
         this.mouse.initialize();
         this.touch.initialize();
         this.keyboard.initialize();

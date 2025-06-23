@@ -132,7 +132,8 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
                 .triggering.mode;
 
         const isFolded =
-            this.controlPanel.diagram.container.dataset.folded === 'true';
+            this.controlPanel.diagram.context.container.dataset.folded ===
+            'true';
 
         let trigger = TriggerType.NONE;
 
