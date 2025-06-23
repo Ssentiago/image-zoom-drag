@@ -7,7 +7,7 @@ import {
     InteractiveInitialization,
     InteractiveMode,
 } from '../../diagram/types/constants';
-import { SettingsEventPayload } from '../../settings/settings-tab';
+import { SettingsEventPayload } from '../../settings/types/interfaces';
 
 export default class PickerMode extends Component {
     private isActive: boolean = false;
