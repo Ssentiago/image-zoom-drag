@@ -3,8 +3,9 @@ import React from 'react';
 import {
     ReactObsidianModal,
     ReactObsidianSetting,
-} from 'react-obsidian-setting';
+} from '@obsidian-devkit/native-react-components';
 
+import { t } from '../../../../../../lang';
 import PanelLayout from '../panel-layout/PanelLayout';
 
 interface LayoutModalProps {
@@ -19,41 +20,40 @@ const LayoutModal: React.FC<LayoutModalProps> = ({ onClose, title }) => {
             title={title}
         >
             <ReactObsidianSetting
-                name='Panel configuration'
-                desc='Customize control panels appearance and position'
+                name={
+                    t.settings.pages.panels.management.panelLayoutModal
+                        .panelConfig.name
+                }
+                desc={
+                    t.settings.pages.panels.management.panelLayoutModal
+                        .panelConfig.desc
+                }
                 setHeading={true}
                 noBorder={true}
             />
             <ReactObsidianSetting
-                name='Available panels'
-                addMultiDesc={(multiDesc) => {
-                    multiDesc.addDesc(
-                        '• Move Panel: By default located at bottom right - Contains 8 directional buttons for images movement'
-                    );
-                    multiDesc.addDesc(
-                        '• Zoom Panel: By default located at center right - Features zoom in/out and reset controls'
-                    );
-                    multiDesc.addDesc(
-                        '• Service Panel: By default located at upper right - Contains additional functionality buttons'
+                name={
+                    t.settings.pages.panels.management.panelLayoutModal
+                        .availablePanels.name
+                }
+                multiDesc={(multiDesc) => {
+                    multiDesc.addDescriptions(
+                        t.settings.pages.panels.management.panelLayoutModal
+                            .availablePanels.desc
                     );
                     return multiDesc;
                 }}
                 noBorder={true}
             />
             <ReactObsidianSetting
-                name='How to customize panels'
-                addMultiDesc={(multiDesc) => {
-                    multiDesc.addDesc(
-                        '1. Use checkboxes below to toggle panel visibility on/off'
-                    );
-                    multiDesc.addDesc(
-                        '2. Click and drag any panel to reposition it on the image unit'
-                    );
-                    multiDesc.addDesc(
-                        '3. Panel positions are saved automatically'
-                    );
-                    multiDesc.addDesc(
-                        '4. Reload the view to see your changes take effect'
+                name={
+                    t.settings.pages.panels.management.panelLayoutModal.howTo
+                        .name
+                }
+                multiDesc={(multiDesc) => {
+                    multiDesc.addDescriptions(
+                        t.settings.pages.panels.management.panelLayoutModal
+                            .howTo.desc
                     );
                     return multiDesc;
                 }}

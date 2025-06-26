@@ -2,7 +2,7 @@ import { MarkdownPostProcessorContext } from 'obsidian';
 
 import { InteractifyAdapters } from '../../adapters/types/constants';
 import { HTMLElementWithCMView } from '../../adapters/types/interfaces';
-import { UnitConfig } from '../../settings/types/interfaces';
+import { ImageConfig } from '../../settings/types/interfaces';
 
 export interface SourceData {
     source: string;
@@ -27,7 +27,7 @@ export interface UnitContext {
     originalParent: HTMLElement;
     container: HTMLElement;
     content: HTMLElement;
-    options: UnitConfig;
+    options: ImageConfig;
     element: HTMLImageElement | SVGElement;
     livePreviewWidget?: HTMLElementWithCMView;
 }

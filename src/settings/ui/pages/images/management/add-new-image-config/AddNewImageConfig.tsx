@@ -1,23 +1,24 @@
 import { FC, useRef, useState } from 'react';
 
 import {
+    MultiDescComponent,
+    ReactObsidianSetting,
+} from '@obsidian-devkit/native-react-components';
+import {
     ButtonComponent,
     ExtraButtonComponent,
     Platform,
     TextComponent,
 } from 'obsidian';
-import {
-    MultiDescComponent,
-    ReactObsidianSetting,
-} from 'react-obsidian-setting';
 
+import { t } from '../../../../../../lang';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../context/HistoryContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';
 import { useUnitsValidation } from '../hooks/useUnitsValidation';
 import UserGuideModal from './modals/UserGuideModal';
 
-const AddNewUnit: FC = () => {
+const AddNewImageConfig: FC = () => {
     const { plugin } = useSettingsContext();
     const [guideOpen, setGuideOpen] = useState(false);
     const {
@@ -88,9 +89,17 @@ const AddNewUnit: FC = () => {
         await saveUnits(newUnits);
         updateUndoStack(
             oldUnits,
-            `Add image config\nName: ${newUnit.name}\nSelector: ${newUnit.selector}`
+            t.settings.pages.images.management.addNewImageConfig.undoStack.addAction.$format(
+                {
+                    name: newUnit.name,
+                    selector: newUnit.selector,
+                }
+            )
         );
-        plugin.showNotice('New image config was added');
+        plugin.showNotice(
+            t.settings.pages.images.management.addNewImageConfig.notices
+                .newConfigAdded
+        );
         nameInput.value = '';
         selectorInput.value = '';
     };
@@ -116,30 +125,27 @@ const AddNewUnit: FC = () => {
             ref={addingUnitWrapperRef}
         >
             <ReactObsidianSetting
-                name={'Add new image config'}
+                name={
+                    t.settings.pages.images.management.addNewImageConfig.header
+                }
                 setHeading
                 noBorder
-                desc='Here you can configure which images will receive enhanced controls and UI.'
-                addMultiDesc={(multiDesc: MultiDescComponent) => {
-                    multiDesc.addDescriptions([
-                        'Adding a Image Config:',
-                        '1. Enter a unique name using only Latin letters, numbers and `-` (A-Z, a-z, 0-9, -)',
-                        '2. Specify a valid CSS selector for your image',
-
-                        'Once added, matching units will get:',
-                        '• Mouse and keyboard navigation',
-                        '• Additional control buttons',
-
-                        'Note: Red border indicates invalid input - hover to see details',
-                    ]);
+                multiDesc={(multiDesc: MultiDescComponent) => {
+                    multiDesc.addDescriptions(
+                        t.settings.pages.images.management.addNewImageConfig
+                            .desc
+                    );
                     return multiDesc;
                 }}
             />
             <ReactObsidianSetting
-                addTexts={[
+                texts={[
                     (name): TextComponent => {
                         name.inputEl.id = 'unit-name';
-                        name.setPlaceholder('Example Unit');
+                        name.setPlaceholder(
+                            t.settings.pages.images.management.addNewImageConfig
+                                .placeholders.name
+                        );
                         name.onChange((text) => {
                             name.setValue(text);
                             const validationResult = validateName(
@@ -154,7 +160,10 @@ const AddNewUnit: FC = () => {
                     },
                     (selector): TextComponent => {
                         selector.inputEl.id = 'unit-selector';
-                        selector.setPlaceholder('.example-unit');
+                        selector.setPlaceholder(
+                            t.settings.pages.images.management.addNewImageConfig
+                                .placeholders.selector
+                        );
                         selector.onChange((text) => {
                             selector.setValue(text);
                             const validationResult = validateSelector(
@@ -168,22 +177,26 @@ const AddNewUnit: FC = () => {
                         return selector;
                     },
                 ]}
-                addButtons={[
+                buttons={[
                     (button): ButtonComponent => {
                         button.setIcon('save');
-                        button.setTooltip('Add this unit');
+                        button.setTooltip(
+                            t.settings.pages.images.management.addNewImageConfig
+                                .tooltips.saveButton
+                        );
                         button.onClick(async () => {
                             await handleAddUnit();
                         });
                         return button;
                     },
                 ]}
-                addExtraButtons={[
+                extraButtons={[
                     Platform.isDesktopApp &&
                         ((extra): ExtraButtonComponent => {
                             extra.setIcon('info');
                             extra.setTooltip(
-                                'Click for more information on how the plugin works and how you can find image unit selectors'
+                                t.settings.pages.images.management
+                                    .addNewImageConfig.tooltips.infoButton
                             );
                             extra.onClick(() => {
                                 setGuideOpen(true);
@@ -200,4 +213,4 @@ const AddNewUnit: FC = () => {
     );
 };
 
-export default AddNewUnit;
+export default AddNewImageConfig;

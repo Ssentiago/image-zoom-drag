@@ -1,8 +1,9 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { DropdownComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 
+import { t } from '../../../../../../lang';
 import { ActivationMode } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
@@ -21,8 +22,10 @@ const Interactive: FC = () => {
     const activationModeTooltips: Record<ActivationMode, string> = useMemo(
         () => ({
             immediate:
-                'Images become interactive instantly when detected. Best for small notes.',
-            lazy: 'Images become interactive only when scrolled into view. Best for notes with many images.',
+                t.settings.pages.images.settings.interactive.activationMode
+                    .tooltips.immediate,
+            lazy: t.settings.pages.images.settings.interactive.activationMode
+                .tooltips.lazy,
         }),
         []
     );
@@ -41,21 +44,22 @@ const Interactive: FC = () => {
     return (
         <>
             <ReactObsidianSetting
-                name={'Interactivity options'}
+                name={t.settings.pages.images.settings.interactive.header}
                 setHeading
             />
 
             <ReactObsidianSetting
-                name={'Enable picker mode'}
-                addMultiDesc={(m) => {
-                    m.addDescriptions([
-                        'Adds a ribbon button and command palette entry for toggling picker mode.',
-                        'When activated, hover over images/SVG elements to see availability status, ' +
-                            'then click to initialize or toggle interactivity.',
-                    ]);
+                name={
+                    t.settings.pages.images.settings.interactive.pickerMode.name
+                }
+                multiDesc={(m) => {
+                    m.addDescriptions(
+                        t.settings.pages.images.settings.interactive.pickerMode
+                            .desc
+                    );
                     return m;
                 }}
-                addToggles={[
+                toggles={[
                     (t) => {
                         t.setValue(
                             plugin.settings.data.units.interactivity.picker
@@ -71,16 +75,17 @@ const Interactive: FC = () => {
                 ]}
             />
             <ReactObsidianSetting
-                name={'Auto-detect images'}
-                addMultiDesc={(m) => {
-                    m.addDescriptions([
-                        '* This option is available only for Obsidian Markdown View',
-                        'When enabled, the plugin will automatically scan and prepare all suitable ' +
-                            'images for potential interactivity.',
-                    ]);
+                name={
+                    t.settings.pages.images.settings.interactive.autoDetect.name
+                }
+                multiDesc={(m) => {
+                    m.addDescriptions(
+                        t.settings.pages.images.settings.interactive.autoDetect
+                            .desc
+                    );
                     return m;
                 }}
-                addToggles={[
+                toggles={[
                     (toggle) => {
                         toggle.setValue(
                             plugin.settings.data.units.interactivity.markdown
@@ -99,20 +104,29 @@ const Interactive: FC = () => {
 
             {isIMOptionEnabled && (
                 <ReactObsidianSetting
-                    name={'Activation mode for Obsidian Markdown View'}
-                    desc={'Live Preview mode uses lazy loading by default'}
-                    addButtons={[
+                    name={
+                        t.settings.pages.images.settings.interactive
+                            .activationMode.name
+                    }
+                    desc={
+                        t.settings.pages.images.settings.interactive
+                            .activationMode.desc
+                    }
+                    buttons={[
                         (button) => {
                             button.setIcon('message-circle-question');
                             button.setTooltip(activationModeTooltip);
                             return button;
                         },
                     ]}
-                    addDropdowns={[
+                    dropdowns={[
                         (dropdown) => {
                             dropdown.addOptions({
-                                immediate: 'Immediate',
-                                lazy: 'Lazy',
+                                immediate:
+                                    t.settings.pages.images.settings.interactive
+                                        .activationMode.dropdown.immediate,
+                                lazy: t.settings.pages.images.settings
+                                    .interactive.activationMode.dropdown.lazy,
                             });
                             dropdown.setValue(
                                 plugin.settings.data.units.interactivity

@@ -1,5 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
+import { t } from '../../../../../../lang';
 import { Panels, PanelsConfig } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import {
@@ -17,6 +18,7 @@ const PanelLayout: FC = () => {
     const [panels, setPanels] = useState(
         plugin.settings.data.panels.local.panels
     );
+    const tL = useMemo(() => t.image.controlPanel, []);
 
     const [, setUpdateTrigger] = useState(false);
     const unitPreviewRef = React.useRef<HTMLDivElement>(null);
@@ -69,11 +71,11 @@ const PanelLayout: FC = () => {
                                     ...config.position,
                                 }}
                             >
-                                {name}
+                                {tL[name as keyof typeof tL].name}
                             </PanelPreview>
                         )
                 )}
-                <FoldPanel>fold</FoldPanel>
+                <FoldPanel>{tL['fold' as keyof typeof tL].name}</FoldPanel>
             </UnitPreview>
             <PanelControl>
                 {Object.entries(panels).map(([name, config]) => (
@@ -85,7 +87,7 @@ const PanelLayout: FC = () => {
                                 togglePanelState(name as keyof PanelsConfig)
                             }
                         />
-                        {name}
+                        {tL[name as keyof typeof tL].name}
                     </PanelToggle>
                 ))}
             </PanelControl>

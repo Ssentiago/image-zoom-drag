@@ -1,4 +1,4 @@
-export enum UnitConfigs {
+export enum ImageConfigs {
     Default = '.interactify',
     IMG_SVG = 'img,svg',
     Mermaid = '.mermaid',
@@ -6,6 +6,7 @@ export enum UnitConfigs {
     PlantUML = '.block-language-plantuml',
     Graphviz = '.block-language-dot',
 }
+
 export enum TriggerType {
     NONE = 1 << 0,
     MOUSE = 1 << 1, // initiator is the mouse event (hover)

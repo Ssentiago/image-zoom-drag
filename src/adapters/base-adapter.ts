@@ -3,14 +3,14 @@ import InteractifyUnit from '../interactify-unit/interactify-unit';
 import InteractifyUnitFactory from '../interactify-unit/interactify-unit-factory';
 import {
     InteractiveInitialization,
-    UnitConfigs,
+    ImageConfigs,
 } from '../interactify-unit/types/constants';
 import {
     UnitContext,
     UnitSize,
     FileStats,
 } from '../interactify-unit/types/interfaces';
-import { UnitConfig } from '../settings/types/interfaces';
+import { ImageConfig } from '../settings/types/interfaces';
 import { InteractifyAdapters } from './types/constants';
 import { HTMLElementWithCMView } from './types/interfaces';
 
@@ -27,7 +27,7 @@ export default abstract class BaseAdapter {
     matchInteractiveElement(element: Element):
         | {
               element: HTMLImageElement | SVGElement;
-              options: UnitConfig;
+              options: ImageConfig;
           }
         | undefined {
         const interactive = element as HTMLImageElement | SVGElement;
@@ -35,13 +35,13 @@ export default abstract class BaseAdapter {
 
         const specific = units.filter(
             (u) =>
-                ![UnitConfigs.IMG_SVG, UnitConfigs.Default].includes(
-                    u.selector as UnitConfigs
+                ![ImageConfigs.IMG_SVG, ImageConfigs.Default].includes(
+                    u.selector as ImageConfigs
                 )
         );
         const defaults = units.filter((u) =>
-            [UnitConfigs.IMG_SVG, UnitConfigs.Default].includes(
-                u.selector as UnitConfigs
+            [ImageConfigs.IMG_SVG, ImageConfigs.Default].includes(
+                u.selector as ImageConfigs
             )
         );
 
@@ -54,7 +54,7 @@ export default abstract class BaseAdapter {
             ) {
                 return {
                     element: interactive,
-                    options: JSON.parse(JSON.stringify(unit)) as UnitConfig,
+                    options: JSON.parse(JSON.stringify(unit)) as ImageConfig,
                 };
             }
         }

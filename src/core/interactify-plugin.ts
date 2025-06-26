@@ -5,6 +5,7 @@ import { LivePreviewAdapter } from '../adapters/markdown-view-adapters/live-prev
 import { PreviewAdapter } from '../adapters/markdown-view-adapters/preview-adapter';
 import InteractifyUnit from '../interactify-unit/interactify-unit';
 import { TriggerType } from '../interactify-unit/types/constants';
+import { t } from '../lang';
 import Logger from '../logger/logger';
 import PickerMode from '../modes/picker-mode/picker-mode';
 import SettingsManager from '../settings/settings-manager';
@@ -237,7 +238,7 @@ export default class InteractifyPlugin extends Plugin {
 
     private setupCommands(): void {
         this.addCommand({
-            id: 'toggle-panels-management-state',
+            id: 'toggle-panels-state',
             name: 'Toggle control panels visibility for all the active interactive images in current note',
             checkCallback: (checking: boolean) => {
                 const units = this.state.getUnits(this.context.leafID!);
@@ -251,14 +252,14 @@ export default class InteractifyPlugin extends Plugin {
                     );
                 }
                 if (!this.context.active) {
-                    this.showNotice(
-                        'This command can only be used when a Markdown view is open.'
-                    );
+                    this.showNotice(t.commands.togglePanels.notice.noMd);
                     return;
                 }
 
                 if (!units.some((d) => d.active)) {
-                    this.showNotice('No active images found');
+                    this.showNotice(
+                        t.commands.togglePanels.notice.noActiveImages
+                    );
                     return;
                 }
 
@@ -274,8 +275,8 @@ export default class InteractifyPlugin extends Plugin {
                         : u.controlPanel.show(TriggerType.FORCE)
                 );
                 const message = anyVisible
-                    ? 'Control panels hidden'
-                    : 'Control panels shown';
+                    ? t.commands.togglePanels.notice.hidden
+                    : t.commands.togglePanels.notice.shown;
                 this.showNotice(message);
                 this.logger.debug(
                     'Called command `toggle-panels-management-state`'

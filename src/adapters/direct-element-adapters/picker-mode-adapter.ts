@@ -1,9 +1,10 @@
 import InteractifyPlugin from '../../core/interactify-plugin';
 import {
-    UnitContext,
     FileStats,
     SourceData,
+    UnitContext,
 } from '../../interactify-unit/types/interfaces';
+import { t } from '../../lang';
 import BaseAdapter from '../base-adapter';
 import { InteractifyAdapters } from '../types/constants';
 
@@ -15,10 +16,7 @@ export default class PickerModeAdapter extends BaseAdapter {
     initialize = async (el: SVGElement | HTMLImageElement) => {
         const ctx = this.matchInteractiveElement(el);
         if (ctx === undefined) {
-            this.plugin.showNotice(
-                'This type of content is unsupported. Please check the plugin settings.',
-                5000
-            );
+            this.plugin.showNotice(t.adapters.pickerMode.notice.error, 5000);
             return;
         }
         await this.processUnit(ctx);

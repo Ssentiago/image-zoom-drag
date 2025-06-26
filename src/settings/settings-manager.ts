@@ -2,7 +2,7 @@ import EventEmitter2 from 'eventemitter2';
 import { normalizePath } from 'obsidian';
 
 import InteractifyPlugin from '../core/interactify-plugin';
-import { UnitConfigs } from '../interactify-unit/types/constants';
+import { ImageConfigs } from '../interactify-unit/types/constants';
 import { createEventsWrapper } from './proxy/events-wrapper';
 import { createSettingsProxy } from './proxy/settings-proxy';
 import { EventsWrapper } from './proxy/types/definitions';
@@ -53,28 +53,28 @@ export default class SettingsManager {
                     expanded: {
                         width: {
                             value: 100,
-                            unit: '%',
+                            type: '%',
                         },
                         height: {
                             value: 100,
-                            unit: '%',
+                            type: '%',
                         },
                     },
                     folded: {
                         width: {
                             value: 50,
-                            unit: '%',
+                            type: '%',
                         },
                         height: {
                             value: 50,
-                            unit: '%',
+                            type: '%',
                         },
                     },
                 },
-                configs: Object.entries(UnitConfigs).map(([key, value]) => ({
+                configs: Object.entries(ImageConfigs).map(([key, value]) => ({
                     name: key,
                     selector: value,
-                    on: value !== UnitConfigs.IMG_SVG,
+                    on: value !== ImageConfigs.IMG_SVG,
                     panels: {
                         move: {
                             on: true,
@@ -96,7 +96,7 @@ export default class SettingsManager {
                     },
                 },
                 local: {
-                    preset: '',
+                    preset: 'none',
                     panels: {
                         service: {
                             on: true,
@@ -175,7 +175,7 @@ export default class SettingsManager {
                 userSettings?.version !== this.migration.CURRENT_VERSION;
         }
 
-        this.data = createSettingsProxy(this.plugin, { ...settings });
+        this.data = createSettingsProxy(this, { ...settings }, []);
         this.events = createEventsWrapper(settings);
 
         if (needsSave) {

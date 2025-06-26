@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { DropdownComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 
+import { t } from '../../../../../lang';
 import { PanelsTriggering } from '../../../../types/interfaces';
 import { useSettingsContext } from '../../../core/SettingsContext';
 
@@ -20,9 +21,12 @@ const Settings: React.FC = () => {
     const panelTriggeringOptionsTooltips: Record<PanelsTriggering, string> =
         useMemo(
             () => ({
-                always: 'Panels are always visible when this option is selected.',
-                hover: 'Panels become visible when hovering the mouse over the image unit. The service panel may remain hidden if the ignore option is enabled.',
-                focus: 'Panels become visible when the image unit is focused (e.g., clicked). The service panel may remain hidden if the ignore option is enabled.',
+                always: t.settings.pages.panels.settings.panelsVisibility
+                    .tooltips.always,
+                hover: t.settings.pages.panels.settings.panelsVisibility
+                    .tooltips.hover,
+                focus: t.settings.pages.panels.settings.panelsVisibility
+                    .tooltips.focus,
             }),
             [plugin]
         );
@@ -43,19 +47,22 @@ const Settings: React.FC = () => {
     return (
         <>
             <ReactObsidianSetting
-                name='Panels behavior'
+                name={t.settings.pages.panels.settings.header}
                 setHeading={true}
             />
 
             <ReactObsidianSetting
-                name={'Panels visibility'}
-                desc={'Control when panels will be visible'}
-                addDropdowns={[
+                name={t.settings.pages.panels.settings.panelsVisibility.name}
+                desc={t.settings.pages.panels.settings.panelsVisibility.desc}
+                dropdowns={[
                     (dropdown) => {
                         dropdown.addOptions({
-                            always: 'Always',
-                            hover: 'On hover',
-                            focus: 'On focus',
+                            always: t.settings.pages.panels.settings
+                                .panelsVisibility.dropdown.always,
+                            hover: t.settings.pages.panels.settings
+                                .panelsVisibility.dropdown.hover,
+                            focus: t.settings.pages.panels.settings
+                                .panelsVisibility.dropdown.focus,
                         });
                         dropdown.setValue(
                             plugin.settings.data.panels.global.triggering.mode
@@ -74,7 +81,7 @@ const Settings: React.FC = () => {
                         return dropdown;
                     },
                 ]}
-                addButtons={[
+                buttons={[
                     (button) => {
                         button.setIcon('message-circle-question');
                         button.setTooltip(dropdownQuestionTooltip);
@@ -85,11 +92,9 @@ const Settings: React.FC = () => {
 
             {serviceOptionVisible && (
                 <ReactObsidianSetting
-                    name={'Ignore panel visibility rule for service panel'}
-                    desc={
-                        'Service panel will always be visible regardless of visibility mode'
-                    }
-                    addToggles={[
+                    name={t.settings.pages.panels.settings.serviceIgnoring.name}
+                    desc={t.settings.pages.panels.settings.serviceIgnoring.desc}
+                    toggles={[
                         (toggle) => {
                             toggle.setValue(
                                 plugin.settings.data.panels.global.triggering

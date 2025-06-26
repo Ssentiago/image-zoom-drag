@@ -1,7 +1,7 @@
-import { UnitConfig } from '../../../../../types/interfaces';
+import { ImageConfig } from '../../../../../types/interfaces';
 import createHistoryContext from '../../../../core/HistoryContextGeneric';
 
-const context = createHistoryContext<UnitConfig[]>();
+const context = createHistoryContext<ImageConfig[]>();
 
 const useUnitsHistoryContext = context.useHistoryContext;
 const UnitsHistoryProvider = context.HistoryProvider;

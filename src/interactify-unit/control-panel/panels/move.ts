@@ -1,3 +1,5 @@
+import { t } from '../../../lang';
+import en from '../../../lang/locale/en/nested';
 import { PanelsTriggering } from '../../../settings/types/interfaces';
 import { IControlPanel } from '../types/interfaces';
 import { BasePanel } from './base-panel';
@@ -33,12 +35,15 @@ export class MovePanel extends BasePanel<MoveButtons> {
     getButtonsConfig() {
         const moveButtons =
             this.unit.plugin.settings.data.panels.local.panels.move.buttons;
+        const getMoveTitle = (
+            direction: keyof typeof en.image.controlPanel.move
+        ) => t.image.controlPanel.move[direction];
 
         const buttons = [
             {
                 id: MoveButtons.UpLeft,
                 icon: 'arrow-up-left',
-                title: 'Move up left',
+                title: getMoveTitle('upLeft'),
                 gridArea: '1 / 1',
                 x: 50,
                 y: 50,
@@ -46,7 +51,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.Up,
                 icon: 'arrow-up',
-                title: 'Move up',
+                title: getMoveTitle('up'),
                 gridArea: '1 / 2',
                 x: 0,
                 y: 50,
@@ -54,7 +59,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.UpRight,
                 icon: 'arrow-up-right',
-                title: 'Move up right',
+                title: getMoveTitle('upRight'),
                 gridArea: '1 / 3',
                 x: -50,
                 y: 50,
@@ -62,7 +67,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.Left,
                 icon: 'arrow-left',
-                title: 'Move left',
+                title: getMoveTitle('left'),
                 gridArea: '2 / 1',
                 x: 50,
                 y: 0,
@@ -70,7 +75,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.Right,
                 icon: 'arrow-right',
-                title: 'Move right',
+                title: getMoveTitle('right'),
                 gridArea: '2 / 3',
                 x: -50,
                 y: 0,
@@ -78,7 +83,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.DownLeft,
                 icon: 'arrow-down-left',
-                title: 'Move down left',
+                title: getMoveTitle('downLeft'),
                 gridArea: '3 / 1',
                 x: 50,
                 y: -50,
@@ -86,7 +91,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.Down,
                 icon: 'arrow-down',
-                title: 'Move down',
+                title: getMoveTitle('down'),
                 gridArea: '3 / 2',
                 x: 0,
                 y: -50,
@@ -94,7 +99,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             {
                 id: MoveButtons.DownRight,
                 icon: 'arrow-down-right',
-                title: 'Move down right',
+                title: getMoveTitle('downRight'),
                 gridArea: '3 / 3',
                 x: -50,
                 y: -50,

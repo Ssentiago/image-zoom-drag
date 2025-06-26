@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
-import AddNewUnit from './add-new-unit/AddNewUnit';
-import AvailableUnits from './available-units/AvailableUnits';
+import AddNewImageConfig from './add-new-image-config/AddNewImageConfig';
+import AvailableImageConfigs from './available-image-configs/AvailableImageConfigs';
 import { UnitsHistoryProvider } from './context/HistoryContext';
 import {
     UnitsManagerProvider,
@@ -16,8 +16,8 @@ const Management: FC = () => {
             state={units}
             updateState={saveUnits}
         >
-            <AddNewUnit />
-            <AvailableUnits />
+            <AddNewImageConfig />
+            <AvailableImageConfigs />
         </UnitsHistoryProvider>
     );
 };

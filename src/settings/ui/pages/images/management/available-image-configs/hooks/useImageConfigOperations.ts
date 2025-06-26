@@ -1,14 +1,22 @@
-import { createSettingsProxy } from '../../../../../../proxy/settings-proxy';
+import { useMemo } from 'react';
+
+import { t } from '../../../../../../../lang';
 import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../../context/HistoryContext';
 import { useUnitsManagerContext } from '../../context/UnitsManagerContext';
 import { useUnitsValidation } from '../../hooks/useUnitsValidation';
 
-export const useUnitOperations = () => {
+export const useImageConfigOperations = () => {
     const { plugin } = useSettingsContext();
     const { validateBoth, processBothValidation } = useUnitsValidation();
     const { units, saveUnits } = useUnitsManagerContext();
     const { updateUndoStack } = useUnitsHistoryContext();
+    const actionL = useMemo(
+        () =>
+            t.settings.pages.images.management.availableImageConfigs.item
+                .actions,
+        [plugin]
+    );
 
     const handleDelete = async (index: number) => {
         const oldUnits = [...units];
@@ -19,22 +27,22 @@ export const useUnitOperations = () => {
         await saveUnits(newUnits);
         updateUndoStack(
             oldUnits,
-            `Delete unit\n\`Name: ${deleted.name}\nSelector: ${deleted.selector}\``
+            actionL.delete.$format({
+                name: deleted.name,
+                selector: deleted.selector,
+            })
         );
     };
 
     const handleToggle = async (index: number, value: boolean) => {
-        const oldUnits = createSettingsProxy(
-            plugin,
-            JSON.parse(JSON.stringify(units)),
-            [plugin.settings.events.units.configs]
-        );
+        const oldUnits = JSON.parse(JSON.stringify(units));
         units[index].on = value;
         await saveUnits([...units]);
-        updateUndoStack(
-            oldUnits,
-            `${value ? 'Enable' : 'Disable'} ${units[index].name} unit`
-        );
+        const action = value ? actionL.enable : actionL.disable;
+        const undoDesc = action.$format({
+            name: units[index].name,
+        });
+        updateUndoStack(oldUnits, undoDesc);
     };
 
     const handleSaveEditing = async (index: number) => {
@@ -72,17 +80,28 @@ export const useUnitOperations = () => {
 
             const changes = [];
             if (nameChanged) {
-                changes.push(`name: "${oldName}" → "${units[index].name}"`);
+                changes.push(
+                    actionL.changes.name.$format({
+                        old: oldName,
+                        new: units[index].name,
+                    })
+                );
             }
             if (selectorChanged) {
                 changes.push(
-                    `selector: "${oldSelector}" → "${units[index].selector}"`
+                    actionL.changes.selector.$format({
+                        old: oldSelector,
+                        new: units[index].selector,
+                    })
                 );
             }
 
             updateUndoStack(
                 units,
-                `Edit unit "${units[index].name}":\n${changes.join('\n')}`
+                actionL.edit.$format({
+                    name: units[index].name,
+                    changes: changes.join('\n'),
+                })
             );
         }
         return validated;

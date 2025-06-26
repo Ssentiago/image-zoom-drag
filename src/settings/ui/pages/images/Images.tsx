@@ -1,9 +1,10 @@
 import { FC } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
+import { t } from '../../../../lang';
 import { MiniNavbar } from './Images.styled';
 import Management from './management/Management';
 import { UnitsManagerProvider } from './management/context/UnitsManagerContext';
@@ -17,10 +18,13 @@ const Images: FC = () => {
         <UnitsManagerProvider>
             <MiniNavbar>
                 <ReactObsidianSetting
-                    addButtons={[
+                    buttons={[
                         (button): ButtonComponent => {
                             button.setIcon('settings');
-                            button.setTooltip('Settings');
+                            button.setTooltip(
+                                t.settings.pages.images.miniNavbar
+                                    .settingsButtonTooltip
+                            );
                             button.onClick(async () => {
                                 await navigate('/images/settings');
                             });
@@ -34,7 +38,10 @@ const Images: FC = () => {
                         },
                         (button): ButtonComponent => {
                             button.setIcon('folder-plus');
-                            button.setTooltip('Images management');
+                            button.setTooltip(
+                                t.settings.pages.images.miniNavbar
+                                    .managementButtonTooltip
+                            );
                             button.onClick(async () => {
                                 await navigate('/images/management');
                             });

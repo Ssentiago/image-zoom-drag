@@ -1,7 +1,8 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 
-import { ReactObsidianSetting } from 'react-obsidian-setting';
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 
+import { t } from '../../../../lang';
 import { DebugLevel } from '../../../types/interfaces';
 import { useSettingsContext } from '../../core/SettingsContext';
 
@@ -28,29 +29,30 @@ const Debug: FC = () => {
         URL.revokeObjectURL(url);
     }, [plugin.logger]);
 
+    const storageMessage = t.settings.pages.debug.clearLogsStorage.desc.$format(
+        {
+            storage: plugin.logger.getStorageUsage(),
+            entries: plugin.logger.getAllLogs().length.toString(),
+        }
+    );
+
     return (
         <>
             <ReactObsidianSetting
-                name='Report an issue'
-                addMultiDesc={(multidesc) => {
-                    multidesc.addDescriptions([
-                        'If you encounter any issues or have suggestions, please report them on GitHub.',
-                        'How to report an issue:',
-                        '1. Enable debug logging below and set level to `Debug`.',
-                        'Warning: This may impact performance temporarily.',
-                        '2. Reproduce the issue with logging enabled.',
-                        '3. Export logs using the button below.',
-                        '4. Click "Report an issue" and fill out the form.',
-                        '5. Attach the exported log file.',
-                        '6. Submit the issue.',
-                    ]);
+                name={`${t.settings.pages.debug.reportIssue.name}`}
+                multiDesc={(multidesc) => {
+                    multidesc.addDescriptions(
+                        t.settings.pages.debug.reportIssue.desc
+                    );
 
                     return multidesc;
                 }}
-                addButtons={[
+                buttons={[
                     (button) => {
                         button.setIcon('bug');
-                        button.setTooltip('Report an issue');
+                        button.setTooltip(
+                            t.settings.pages.debug.reportIssue.linkButtonTooltip
+                        );
                         button.onClick(async () => {
                             const systemInfo = JSON.stringify(
                                 plugin.logger.getShortSystemInfo(),
@@ -79,9 +81,9 @@ const Debug: FC = () => {
             />
 
             <ReactObsidianSetting
-                name={'Enable logging'}
-                desc={'Enable debug logging for troubleshooting'}
-                addToggles={[
+                name={t.settings.pages.debug.enableLogging.name}
+                desc={t.settings.pages.debug.enableLogging.desc}
+                toggles={[
                     (toggle) => {
                         toggle.setValue(plugin.settings.data.debug.enabled);
                         toggle.onChange(async (value) => {
@@ -94,9 +96,9 @@ const Debug: FC = () => {
             />
 
             <ReactObsidianSetting
-                name={'Log level'}
-                desc={'Set minimum log level to display'}
-                addDropdowns={[
+                name={t.settings.pages.debug.logLevel.name}
+                desc={t.settings.pages.debug.logLevel.desc}
+                dropdowns={[
                     (dropdown) => {
                         dropdown.addOptions({
                             none: 'None',
@@ -118,44 +120,51 @@ const Debug: FC = () => {
             />
 
             <ReactObsidianSetting
-                name={'About exported logs'}
-                addMultiDesc={(multiDesc) => {
-                    multiDesc.addDescriptions([
-                        'Exported logs contain:',
-                        '• Complete system information (OS, hardware, plugins)',
-                        '• Debug events with timestamps',
-                        '• Performance metrics',
-                        'Review logs before sharing - remove sensitive data if needed.',
-                    ]);
+                name={t.settings.pages.debug.aboutExportedLogs.name}
+                multiDesc={(multiDesc) => {
+                    multiDesc.addDescriptions(
+                        t.settings.pages.debug.aboutExportedLogs.desc
+                    );
                     return multiDesc;
                 }}
             />
 
             <ReactObsidianSetting
-                name={'Export logs'}
-                addButtons={[
+                name={t.settings.pages.debug.exportLogs.name}
+                buttons={[
                     (button) => {
                         button.setIcon('download');
-                        button.setTooltip('Export logs');
+                        button.setTooltip(
+                            t.settings.pages.debug.exportLogs
+                                .exportButtonTooltip
+                        );
                         button.onClick(downloadLogs);
                         return button;
                     },
                 ]}
             />
             <ReactObsidianSetting
-                name={'Copy logs'}
-                addButtons={[
+                name={t.settings.pages.debug.copyLogs.name}
+                buttons={[
                     (button) => {
                         button.setIcon('clipboard');
-                        button.setTooltip('Copy logs to clipboard');
+                        button.setTooltip(
+                            t.settings.pages.debug.copyLogs.copyButtonTooltip
+                        );
                         button.onClick(async () => {
                             const logString = plugin.logger.exportLogs();
                             if (logString.trim() === '') {
-                                plugin.showNotice('No logs data found');
+                                plugin.showNotice(
+                                    t.settings.pages.debug.copyLogs.notice
+                                        .logsNotFound
+                                );
                                 return;
                             }
                             await navigator.clipboard.writeText(logString);
-                            plugin.showNotice('Logs was copied to clipboard');
+                            plugin.showNotice(
+                                t.settings.pages.debug.copyLogs.notice
+                                    .successfully
+                            );
                         });
                         return button;
                     },
@@ -163,16 +172,22 @@ const Debug: FC = () => {
             />
 
             <ReactObsidianSetting
-                name={'Clear logs storage'}
-                desc={`Storage: ${plugin.logger.getStorageUsage()}, Entries: ${plugin.logger.getAllLogs().length}`}
-                addButtons={[
+                name={t.settings.pages.debug.clearLogsStorage.name}
+                desc={storageMessage}
+                buttons={[
                     (button) => {
                         button.setIcon('trash');
-                        button.setTooltip('Clear logs storage');
+                        button.setTooltip(
+                            t.settings.pages.debug.clearLogsStorage
+                                .clearButtonTooltip
+                        );
                         button.onClick(async () => {
                             plugin.logger.clearAllLogs();
                             setReload((prev) => !prev);
-                            plugin.showNotice('Logs storage was cleared');
+                            plugin.showNotice(
+                                t.settings.pages.debug.clearLogsStorage.notice
+                                    .successfully
+                            );
                         });
                         return button;
                     },

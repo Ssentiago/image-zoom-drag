@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
-import { ReactObsidianSetting } from 'react-obsidian-setting';
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 
+import { t } from '../../../../../lang';
 import { useSettingsContext } from '../../../core/SettingsContext';
 import ButtonManagementModal from './modals/ButtonManagementModal';
 import LayoutModal from './modals/LayoutModal';
@@ -14,7 +15,7 @@ const Management: React.FC = () => {
     const isApplyingPreset = useRef(false);
 
     const presets = {
-        mobile: {
+        minimal: {
             zoom: { in: true, out: true, reset: false },
             move: {
                 up: false,
@@ -28,7 +29,7 @@ const Management: React.FC = () => {
             },
             service: { hide: true, fullscreen: false },
         },
-        desktop: {
+        full: {
             zoom: { in: true, out: true, reset: true },
             move: {
                 up: true,
@@ -64,19 +65,19 @@ const Management: React.FC = () => {
                 return;
             }
 
-            plugin.settings.data.panels.local.preset = '';
+            plugin.settings.data.panels.local.preset = 'none';
 
             await plugin.settings.saveSettings();
         };
 
         plugin.settings.eventBus.on(
-            `${plugin.settings.events.panels.local.panels.$path}.**`,
+            `${plugin.settings.events.panels.local.panels.$all}`,
             handler
         );
 
         return () => {
             plugin.settings.eventBus.off(
-                `${plugin.settings.events.panels.local.panels.$path}.**`,
+                `${plugin.settings.events.panels.local.panels.$all}`,
                 handler
             );
         };
@@ -100,15 +101,31 @@ const Management: React.FC = () => {
     return (
         <>
             <ReactObsidianSetting
-                name='Apply preset'
-                desc={'Apply button visibility preset'}
-                addDropdowns={[
+                name={t.settings.pages.panels.management.preset.name}
+                desc={t.settings.pages.panels.management.preset.desc}
+                dropdowns={[
                     (dropdown) => {
                         dropdown
-                            .addOption('', 'Select preset...')
-                            .addOption('mobile', 'Mobile minimal')
-                            .addOption('desktop', 'Desktop full')
-                            .addOption('presentation', 'Presentation mode')
+                            .addOption(
+                                'none',
+                                t.settings.pages.panels.management.preset
+                                    .dropdown.none
+                            )
+                            .addOption(
+                                'minimal',
+                                t.settings.pages.panels.management.preset
+                                    .dropdown.minimal
+                            )
+                            .addOption(
+                                'full',
+                                t.settings.pages.panels.management.preset
+                                    .dropdown.full
+                            )
+                            .addOption(
+                                'presentation',
+                                t.settings.pages.panels.management.preset
+                                    .dropdown.presentation
+                            )
                             .setValue(plugin.settings.data.panels.local.preset)
 
                             .onChange(async (value) => {
@@ -126,12 +143,12 @@ const Management: React.FC = () => {
             />
 
             <ReactObsidianSetting
-                name='Panel layout'
-                desc={'Adjust panel positions and visibility'}
-                addButtons={[
+                name={t.settings.pages.panels.management.panelLayout.name}
+                desc={t.settings.pages.panels.management.panelLayout.desc}
+                buttons={[
                     (button) => {
                         button.setIcon('layout');
-                        button.setTooltip('Open panel layout editor');
+                        button.setTooltip(t.settings.pages.panels.management.panelLayout.tooltip);
                         button.onClick(() => {
                             setLayoutModalOpen(true);
                         });
@@ -140,12 +157,12 @@ const Management: React.FC = () => {
                 ]}
             />
             <ReactObsidianSetting
-                name='Buttons layout'
-                desc={'Configure which buttons are shown on each panel'}
-                addButtons={[
+                name={t.settings.pages.panels.management.buttonsLayout.name}
+                desc={t.settings.pages.panels.management.buttonsLayout.desc}
+                buttons={[
                     (button) => {
                         button.setIcon('panels-top-left');
-                        button.setTooltip('Open panel buttons editor');
+                        button.setTooltip(t.settings.pages.panels.management.buttonsLayout.tooltip);
                         button.onClick(() => {
                             setButtonModalOpen(true);
                         });
@@ -156,13 +173,13 @@ const Management: React.FC = () => {
             {layoutModalOpen && (
                 <LayoutModal
                     onClose={() => setLayoutModalOpen(false)}
-                    title={'Panel layout editor'}
+                    title={t.settings.pages.panels.management.panelLayoutModal.title}
                 />
             )}
             {buttonModalOpen && (
                 <ButtonManagementModal
                     onClose={() => setButtonModalOpen(false)}
-                    title={'Panels buttons'}
+                    title={t.settings.pages.panels.management.buttonsLayoutModal.title}
                 />
             )}
         </>

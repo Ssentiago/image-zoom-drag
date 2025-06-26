@@ -1,19 +1,20 @@
-import React, { FC, useRef } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import {
     ButtonComponent,
     ExtraButtonComponent,
     TextComponent,
     ToggleComponent,
 } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 
-import { UnitConfigs } from '../../../../../../interactify-unit/types/constants';
+import { ImageConfigs } from '../../../../../../interactify-unit/types/constants';
+import { t } from '../../../../../../lang';
 import { useUnitsValidation } from '../hooks/useUnitsValidation';
-import { useUnitOperations } from './hooks/useUnitOperations';
+import { useImageConfigOperations } from './hooks/useImageConfigOperations';
 import { UnitItemProps } from './types/interfaces';
 
-export const UnitItem: FC<UnitItemProps> = ({
+export const ImageConfigItem: FC<UnitItemProps> = ({
     unit,
     index,
     modeState,
@@ -26,8 +27,13 @@ export const UnitItem: FC<UnitItemProps> = ({
         processSelectorValidation,
     } = useUnitsValidation();
 
+    const itemL = useMemo(
+        () => t.settings.pages.images.management.availableImageConfigs.item,
+        [unit]
+    );
+
     const { handleSaveEditing, handleDelete, handleToggle } =
-        useUnitOperations();
+        useImageConfigOperations();
 
     const editingItemRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +59,7 @@ export const UnitItem: FC<UnitItemProps> = ({
             ref={editingItemRef}
         >
             <ReactObsidianSetting
-                addTexts={[
+                texts={[
                     (nameInput): TextComponent => {
                         nameInput.setValue(unit.name);
                         nameInput.inputEl.id = 'editing-name-input';
@@ -79,12 +85,10 @@ export const UnitItem: FC<UnitItemProps> = ({
                         return selectorInput;
                     },
                 ]}
-                addButtons={[
+                buttons={[
                     (button): ButtonComponent => {
                         button.setIcon('circle-x');
-                        button.setTooltip(
-                            'Cancel operation? All changes will be lost.'
-                        );
+                        button.setTooltip(itemL.buttons.cancel);
                         button.onClick(() => {
                             setModeState({
                                 index: -1,
@@ -95,7 +99,9 @@ export const UnitItem: FC<UnitItemProps> = ({
                     },
                     (button): ButtonComponent => {
                         button.setIcon('save');
-                        button.setTooltip(`Save changes for ${unit.name}?`);
+                        button.setTooltip(
+                            itemL.buttons.save.$format({ name: unit.name })
+                        );
                         button.onClick(async (cb) => {
                             await handleSaveEditing(index);
                             setModeState({
@@ -112,11 +118,17 @@ export const UnitItem: FC<UnitItemProps> = ({
         <ReactObsidianSetting
             name={unit.name}
             desc={unit.selector}
-            addToggles={[
+            toggles={[
                 (toggle: ToggleComponent): ToggleComponent => {
                     toggle.setValue(unit.on);
                     toggle.setTooltip(
-                        `${unit.on ? 'Disable' : 'Enable'} ${unit.name} unit`
+                        unit.on
+                            ? itemL.toggle.disable.$format({
+                                  name: unit.name,
+                              })
+                            : itemL.toggle.enable.$format({
+                                  name: unit.name,
+                              })
                     );
                     toggle.onChange(async (value) => {
                         await handleToggle(index, value);
@@ -124,13 +136,17 @@ export const UnitItem: FC<UnitItemProps> = ({
                     return toggle;
                 },
             ]}
-            addButtons={[
-                ![UnitConfigs.IMG_SVG, UnitConfigs.Default].contains(
-                    unit.selector as UnitConfigs
+            buttons={[
+                ![ImageConfigs.IMG_SVG, ImageConfigs.Default].contains(
+                    unit.selector as ImageConfigs
                 ) &&
                     ((button: ButtonComponent): ButtonComponent => {
                         button.setIcon('edit');
-                        button.setTooltip(`Edit ${unit.name} unit`);
+                        button.setTooltip(
+                            itemL.buttons.edit.$format({
+                                name: unit.name,
+                            })
+                        );
                         button.onClick(async () => {
                             setModeState({
                                 index,
@@ -139,21 +155,27 @@ export const UnitItem: FC<UnitItemProps> = ({
                         });
                         return button;
                     }),
-                ![UnitConfigs.IMG_SVG, UnitConfigs.Default].contains(
-                    unit.selector as UnitConfigs
+                ![ImageConfigs.IMG_SVG, ImageConfigs.Default].contains(
+                    unit.selector as ImageConfigs
                 ) &&
                     ((button: ButtonComponent): ButtonComponent => {
                         button.setIcon('trash');
-                        button.setTooltip(`Delete ${unit.name} unit`);
+                        button.setTooltip(
+                            itemL.buttons.delete.$format({
+                                name: unit.name,
+                            })
+                        );
                         button.onClick(async () => {
                             await handleDelete(index);
                         });
                         return button;
                     }),
             ]}
-            addExtraButtons={[
+            extraButtons={[
                 (button: ExtraButtonComponent): ExtraButtonComponent => {
-                    button.setTooltip(`Options for ${unit.name} unit`);
+                    button.setTooltip(
+                        itemL.buttons.options.$format({ name: unit.name })
+                    );
                     button.onClick(() => {
                         setModeState({
                             index,

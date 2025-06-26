@@ -7,9 +7,10 @@ import React, {
     useState,
 } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { setTooltip, TextComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 
+import { t } from '../../../../../../lang';
 import { DimensionType } from '../../../../../types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { ComponentType } from './types/constants';
@@ -30,8 +31,6 @@ const dimensionSpec = {
     },
 };
 
-const getRangeMessage = (unit: DimensionType) =>
-    dimensionSpec[unit].rangeMessage;
 const isDimensionInValidRange = (
     value: string,
     unit: DimensionType
@@ -41,26 +40,54 @@ const isDimensionInValidRange = (
     return n >= min && n <= max;
 };
 
-const getErrorMessage = (field: 'width' | 'height', unit: DimensionType) =>
-    `Invalid ${field}. Please enter number in range ${getRangeMessage(unit)}.`;
+const getErrorMessage = (field: 'width' | 'height', unit: DimensionType) => {
+    const range =
+        unit === 'px'
+            ? dimensionSpec.px.rangeMessage
+            : dimensionSpec['%'].rangeMessage;
+    switch (field) {
+        case 'width':
+            return t.settings.pages.images.settings.size.validation.invalidWidth.$format(
+                {
+                    range: range,
+                }
+            );
+        case 'height':
+            return t.settings.pages.images.settings.size.validation.invalidHeight.$format(
+                {
+                    range: range,
+                }
+            );
+    }
+};
 
 const DimensionsOption: FC<DimensionsOptionProps> = ({
     type,
     initialOptions,
+    border,
 }) => {
     const { plugin } = useSettingsContext();
     const hasValidationErrorsRef = useRef(false);
 
-    const [heightUnit, setHeightUnit] = useState(initialOptions.height.unit);
-    const [widthUnit, setWidthUnit] = useState(initialOptions.width.unit);
+    const [heightUnit, setHeightUnit] = useState(initialOptions.height.type);
+    const [widthUnit, setWidthUnit] = useState(initialOptions.width.type);
 
     const heightValueRef = useRef(initialOptions.height.value);
     const widthValueRef = useRef(initialOptions.width.value);
 
     const inputsRef = useRef<HTMLDivElement>(null);
 
-    const prefix = useMemo(
-        () => (type === ComponentType.Folded ? 'Folded' : 'Expanded'),
+    const nameAndDesc = useMemo(
+        () =>
+            type === ComponentType.Folded
+                ? {
+                      desc: t.settings.pages.images.settings.size.folded.desc,
+                      name: t.settings.pages.images.settings.size.folded.name,
+                  }
+                : {
+                      desc: t.settings.pages.images.settings.size.expanded.desc,
+                      name: t.settings.pages.images.settings.size.expanded.name,
+                  },
         [type]
     );
 
@@ -130,7 +157,9 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
         const isValid = validateAllFields(widthInput, heightInput);
 
         if (!isValid) {
-            plugin.showNotice('Please fix validation errors');
+            plugin.showNotice(
+                t.settings.pages.images.settings.size.validation.fixErrors
+            );
             return;
         }
 
@@ -140,17 +169,19 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
         if (
             inputWidth === initialOptions.width.value &&
             inputHeight === initialOptions.height.value &&
-            widthUnit === initialOptions.width.unit &&
-            heightUnit === initialOptions.height.unit
+            widthUnit === initialOptions.width.type &&
+            heightUnit === initialOptions.height.type
         ) {
-            plugin.showNotice('Nothing to save');
+            plugin.showNotice(
+                t.settings.pages.images.settings.size.validation.nothingToSave
+            );
             return;
         }
 
         initialOptions.width.value = inputWidth;
         initialOptions.height.value = inputHeight;
-        initialOptions.width.unit = widthUnit;
-        initialOptions.height.unit = heightUnit;
+        initialOptions.width.type = widthUnit;
+        initialOptions.height.type = heightUnit;
 
         if (type === ComponentType.Folded) {
             plugin.settings.data.units.size.folded = initialOptions;
@@ -159,7 +190,9 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
         }
 
         await plugin.settings.saveSettings();
-        plugin.showNotice('Saved successfully');
+        plugin.showNotice(
+            t.settings.pages.images.settings.size.validation.savedSuccessfully
+        );
     };
 
     const onKeyDown = async (e: React.KeyboardEvent) => {
@@ -180,13 +213,11 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
     return (
         <>
             <ReactObsidianSetting
-                name={`${prefix} image container size`}
-                addMultiDesc={(multiDesc) => {
-                    multiDesc.addDescriptions([
-                        `Set the container dimensions for ${prefix.toLowerCase()} state.`,
-                        `px: 100-1000, %: 10-100`,
-                        'Click Save button or press Enter to apply changes.',
-                    ]);
+                name={nameAndDesc.name}
+                multiDesc={(multiDesc) => {
+                    debugger;
+                    console.log(JSON.stringify(nameAndDesc.desc));
+                    multiDesc.addDescriptions(nameAndDesc.desc);
                     return multiDesc;
                 }}
                 noBorder={true}
@@ -197,18 +228,22 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                 ref={inputsRef}
             >
                 <ReactObsidianSetting
-                    addTexts={[
+                    texts={[
                         (inputHeight): TextComponent => {
                             const parent = inputHeight.inputEl
                                 .parentElement as HTMLElement;
                             inputHeight.inputEl.id = 'input-height';
                             const label = document.createElement('label');
-                            label.textContent = 'Height:';
+                            label.textContent =
+                                t.settings.pages.images.settings.size.labels.height;
                             parent.insertBefore(label, inputHeight.inputEl);
                             inputHeight.setValue(
                                 heightValueRef.current.toString()
                             );
-                            inputHeight.setPlaceholder('height');
+                            inputHeight.setPlaceholder(
+                                t.settings.pages.images.settings.size
+                                    .placeholders.height
+                            );
                             inputHeight.onChange((value) => {
                                 const replaced = value.replace(/\D/, '');
                                 inputHeight.setValue(replaced);
@@ -227,7 +262,8 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                                 .parentElement as HTMLElement;
                             inputWidth.inputEl.id = 'input-width';
                             const label = document.createElement('label');
-                            label.textContent = 'Width:';
+                            label.textContent =
+                                t.settings.pages.images.settings.size.labels.width;
                             wrapper.insertBefore(label, inputWidth.inputEl);
 
                             inputWidth.setValue(
@@ -248,7 +284,7 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                             return inputWidth;
                         },
                     ]}
-                    addDropdowns={[
+                    dropdowns={[
                         (dropdown) => {
                             dropdown.addOptions({ px: 'px', '%': '%' });
                             dropdown.setValue(heightUnit);
@@ -266,9 +302,13 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                             return dropdown;
                         },
                     ]}
-                    addButtons={[
+                    buttons={[
                         (button) => {
                             button.setIcon('save');
+                            button.setTooltip(
+                                t.settings.pages.images.settings.size
+                                    .saveButtonTooltip
+                            );
                             button.onClick(handleSave);
                             return button;
                         },

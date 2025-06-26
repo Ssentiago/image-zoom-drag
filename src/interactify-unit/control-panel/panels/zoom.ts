@@ -1,3 +1,4 @@
+import { t } from '../../../lang';
 import { PanelsTriggering } from '../../../settings/types/interfaces';
 import { IControlPanel } from '../types/interfaces';
 import { BasePanel } from './base-panel';
@@ -46,7 +47,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
                     this.controlPanel.unit.actions.zoomElement(1.1, {
                         animated: true,
                     }),
-                title: 'Zoom In',
+                title: t.image.controlPanel.zoom.in,
             });
         }
         if (zoomButtons.reset) {
@@ -57,7 +58,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
                     this.controlPanel.unit.actions.resetZoomAndMove({
                         animated: true,
                     }),
-                title: 'Reset Zoom and Position',
+                title: t.image.controlPanel.zoom.reset,
             });
         }
         if (zoomButtons.out) {
@@ -68,7 +69,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
                     this.controlPanel.unit.actions.zoomElement(0.9, {
                         animated: true,
                     }),
-                title: 'Zoom Out',
+                title: t.image.controlPanel.zoom.out,
             });
         }
 

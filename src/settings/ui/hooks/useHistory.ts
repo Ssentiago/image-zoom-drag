@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import { t } from '../../../lang';
 import { useSettingsContext } from '../core/SettingsContext';
 import { HistoryAction, UndoRedoApi } from './types/interfaces';
 
@@ -14,6 +15,11 @@ export const useHistory = <T extends readonly unknown[]>(
     const [redoStack, setRedoStack] = useState<HistoryAction<T>[]>([]);
     const [undoDescription, setUndoDescription] = useState('');
     const [redoDescription, setRedoDescription] = useState('');
+
+    const historyL = useMemo(
+        () => t.settings.pages.images.management.history,
+        [plugin]
+    );
 
     if (process.env.NODE_ENV === 'development') {
         useEffect(() => {
@@ -46,20 +52,27 @@ export const useHistory = <T extends readonly unknown[]>(
 
     const getUndoLabel = () => {
         if (!undoDescription) {
-            return 'Nothing to undo\nShortcut: CTR+Z';
+            return historyL.tooltips.undo.nothing;
         }
         const count =
             undoStack.length > 1 ? ` (${undoStack.length - 1} more)` : '';
-        return `Undo\n${undoDescription}${count}\nShortcut: CTR+Z`;
+
+        return historyL.tooltips.undo.available.$format({
+            description: undoDescription,
+            count,
+        });
     };
 
     const getRedoLabel = () => {
         if (!redoDescription) {
-            return 'Nothing to redo\nShortcut: CTR+SHIFT+Z';
+            return historyL.tooltips.redo.nothing;
         }
         const count =
             redoStack.length > 1 ? ` (${redoStack.length - 1} more)` : '';
-        return `Redo\n${redoDescription}${count}\nShortcut: CTR+SHIFT+Z`;
+        return historyL.tooltips.redo.available.$format({
+            description: redoDescription,
+            count,
+        });
     };
 
     useEffect(() => {
@@ -154,14 +167,14 @@ export const useHistory = <T extends readonly unknown[]>(
                 if (canRedo) {
                     await redo();
                 } else {
-                    plugin.showNotice('Nothing to redo');
+                    plugin.showNotice(historyL.notices.nothingToRedo);
                 }
             } else if (e.ctrlKey || e.metaKey) {
                 e.preventDefault();
                 if (canUndo) {
                     await undo();
                 } else {
-                    plugin.showNotice('Nothing to undo');
+                    plugin.showNotice(historyL.notices.nothingToUndo);
                 }
             }
 

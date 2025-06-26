@@ -18,7 +18,7 @@ export const SettingProvider = ({
     children,
 }: SettingProviderProps): React.ReactElement => {
     const [reloadCount, setReloadCount] = useState(0);
-    const [currentPath, setCurrentPath] = useState<string>('/units');
+    const [currentPath, setCurrentPath] = useState<string>('/images');
 
     const forceReload = useCallback(() => {
         setReloadCount((prev) => prev + 1);

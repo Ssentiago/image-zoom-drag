@@ -1,9 +1,10 @@
 import { FC } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
+import { t } from '../../../../lang';
 import { MiniNavbar } from './PanelSection.styled';
 import Management from './management/Management';
 import Settings from './settings/Settings';
@@ -13,21 +14,23 @@ const PanelSection: FC = () => {
     const location = useLocation();
 
     const isSettingsActive =
-        location.pathname === '/panel-section/settings' ||
-        location.pathname === '/panel-section';
-    const isManagementActive =
-        location.pathname === '/panel-section/management';
+        location.pathname === '/panel/settings' ||
+        location.pathname === '/panel';
+    const isManagementActive = location.pathname === '/panel/management';
 
     return (
         <>
             <MiniNavbar>
                 <ReactObsidianSetting
-                    addButtons={[
+                    buttons={[
                         (button): ButtonComponent => {
                             button.setIcon('settings');
-                            button.setTooltip('Panels Settings');
+                            button.setTooltip(
+                                t.settings.pages.panels.miniNavbar
+                                    .settingsButtonTooltip
+                            );
                             button.onClick(async () => {
-                                await navigate('/panel-section/settings');
+                                await navigate('/panel/settings');
                             });
                             if (isSettingsActive) {
                                 button.setClass('button-active');
@@ -37,9 +40,12 @@ const PanelSection: FC = () => {
 
                         (button): ButtonComponent => {
                             button.setIcon('folder-plus');
-                            button.setTooltip('Panels Management');
+                            button.setTooltip(
+                                t.settings.pages.panels.miniNavbar
+                                    .managementButtonTooltip
+                            );
                             button.onClick(async () => {
-                                await navigate('/panel-section/management');
+                                await navigate('/panel/management');
                             });
                             if (isManagementActive) {
                                 button.setClass('button-active');

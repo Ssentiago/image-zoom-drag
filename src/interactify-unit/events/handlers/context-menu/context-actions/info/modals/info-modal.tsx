@@ -3,14 +3,14 @@ import { FC } from 'react';
 import {
     ReactObsidianModal,
     ReactObsidianSetting,
-} from 'react-obsidian-setting';
+} from '@obsidian-devkit/native-react-components';
 
 import { UnitInfoProps } from './types/interfaces';
 
 const InfoModal: FC<UnitInfoProps> = ({ info, onClose }) => {
     return (
         <ReactObsidianModal
-            title='Image unit properties'
+            title='Image properties'
             onClose={onClose}
             width='500px'
             maxHeight='80vh'

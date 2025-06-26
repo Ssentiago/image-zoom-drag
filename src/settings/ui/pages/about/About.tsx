@@ -1,7 +1,8 @@
 import { FC } from 'react';
 
-import { ReactObsidianSetting } from 'react-obsidian-setting';
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 
+import { t } from '../../../../lang';
 import { useSettingsContext } from '../../core/SettingsContext';
 import { FooterContent, Info, Slogan } from './About.styled';
 
@@ -11,11 +12,13 @@ const About: FC = () => {
     return (
         <>
             <ReactObsidianSetting
-                name={'GitHub page'}
-                addButtons={[
+                name={t.settings.pages.about.githubPage.name}
+                buttons={[
                     (button) => {
                         button.setIcon('github');
-                        button.setTooltip('Go to GitHub page of this plugin');
+                        button.setTooltip(
+                            t.settings.pages.about.githubPage.linkButtonTooltip
+                        );
                         button.onClick(() => {
                             window.open(
                                 'https://github.com/Ssentiago/interactify/',

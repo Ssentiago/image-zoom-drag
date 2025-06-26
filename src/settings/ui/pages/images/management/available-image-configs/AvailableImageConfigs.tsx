@@ -1,8 +1,10 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ArrowLeft, ArrowRight, RotateCcw, RotateCw } from 'lucide-react';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 
+import { t } from '../../../../../../lang';
+import { LocaleString } from '../../../../../../lang/proxy/types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../context/HistoryContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';
@@ -12,14 +14,24 @@ import {
     PaginationControls,
     RedoButton,
     UndoButton,
-} from './AvailableUnits.styled';
-import { UnitItem } from './UnitItem';
+} from './AvailableImageConfigs.styled';
+import { ImageConfigItem } from './ImageConfigItem';
 import { usePagination } from './hooks/usePagination';
-import { UnitOptionsModal } from './modals/UnitOptionsModal';
+import { ImageConfigOptionsModal } from './modals/ImageConfigOptionsModal';
 import { ModeState } from './types/interfaces';
 
-const AvailableUnits: FC = () => {
+const AvailableImageConfigs: FC = () => {
     const { plugin } = useSettingsContext();
+
+    const paginationTitle: LocaleString = useMemo(
+        () =>
+            t.settings.pages.images.management.availableImageConfigs.pagination
+                .page,
+        [plugin]
+    );
+
+    debugger;
+
     const [unitsPerPage, setUnitsPerPage] = useState(
         plugin.settings.data.units.settingsPagination.perPage
     );
@@ -70,26 +82,35 @@ const AvailableUnits: FC = () => {
 
     const getPageChangeButtonLabel = (type: 'previous' | 'next') => {
         const canChange = type === 'next' ? page < totalPages : page > 1;
-        const base = canChange ? `Go to ${type} page` : `No ${type} page`;
-        const isOccupied = modeState.mode === 'edit';
+        const buttons =
+            t.settings.pages.images.management.availableImageConfigs.pagination
+                .buttons;
 
-        if (isOccupied && canChange) {
-            return `Can't change page while editing`;
+        if (modeState.mode === 'edit' && canChange) {
+            return buttons.editingBlocked;
         }
 
-        return base;
+        const buttonConfig =
+            type === 'previous' ? buttons.previous : buttons.next;
+        return canChange ? buttonConfig.enabled : buttonConfig.disabled;
     };
 
     return (
         <>
             <ReactObsidianSetting
-                name='Available image configs'
+                name={
+                    t.settings.pages.images.management.availableImageConfigs
+                        .header
+                }
                 setHeading
             />
             <ReactObsidianSetting
-                name='Image configs per page'
+                name={
+                    t.settings.pages.images.management.availableImageConfigs
+                        .perPageSlider.name
+                }
                 setDisabled={modeState.mode === 'edit'}
-                addSliders={[
+                sliders={[
                     (slider) => {
                         slider.setValue(
                             plugin.settings.data.units.settingsPagination
@@ -123,7 +144,11 @@ const AvailableUnits: FC = () => {
                     >
                         <ArrowLeft size={'20px'} />
                     </PaginationButton>
-                    {`Page ${page} of ${totalPages} (Total image configs: ${units.length})`}
+                    {paginationTitle.$format({
+                        current: page.toString(),
+                        total: totalPages.toString(),
+                        count: units.length.toString(),
+                    })}
                     <PaginationButton
                         onClick={() => navigateToPage(1)}
                         disabled={
@@ -143,8 +168,9 @@ const AvailableUnits: FC = () => {
                     <RotateCw size={'20px'} />
                 </RedoButton>
             </ButtonContainer>
+
             {visibleDUnits.map((unit, index) => (
-                <UnitItem
+                <ImageConfigItem
                     key={`${unit.name}-${unit.selector}`}
                     unit={unit}
                     index={pageStartIndex + index}
@@ -154,7 +180,7 @@ const AvailableUnits: FC = () => {
             ))}
 
             {modeState.mode === 'options' && modeState.index !== -1 && (
-                <UnitOptionsModal
+                <ImageConfigOptionsModal
                     unitIndex={modeState.index}
                     onChanges={updateUndoStack}
                     onClose={() => {
@@ -169,4 +195,4 @@ const AvailableUnits: FC = () => {
     );
 };
 
-export default AvailableUnits;
+export default AvailableImageConfigs;

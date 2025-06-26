@@ -6,4 +6,5 @@ export interface DimensionsOptionProps {
     initialOptions:
         | DefaultSettings['units']['size']['folded']
         | DefaultSettings['units']['size']['expanded'];
+    border?: boolean;
 }

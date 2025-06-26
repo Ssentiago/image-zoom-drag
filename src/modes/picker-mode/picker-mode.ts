@@ -6,6 +6,7 @@ import {
     InteractiveInitialization,
     InteractiveMode,
 } from '../../interactify-unit/types/constants';
+import { t } from '../../lang';
 import { SettingsEventPayload } from '../../settings/types/interfaces';
 
 export default class PickerMode extends Component {
@@ -59,7 +60,9 @@ export default class PickerMode extends Component {
                     !this.plugin.settings.data.units.interactivity.picker
                         .enabled
                 ) {
-                    this.plugin.showNotice('Picker mode disabled');
+                    this.plugin.showNotice(
+                        t.commands.pickerMode.notice.disabled
+                    );
                     return;
                 }
 
@@ -112,14 +115,14 @@ export default class PickerMode extends Component {
         let text = 'Make interactive';
 
         if (initializationStatus === InteractiveInitialization.NotInitialized) {
-            text =
-                'Cannot initialize this image. Consult for docs for more info';
+            text = t.pickerMode.tooltip.imageState.nonInitialized;
         } else {
-            const interactiveAction =
-                mode === InteractiveMode.Interactive
-                    ? 'Deactivate'
-                    : 'Activate';
-            text = `${interactiveAction} interactive mode`;
+            const state = mode === InteractiveMode.Interactive ? 'on' : 'off';
+
+            text =
+                state === 'on'
+                    ? t.pickerMode.tooltip.imageState.on
+                    : t.pickerMode.tooltip.imageState.off;
         }
 
         this.tooltip.textContent = text;
@@ -151,10 +154,7 @@ export default class PickerMode extends Component {
             }
         });
 
-        this.plugin.showNotice(
-            `Picker mode enabled\nClick on image to toggle interactive mode\nPress Esc to exit`,
-            10000
-        );
+        this.plugin.showNotice(t.pickerMode.tooltip.onStart, 10000);
     }
 
     deactivate() {
@@ -175,10 +175,10 @@ export default class PickerMode extends Component {
         this.tooltip?.remove();
         this.tooltip = null;
         this.currentElement = null;
-        this.plugin.showNotice('Picker mode disabled');
+        this.plugin.showNotice(t.pickerMode.tooltip.onExit, 10000);
     }
 
-    private onMouseMove = (e: MouseEvent) => {
+    private readonly onMouseMove = (e: MouseEvent) => {
         if (!this.tooltip) return;
 
         // Tooltip follows a cursor with a small indent

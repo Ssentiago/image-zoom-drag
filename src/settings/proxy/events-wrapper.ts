@@ -15,7 +15,7 @@ export function createEventsWrapper(obj: any, path: string[] = []) {
             }
 
             if (key === '$children') {
-                return createEventsWrapper(obj, [...path, key]);
+                return `${basePath}.*`;
             }
 
             const value = target[key];

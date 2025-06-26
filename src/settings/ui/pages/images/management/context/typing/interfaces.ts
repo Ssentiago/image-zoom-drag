@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import { UnitConfig } from '../../../../../../types/interfaces';
+import { ImageConfig } from '../../../../../../types/interfaces';
 
 export interface UnitManagerContextProps {
-    units: UnitConfig[];
-    saveUnits: (newUnits: UnitConfig[]) => Promise<void>;
+    units: ImageConfig[];
+    saveUnits: (newUnits: ImageConfig[]) => Promise<void>;
 }
 
 export interface UnitsManagerProviderProps {
