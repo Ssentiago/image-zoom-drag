@@ -15,11 +15,11 @@ export function updateUnitSize(
     const heightValue = setting.height.value;
     const widthValue = setting.width.value;
     const heightInPx =
-        setting.height.unit === '%'
+        setting.height.type === '%'
             ? (heightValue / 100) * originalSize.height
             : heightValue;
     const widthInPx =
-        setting.width.unit === '%'
+        setting.width.type === '%'
             ? (widthValue / 100) * originalSize.width
             : widthValue;
 

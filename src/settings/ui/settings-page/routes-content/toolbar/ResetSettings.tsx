@@ -1,9 +1,10 @@
 import { FC } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 import { useLocation } from 'react-router-dom';
 
+import { t } from '../../../../../lang';
 import { useSettingsContext } from '../../../core/SettingsContext';
 
 const ResetSettings: FC = () => {
@@ -13,7 +14,7 @@ const ResetSettings: FC = () => {
 
     return (
         <ReactObsidianSetting
-            addButtons={[
+            buttons={[
                 (button): ButtonComponent => {
                     button.setIcon('rotate-ccw');
                     button.setTooltip('Reset settings to default');
@@ -23,12 +24,10 @@ const ResetSettings: FC = () => {
                         plugin.settings.eventBus.emit('settings-reset', {
                             eventName: 'settings-reset',
                             oldValue: undefined,
-                            newValue: undefined
+                            newValue: undefined,
                         });
                         forceReload();
-                        plugin.showNotice(
-                            'Settings have been reset to default.'
-                        );
+                        plugin.showNotice(t.settings.notice.resetSettings);
                     });
                     return button;
                 },

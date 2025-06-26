@@ -76,11 +76,11 @@ export class MigrateFrom_5_2_0_To_5_3_0 {
         return {
             width: {
                 value: parseInt(input?.width, 10) || 100,
-                unit: (input?.widthUnit as DimensionType) || 'px',
+                type: (input?.widthUnit as DimensionType) || 'px',
             },
             height: {
                 value: parseInt(input?.height, 10) || 100,
-                unit: (input?.heightUnit as DimensionType) || 'px',
+                type: (input?.heightUnit as DimensionType) || 'px',
             },
         };
     }

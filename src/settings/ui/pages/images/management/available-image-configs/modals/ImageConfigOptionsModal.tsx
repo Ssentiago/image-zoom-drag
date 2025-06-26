@@ -3,14 +3,14 @@ import { FC, useMemo } from 'react';
 import {
     ReactObsidianModal,
     ReactObsidianSetting,
-} from 'react-obsidian-setting';
+} from '@obsidian-devkit/native-react-components';
 
-import { createSettingsProxy } from '../../../../../../proxy/settings-proxy';
+import { t } from '../../../../../../../lang';
 import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../../context/UnitsManagerContext';
 import { UnitOptionsProps } from './types/interfaces';
 
-export const UnitOptionsModal: FC<UnitOptionsProps> = ({
+export const ImageConfigOptionsModal: FC<UnitOptionsProps> = ({
     unitIndex,
     onClose,
     onChanges,
@@ -18,18 +18,21 @@ export const UnitOptionsModal: FC<UnitOptionsProps> = ({
     const { plugin } = useSettingsContext();
     const { units } = useUnitsManagerContext();
     const unit = useMemo(() => units[unitIndex], [unitIndex]);
-
+    const opT = useMemo(
+        () =>
+            t.settings.pages.images.management.availableImageConfigs
+                .optionsModal,
+        [plugin]
+    );
     return (
         <ReactObsidianModal
             onClose={onClose}
-            title={`${unit.name} unit options`}
+            title={opT.name.$format({ name: unit.name })}
         >
-            <ReactObsidianSetting
-                desc={'These settings will only apply to this unit.'}
-            />
+            <ReactObsidianSetting desc={opT.desc} />
 
             <ReactObsidianSetting
-                name={'Panels'}
+                name={opT.panels.header}
                 setHeading={true}
             />
 
@@ -40,23 +43,27 @@ export const UnitOptionsModal: FC<UnitOptionsProps> = ({
                         .toUpperCase()
                         .concat(panel.slice(1).toLowerCase())}
                     key={panel}
-                    addToggles={[
+                    toggles={[
                         (toggle) => {
                             toggle.setValue(on);
                             toggle.onChange(async (value) => {
-                                const oldUnits = createSettingsProxy(
-                                    plugin,
-                                    JSON.parse(JSON.stringify(units)),
-                                    [plugin.settings.events.units.configs]
+                                const oldUnits = JSON.parse(
+                                    JSON.stringify(units)
                                 );
                                 plugin.settings.data.units.configs[
                                     unitIndex
                                 ].panels[panel].on = value;
                                 await plugin.settings.saveSettings();
-
+                                const state = value
+                                    ? opT.panels.states.on
+                                    : opT.panels.states.off;
                                 onChanges(
                                     oldUnits,
-                                    `Turn ${!value ? 'off' : 'on'} panel \`${panel}\` for unit \`${unit.name}\``
+                                    opT.panels.action.$format({
+                                        state: state,
+                                        panel: panel,
+                                        name: unit.name,
+                                    })
                                 );
                             });
 

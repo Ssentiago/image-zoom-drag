@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { UnitConfig } from '../../../../../types/interfaces';
+import { ImageConfig } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
 export const useUnitsManager = () => {
@@ -25,7 +25,7 @@ export const useUnitsManager = () => {
     }, [plugin]);
 
     const saveUnits = useCallback(
-        async (newUnits: UnitConfig[]) => {
+        async (newUnits: ImageConfig[]) => {
             setUnits(newUnits);
             plugin.settings.data.units.configs = newUnits;
             await plugin.settings.saveSettings();

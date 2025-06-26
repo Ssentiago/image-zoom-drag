@@ -1,15 +1,24 @@
-import InteractifyPlugin from '../../core/interactify-plugin';
+import EventEmitter2 from 'eventemitter2';
+
+interface ISettingsManager {
+    eventBus: EventEmitter2;
+    saveSettings(): Promise<void>;
+}
 
 export function createSettingsProxy(
-    plugin: InteractifyPlugin,
+    settingsManager: ISettingsManager,
     obj: any,
-    path: any[] = []
+    path: any[] = [],
+    autoSave?: boolean
 ) {
     return new Proxy(obj, {
         get(target, key) {
             const value = target[key];
             if (typeof value === 'object' && value !== null) {
-                return createSettingsProxy(plugin, value, [...path, key]);
+                return createSettingsProxy(settingsManager, value, [
+                    ...path,
+                    key,
+                ]);
             }
             return value;
         },
@@ -17,7 +26,7 @@ export function createSettingsProxy(
             const oldValue = target[prop];
             target[prop] = value;
             const fullPath = [...path, prop].join('.');
-            plugin.settings.eventBus?.emit(`settings.${fullPath}`, {
+            settingsManager.eventBus?.emit(`settings.${fullPath}`, {
                 eventName: `settings.${fullPath}`,
                 oldValue,
                 newValue: value,
@@ -33,7 +42,7 @@ export function createSettingsProxy(
 
             if (existed) {
                 const fullPath = [...path, prop].join('.');
-                plugin.settings.eventBus?.emit(`settings.${fullPath}`, {
+                settingsManager.eventBus?.emit(`settings.${fullPath}`, {
                     eventName: `settings.${fullPath}`,
                     operation: 'delete',
                     oldValue,

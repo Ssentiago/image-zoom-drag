@@ -1,6 +1,6 @@
 import { DimensionType } from './definitions';
 
-export interface UnitConfig {
+export interface ImageConfig {
     name: string;
     selector: string;
     on: boolean;
@@ -37,11 +37,11 @@ export interface PanelsConfig {
 export interface DimensionSetting {
     width: {
         value: number;
-        unit: DimensionType;
+        type: DimensionType;
     };
     height: {
         value: number;
-        unit: DimensionType;
+        type: DimensionType;
     };
 }
 
@@ -99,7 +99,7 @@ export interface Panels {
                 position: Position;
             };
         };
-        preset: 'mobile' | 'desktop' | 'presentation' | '';
+        preset: 'minimal' | 'full' | 'presentation' | 'none';
     };
 }
 
@@ -119,7 +119,7 @@ export interface Interactivity {
 }
 
 export interface Units {
-    configs: UnitConfig[];
+    configs: ImageConfig[];
     interactivity: Interactivity;
     settingsPagination: {
         perPage: number;

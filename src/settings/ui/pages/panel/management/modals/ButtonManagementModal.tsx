@@ -3,8 +3,9 @@ import React from 'react';
 import {
     ReactObsidianModal,
     ReactObsidianSetting,
-} from 'react-obsidian-setting';
+} from '@obsidian-devkit/native-react-components';
 
+import { t } from '../../../../../../lang';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
 interface ButtonManagementModalProps {
@@ -26,22 +27,25 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
     const buttonData = React.useMemo(() => {
         const { zoom, move, service } =
             plugin.settings.data.panels.local.panels;
+
+        const tL = t.image.controlPanel;
+
         return {
             zoom: [
                 {
-                    tooltip: 'Zoom In',
+                    tooltip: tL.zoom.in,
                     icon: 'zoom-in',
                     getValue: () => zoom.buttons.in,
                     setValue: (v: boolean) => (zoom.buttons.in = v),
                 },
                 {
-                    tooltip: 'Zoom Out',
+                    tooltip: tL.zoom.out,
                     icon: 'zoom-out',
                     getValue: () => zoom.buttons.out,
                     setValue: (v: boolean) => (zoom.buttons.out = v),
                 },
                 {
-                    tooltip: 'Reset',
+                    tooltip: tL.zoom.reset,
                     icon: 'refresh-cw',
                     getValue: () => zoom.buttons.reset,
                     setValue: (v: boolean) => (zoom.buttons.reset = v),
@@ -49,49 +53,49 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             ],
             move: [
                 {
-                    tooltip: 'Move Up',
+                    tooltip: tL.move.up,
                     icon: 'arrow-up',
                     getValue: () => move.buttons.up,
                     setValue: (v: boolean) => (move.buttons.up = v),
                 },
                 {
-                    tooltip: 'Move Down',
+                    tooltip: tL.move.down,
                     icon: 'arrow-down',
                     getValue: () => move.buttons.down,
                     setValue: (v: boolean) => (move.buttons.down = v),
                 },
                 {
-                    tooltip: 'Move Left',
+                    tooltip: tL.move.left,
                     icon: 'arrow-left',
                     getValue: () => move.buttons.left,
                     setValue: (v: boolean) => (move.buttons.left = v),
                 },
                 {
-                    tooltip: 'Move Right',
+                    tooltip: tL.move.right,
                     icon: 'arrow-right',
                     getValue: () => move.buttons.right,
                     setValue: (v: boolean) => (move.buttons.right = v),
                 },
                 {
-                    tooltip: 'Move Right Up',
+                    tooltip: tL.move.upRight,
                     icon: 'arrow-up-right',
                     getValue: () => move.buttons.upRight,
                     setValue: (v: boolean) => (move.buttons.upRight = v),
                 },
                 {
-                    tooltip: 'Move Right Down',
+                    tooltip: tL.move.downRight,
                     icon: 'arrow-down-right',
                     getValue: () => move.buttons.downRight,
                     setValue: (v: boolean) => (move.buttons.downRight = v),
                 },
                 {
-                    tooltip: 'Move Left Up',
+                    tooltip: tL.move.upLeft,
                     icon: 'arrow-up-left',
                     getValue: () => move.buttons.upLeft,
                     setValue: (v: boolean) => (move.buttons.upLeft = v),
                 },
                 {
-                    tooltip: 'Move Left Down',
+                    tooltip: tL.move.downLeft,
                     icon: 'arrow-down-left',
                     getValue: () => move.buttons.downLeft,
                     setValue: (v: boolean) => (move.buttons.downLeft = v),
@@ -99,13 +103,13 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             ],
             service: [
                 {
-                    tooltip: 'Hide',
+                    tooltip: tL.service.hide.name,
                     icon: 'eye',
                     getValue: () => service.buttons.hide,
                     setValue: (v: boolean) => (service.buttons.hide = v),
                 },
                 {
-                    tooltip: 'Fullscreen',
+                    tooltip: tL.service.fullscreen.name,
                     icon: 'fullscreen',
                     getValue: () => service.buttons.fullscreen,
                     setValue: (v: boolean) => (service.buttons.fullscreen = v),
@@ -119,17 +123,14 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             title={title}
             onClose={onClose}
         >
-            <ReactObsidianSetting
-                name={'Panel buttons section'}
-                setHeading
-            />
             {Object.entries(buttonData).map(([panel, panelData]) => (
                 <React.Fragment key={panel}>
                     <ReactObsidianSetting
-                        name={panel
-                            .charAt(0)
-                            .toUpperCase()
-                            .concat(panel.slice(1).toLowerCase())}
+                        name={
+                            t.image.controlPanel[
+                                panel as keyof typeof t.image.controlPanel
+                            ].name
+                        }
                         setHeading
                     />
                     {panelData.map(
@@ -138,7 +139,7 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
                                 key={tooltip}
                                 name={tooltip}
                                 noBorder={index !== panelData.length - 1}
-                                addButtons={[
+                                buttons={[
                                     {
                                         priority: UI_PRIORITY.BUTTON,
                                         callback: (button) => {
@@ -148,7 +149,7 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
                                         },
                                     },
                                 ]}
-                                addToggles={[
+                                toggles={[
                                     {
                                         priority: UI_PRIORITY.TOGGLE,
                                         callback: (toggle) => {

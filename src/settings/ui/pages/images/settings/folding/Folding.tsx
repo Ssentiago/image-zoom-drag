@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 
+import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ToggleComponent } from 'obsidian';
-import { ReactObsidianSetting } from 'react-obsidian-setting';
 
+import { t } from '../../../../../../lang';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
 const Folding: FC = (): React.ReactElement => {
@@ -10,13 +11,13 @@ const Folding: FC = (): React.ReactElement => {
     return (
         <>
             <ReactObsidianSetting
-                name={'Fold'}
+                name={t.settings.pages.images.settings.fold.header}
                 setHeading={true}
             />
 
             <ReactObsidianSetting
-                name='Fold images by default'
-                addToggles={[
+                name={t.settings.pages.images.settings.fold.foldByDefault.name}
+                toggles={[
                     (toggle): ToggleComponent => {
                         toggle
                             .setValue(
@@ -33,8 +34,11 @@ const Folding: FC = (): React.ReactElement => {
             />
 
             <ReactObsidianSetting
-                name='Automatically fold images on focus change'
-                addToggles={[
+                name={
+                    t.settings.pages.images.settings.fold.autoFoldOnFocusChange
+                        .name
+                }
+                toggles={[
                     (toggle): ToggleComponent => {
                         toggle
                             .setValue(

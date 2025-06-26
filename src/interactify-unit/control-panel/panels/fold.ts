@@ -1,3 +1,4 @@
+import { t } from '../../../lang';
 import { updateUnitSize } from '../../helpers';
 import { TriggerType } from '../../types/constants';
 import { updateButton } from '../helpers/helpers';
@@ -33,6 +34,10 @@ export class FoldPanel extends BasePanel<FoldButtons> {
 
     getButtonsConfig() {
         const isFolded = this.unit.context.container.dataset.folded === 'true';
+        const titleGetter = (state: 'folded' | 'expanded') =>
+            state === 'folded'
+                ? t.image.controlPanel.fold.fold.folded
+                : t.image.controlPanel.fold.fold.expanded;
 
         return [
             {
@@ -50,11 +55,11 @@ export class FoldPanel extends BasePanel<FoldButtons> {
                         updateButton(
                             button.element,
                             isFolded ? 'fold-vertical' : 'unfold-vertical',
-                            isFolded ? 'Fold' : 'Expand'
+                            titleGetter(isFolded ? 'folded' : 'expanded')
                         );
                     }
                 },
-                title: isFolded ? 'Expand' : 'Fold',
+                title: titleGetter(isFolded ? 'folded' : 'expanded'),
                 id: FoldButtons.Fold,
             },
         ];

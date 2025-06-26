@@ -1,4 +1,4 @@
-import { UnitConfig } from '../../../../../../types/interfaces';
+import { ImageConfig } from '../../../../../../types/interfaces';
 import { mode } from './definitions';
 
 export interface ModeState {
@@ -10,7 +10,7 @@ export interface ModeState {
 }
 
 export interface UnitItemProps {
-    unit: UnitConfig;
+    unit: ImageConfig;
     index: number;
     modeState: ModeState;
     setModeState: (modeState: ModeState) => void;

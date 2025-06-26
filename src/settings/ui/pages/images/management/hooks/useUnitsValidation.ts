@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { UnitConfig } from '../../../../../types/interfaces';
+import { t } from '../../../../../../lang';
+import { ImageConfig } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';
 import {
@@ -16,7 +17,12 @@ export const useUnitsValidation = () => {
     const [unitNamesIndex, setUnitNamesIndex] = useState(new Set());
     const [unitSelectorsIndex, setUnitSelectorsIndex] = useState(new Set());
 
-    const updateUnitNameAndSelectors = (units: UnitConfig[]) => {
+    const unitL = useMemo(
+        () => t.settings.pages.images.management.unitsValidation,
+        [plugin]
+    );
+
+    const updateUnitNameAndSelectors = (units: ImageConfig[]) => {
         const unitIndexData = {
             names: [] as string[],
             selectors: [] as string[],
@@ -61,7 +67,7 @@ export const useUnitsValidation = () => {
 
     const validateName = (
         name: string,
-        exclude?: UnitConfig
+        exclude?: ImageConfig
     ): UnitValidationResult => {
         if (!name.trim()) {
             return {
@@ -82,7 +88,7 @@ export const useUnitsValidation = () => {
         if (unitNamesIndex.has(name) && (!exclude || exclude.name !== name)) {
             return {
                 valid: false,
-                tooltip: 'Unit with that name already exists',
+                tooltip: unitL.nameAlreadyExists,
                 empty: false,
             };
         }
@@ -92,7 +98,7 @@ export const useUnitsValidation = () => {
 
     const validateSelector = (
         selector: string,
-        exclude?: UnitConfig
+        exclude?: ImageConfig
     ): UnitValidationResult => {
         if (!selector.trim()) {
             return {
@@ -106,7 +112,9 @@ export const useUnitsValidation = () => {
         if (!valid) {
             return {
                 valid: false,
-                tooltip: `Invalid CSS selector: ${err}`,
+                tooltip: unitL.invalidSelectorPrefix.$format({
+                    err: err ?? '',
+                }),
                 empty: false,
             };
         }
@@ -117,7 +125,7 @@ export const useUnitsValidation = () => {
         ) {
             return {
                 valid: false,
-                tooltip: 'Unit with that selector already exists',
+                tooltip: unitL.selectorAlreadyExists,
                 empty: false,
             };
         }
@@ -128,7 +136,7 @@ export const useUnitsValidation = () => {
     const validateBoth = (
         name: string,
         selector: string,
-        exclude?: UnitConfig
+        exclude?: ImageConfig
     ): GlobalValidationResult => {
         const nameResult = validateName(name, exclude);
         const selectorResult = validateSelector(selector, exclude);
@@ -156,13 +164,13 @@ export const useUnitsValidation = () => {
         applyValidationToElement(selectorInput, result.selectorResult);
 
         if (result.bothEmpty) {
-            plugin.showNotice('Nothing to save');
+            plugin.showNotice(unitL.nothingToSave);
             return false;
         }
 
         if (result.oneEmpty) {
             const field = result.nameResult.empty ? 'name' : 'selector';
-            plugin.showNotice(`Fill out unit ${field} field!`);
+            plugin.showNotice(unitL.fillOutField.$format({ field }));
             return false;
         }
 
@@ -172,13 +180,13 @@ export const useUnitsValidation = () => {
             !result.nameResult.valid || !result.selectorResult.valid;
 
         if (bothInvalid) {
-            plugin.showNotice('Unit name and selector are both invalid');
+            plugin.showNotice(unitL.bothInvalid);
             return false;
         }
 
         if (oneInvalid) {
             const field = !result.nameResult.valid ? 'name' : 'selector';
-            plugin.showNotice(`Unit ${field} is invalid`);
+            plugin.showNotice(unitL.oneInvalid.$format({ field }));
             return false;
         }
 

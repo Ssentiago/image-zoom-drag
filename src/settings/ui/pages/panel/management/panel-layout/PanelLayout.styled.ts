@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { boolean } from 'superstruct';
 
 export const UnitSetup = styled.div`
     display: flex;
