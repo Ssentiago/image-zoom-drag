@@ -1,6 +1,7 @@
+import { t } from '@/lang';
+
 import { useEffect, useMemo, useState } from 'react';
 
-import { t } from '../../../../../../lang';
 import { ImageConfig } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';

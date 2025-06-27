@@ -1,42 +1,50 @@
 import { FC } from 'react';
 
-import { NavLink } from 'react-router-dom';
+import { Link, useLocation } from 'wouter';
 
 import { NavbarContainer, NavbarTab, NavbarTabs } from './Navbar.styled';
 
-const Navbar: FC = () => (
-    <NavbarContainer>
-        <NavbarTabs>
-            <NavbarTab
-                as={NavLink}
-                to={'/images'}
-                draggable={false}
-            >
-                Images
-            </NavbarTab>
-            <NavbarTab
-                as={NavLink}
-                to={'/panel'}
-                draggable={false}
-            >
-                Panel
-            </NavbarTab>
-            <NavbarTab
-                as={NavLink}
-                to={'/debug/'}
-                draggable={false}
-            >
-                Debug
-            </NavbarTab>
-            <NavbarTab
-                as={NavLink}
-                to={'/about'}
-                draggable={false}
-            >
-                About
-            </NavbarTab>
-        </NavbarTabs>
-    </NavbarContainer>
-);
+const Navbar: FC = () => {
+    const [location] = useLocation();
+
+    return (
+        <NavbarContainer>
+            <NavbarTabs>
+                <NavbarTab
+                    as={Link}
+                    to={'/images'}
+                    draggable={false}
+                    $active={location.startsWith('/images')}
+                >
+                    Images
+                </NavbarTab>
+                <NavbarTab
+                    as={Link}
+                    to={'/panel'}
+                    draggable={false}
+                    $active={location.startsWith('/panel')}
+                >
+                    Panel
+                </NavbarTab>
+                <NavbarTab
+                    as={Link}
+                    to={'/debug/'}
+                    draggable={false}
+                    $active={location.startsWith('/debug')}
+                >
+                    Debug
+                </NavbarTab>
+                <NavbarTab
+                    as={Link}
+                    to={'/about'}
+                    draggable={false}
+                    $active={location === '/about'}
+                >
+                    About
+                </NavbarTab>
+            </NavbarTabs>
+        </NavbarContainer>
+    );
+};
 
 export default Navbar;

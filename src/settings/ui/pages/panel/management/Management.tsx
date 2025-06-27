@@ -1,8 +1,9 @@
+import { t } from '@/lang';
+
 import React, { useEffect, useRef } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 
-import { t } from '../../../../../lang';
 import { useSettingsContext } from '../../../core/SettingsContext';
 import ButtonManagementModal from './modals/ButtonManagementModal';
 import LayoutModal from './modals/LayoutModal';
@@ -148,7 +149,10 @@ const Management: React.FC = () => {
                 buttons={[
                     (button) => {
                         button.setIcon('layout');
-                        button.setTooltip(t.settings.pages.panels.management.panelLayout.tooltip);
+                        button.setTooltip(
+                            t.settings.pages.panels.management.panelLayout
+                                .tooltip
+                        );
                         button.onClick(() => {
                             setLayoutModalOpen(true);
                         });
@@ -162,7 +166,10 @@ const Management: React.FC = () => {
                 buttons={[
                     (button) => {
                         button.setIcon('panels-top-left');
-                        button.setTooltip(t.settings.pages.panels.management.buttonsLayout.tooltip);
+                        button.setTooltip(
+                            t.settings.pages.panels.management.buttonsLayout
+                                .tooltip
+                        );
                         button.onClick(() => {
                             setButtonModalOpen(true);
                         });
@@ -173,13 +180,19 @@ const Management: React.FC = () => {
             {layoutModalOpen && (
                 <LayoutModal
                     onClose={() => setLayoutModalOpen(false)}
-                    title={t.settings.pages.panels.management.panelLayoutModal.title}
+                    title={
+                        t.settings.pages.panels.management.panelLayoutModal
+                            .title
+                    }
                 />
             )}
             {buttonModalOpen && (
                 <ButtonManagementModal
                     onClose={() => setButtonModalOpen(false)}
-                    title={t.settings.pages.panels.management.buttonsLayoutModal.title}
+                    title={
+                        t.settings.pages.panels.management.buttonsLayoutModal
+                            .title
+                    }
                 />
             )}
         </>

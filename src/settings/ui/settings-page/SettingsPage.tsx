@@ -1,19 +1,25 @@
+import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
+
 import { FC } from 'react';
 
-import { MemoryRouter } from 'react-router-dom';
+import { Router } from 'wouter';
+import { memoryLocation } from 'wouter/memory-location';
 
-import { useSettingsContext } from '../core/SettingsContext';
 import RoutesContent from './routes-content/RoutesContent';
 
 const SettingsPage: FC = () => {
     const { reloadCount, currentPath } = useSettingsContext();
+
+    const { hook } = memoryLocation({ path: currentPath });
+
     return (
-        <MemoryRouter
-            initialEntries={[currentPath]}
+        <Router
+            hook={hook}
             key={reloadCount}
         >
             <RoutesContent />
-        </MemoryRouter>
+        </Router>
     );
 };
+
 export default SettingsPage;

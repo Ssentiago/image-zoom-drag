@@ -1,4 +1,5 @@
-import { t } from '../../../lang';
+import { t } from '@/lang';
+
 import en from '../../../lang/locale/en/nested';
 import { PanelsTriggering } from '../../../settings/types/interfaces';
 import { IControlPanel } from '../types/interfaces';

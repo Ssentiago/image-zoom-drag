@@ -1,10 +1,11 @@
+import { t } from '@/lang';
+
 import InteractifyPlugin from '../../core/interactify-plugin';
 import {
     FileStats,
     SourceData,
     UnitContext,
 } from '../../interactify-unit/types/interfaces';
-import { t } from '../../lang';
 import BaseAdapter from '../base-adapter';
 import { InteractifyAdapters } from '../types/constants';
 

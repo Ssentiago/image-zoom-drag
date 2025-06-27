@@ -1,6 +1,7 @@
+import { t } from '@/lang';
+
 import { useEffect, useMemo, useState } from 'react';
 
-import { t } from '../../../lang';
 import { useSettingsContext } from '../core/SettingsContext';
 import { HistoryAction, UndoRedoApi } from './types/interfaces';
 

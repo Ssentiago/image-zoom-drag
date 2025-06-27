@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import { FC, useMemo } from 'react';
 
 import {
@@ -5,7 +7,6 @@ import {
     ReactObsidianSetting,
 } from '@obsidian-devkit/native-react-components';
 
-import { t } from '../../../../../../../lang';
 import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../../context/UnitsManagerContext';
 import { UnitOptionsProps } from './types/interfaces';

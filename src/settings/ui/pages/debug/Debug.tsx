@@ -1,8 +1,9 @@
+import { t } from '@/lang';
+
 import { FC, useCallback, useMemo, useState } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 
-import { t } from '../../../../lang';
 import { DebugLevel } from '../../../types/interfaces';
 import { useSettingsContext } from '../../core/SettingsContext';
 

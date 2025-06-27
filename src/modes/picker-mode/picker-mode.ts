@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import { Component } from 'obsidian';
 
 import PickerModeAdapter from '../../adapters/direct-element-adapters/picker-mode-adapter';
@@ -6,7 +8,6 @@ import {
     InteractiveInitialization,
     InteractiveMode,
 } from '../../interactify-unit/types/constants';
-import { t } from '../../lang';
 import { SettingsEventPayload } from '../../settings/types/interfaces';
 
 export default class PickerMode extends Component {

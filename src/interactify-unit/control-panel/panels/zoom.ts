@@ -1,4 +1,5 @@
-import { t } from '../../../lang';
+import { t } from '@/lang';
+
 import { PanelsTriggering } from '../../../settings/types/interfaces';
 import { IControlPanel } from '../types/interfaces';
 import { BasePanel } from './base-panel';

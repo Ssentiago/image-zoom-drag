@@ -1,18 +1,20 @@
+import { t } from '@/lang';
+
 import { FC } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Router, Switch, useLocation } from 'wouter';
 
-import { t } from '../../../../lang';
 import { MiniNavbar } from './Images.styled';
 import Management from './management/Management';
 import { UnitsManagerProvider } from './management/context/UnitsManagerContext';
 import Settings from './settings/Settings';
 
 const Images: FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const [location, setLocation] = useLocation();
+    const navigate = (path: string) => setLocation(path);
+    console.log(location);
 
     return (
         <UnitsManagerProvider>
@@ -26,11 +28,11 @@ const Images: FC = () => {
                                     .settingsButtonTooltip
                             );
                             button.onClick(async () => {
-                                await navigate('/images/settings');
+                                navigate('/images/settings');
                             });
                             if (
-                                location.pathname === '/images' ||
-                                location.pathname === '/images/settings'
+                                location === '/' ||
+                                location === '/images/settings'
                             ) {
                                 button.setClass('button-active');
                             }
@@ -43,9 +45,9 @@ const Images: FC = () => {
                                     .managementButtonTooltip
                             );
                             button.onClick(async () => {
-                                await navigate('/images/management');
+                                navigate('/images/management');
                             });
-                            if (location.pathname === '/images/management') {
+                            if (location === '/images/management') {
                                 button.setClass('button-active');
                             }
                             return button;
@@ -53,20 +55,11 @@ const Images: FC = () => {
                     ]}
                 />
             </MiniNavbar>
-            <Routes location={location}>
-                <Route
-                    index
-                    element={<Settings />}
-                />
-                <Route
-                    path='settings'
-                    element={<Settings />}
-                />
-                <Route
-                    path='management'
-                    element={<Management />}
-                />
-            </Routes>
+            <Switch location={location}>
+                <Route path=''>{() => <Settings />}</Route>
+                <Route path='/settings'>{() => <Settings />}</Route>
+                <Route path='/management'>{() => <Management />}</Route>
+            </Switch>{' '}
         </UnitsManagerProvider>
     );
 };

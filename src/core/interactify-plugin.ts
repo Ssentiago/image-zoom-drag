@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import EventEmitter2 from 'eventemitter2';
 import { MarkdownPostProcessorContext, Notice, Plugin } from 'obsidian';
 
@@ -5,7 +7,6 @@ import { LivePreviewAdapter } from '../adapters/markdown-view-adapters/live-prev
 import { PreviewAdapter } from '../adapters/markdown-view-adapters/preview-adapter';
 import InteractifyUnit from '../interactify-unit/interactify-unit';
 import { TriggerType } from '../interactify-unit/types/constants';
-import { t } from '../lang';
 import Logger from '../logger/logger';
 import PickerMode from '../modes/picker-mode/picker-mode';
 import SettingsManager from '../settings/settings-manager';

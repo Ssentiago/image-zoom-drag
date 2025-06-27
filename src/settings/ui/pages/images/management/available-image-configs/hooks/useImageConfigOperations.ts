@@ -1,6 +1,7 @@
+import { t } from '@/lang';
+
 import { useMemo } from 'react';
 
-import { t } from '../../../../../../../lang';
 import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../../context/HistoryContext';
 import { useUnitsManagerContext } from '../../context/UnitsManagerContext';

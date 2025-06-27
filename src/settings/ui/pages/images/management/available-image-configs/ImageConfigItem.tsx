@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import React, { FC, useMemo, useRef } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
@@ -9,7 +11,6 @@ import {
 } from 'obsidian';
 
 import { ImageConfigs } from '../../../../../../interactify-unit/types/constants';
-import { t } from '../../../../../../lang';
 import { useUnitsValidation } from '../hooks/useUnitsValidation';
 import { useImageConfigOperations } from './hooks/useImageConfigOperations';
 import { UnitItemProps } from './types/interfaces';

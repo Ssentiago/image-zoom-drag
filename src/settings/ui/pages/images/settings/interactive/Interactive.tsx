@@ -1,9 +1,10 @@
+import { t } from '@/lang';
+
 import { FC, useCallback, useMemo, useState } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { DropdownComponent } from 'obsidian';
 
-import { t } from '../../../../../../lang';
 import { ActivationMode } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 

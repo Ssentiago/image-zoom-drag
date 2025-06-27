@@ -1,6 +1,7 @@
+import { t } from '@/lang';
+
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { t } from '../../../../../../lang';
 import { Panels, PanelsConfig } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import {

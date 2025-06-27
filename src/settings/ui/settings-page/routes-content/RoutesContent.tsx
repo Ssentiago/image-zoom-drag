@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'wouter';
 
 import About from '../../pages/about/About';
 import Debug from '../../pages/debug/Debug';
@@ -10,8 +10,9 @@ import { AnimatedRoutes } from './RoutesContent.styled';
 import Toolbar from './toolbar/Toolbar';
 
 const RoutesContent: FC = () => {
-    const location = useLocation();
+    const [location] = useLocation();
     const [displayLocation, setDisplayLocation] = useState(location);
+
     const [transitionStage, setTransitionStage] = useState<
         'fadeIn' | 'fadeOut'
     >('fadeIn');
@@ -35,24 +36,27 @@ const RoutesContent: FC = () => {
                     }
                 }}
             >
-                <Routes location={displayLocation}>
+                <Switch location={displayLocation}>
                     <Route
-                        path='/images/*'
-                        element={<Images />}
-                    />
+                        path='/images'
+                        nest
+                    >
+                        {() => <Images />}
+                    </Route>
                     <Route
-                        path='/panel/*'
-                        element={<PanelSection />}
-                    />
+                        path='/panel'
+                        nest
+                    >
+                        {() => <PanelSection />}
+                    </Route>
                     <Route
-                        path={'/debug/*'}
-                        element={<Debug />}
-                    />
-                    <Route
-                        path={'/about'}
-                        element={<About />}
-                    />
-                </Routes>
+                        path='/debug'
+                        nest
+                    >
+                        {() => <Debug />}
+                    </Route>
+                    <Route path='/about'>{() => <About />}</Route>
+                </Switch>
             </AnimatedRoutes>
         </>
     );

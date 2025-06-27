@@ -1,4 +1,5 @@
-import { t } from '../../../lang';
+import { t } from '@/lang';
+
 import { updateUnitSize } from '../../helpers';
 import { TriggerType } from '../../types/constants';
 import { updateButton } from '../helpers/helpers';

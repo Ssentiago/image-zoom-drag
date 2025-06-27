@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import React from 'react';
 
 import {
@@ -5,7 +7,6 @@ import {
     ReactObsidianSetting,
 } from '@obsidian-devkit/native-react-components';
 
-import { t } from '../../../../../../../lang';
 import { useUserGuideVideo } from './hooks/useUserGuideVideo';
 import { UserGuideModalProps } from './typing/interfaces';
 

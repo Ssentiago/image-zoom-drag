@@ -1,9 +1,10 @@
+import { t } from '@/lang';
+
 import React, { FC } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ToggleComponent } from 'obsidian';
 
-import { t } from '../../../../../../lang';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
 const Folding: FC = (): React.ReactElement => {

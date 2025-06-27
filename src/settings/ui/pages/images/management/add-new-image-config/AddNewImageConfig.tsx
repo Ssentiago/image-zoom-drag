@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import { FC, useRef, useState } from 'react';
 
 import {
@@ -11,7 +13,6 @@ import {
     TextComponent,
 } from 'obsidian';
 
-import { t } from '../../../../../../lang';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../context/HistoryContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';

@@ -15,7 +15,7 @@ export const NavbarTabs = styled.div`
     gap: 16px;
 `;
 
-export const NavbarTab = styled.button`
+export const NavbarTab = styled.button<{ $active: boolean }>`
     display: flex;
     align-items: center;
     background: none;
@@ -37,19 +37,21 @@ export const NavbarTab = styled.button`
         color: var(--text-accent-hover);
     }
 
-    &.active {
+    ${(props) =>
+        props.$active &&
+        `
         background-color: var(--background-modifier-active-hover);
         color: var(--text-accent);
-    }
-
-    &.active::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background-color: var(--text-accent);
-        border-radius: 2px 2px 0 0;
-    }
+        
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--text-accent);
+            border-radius: 2px 2px 0 0;
+        }
+    `}
 `;

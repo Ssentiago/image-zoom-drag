@@ -1,22 +1,22 @@
+import { t } from '@/lang';
+
 import { FC } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'wouter';
 
-import { t } from '../../../../lang';
 import { MiniNavbar } from './PanelSection.styled';
 import Management from './management/Management';
 import Settings from './settings/Settings';
 
 const PanelSection: FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const [location, setLocation] = useLocation();
 
-    const isSettingsActive =
-        location.pathname === '/panel/settings' ||
-        location.pathname === '/panel';
-    const isManagementActive = location.pathname === '/panel/management';
+    const navigate = (path: string) => setLocation(path);
+
+    const isSettingsActive = location === '/panel/settings' || location === '/';
+    const isManagementActive = location === '/panel/management';
 
     return (
         <>
@@ -30,7 +30,7 @@ const PanelSection: FC = () => {
                                     .settingsButtonTooltip
                             );
                             button.onClick(async () => {
-                                await navigate('/panel/settings');
+                                navigate('/panel/settings');
                             });
                             if (isSettingsActive) {
                                 button.setClass('button-active');
@@ -45,7 +45,7 @@ const PanelSection: FC = () => {
                                     .managementButtonTooltip
                             );
                             button.onClick(async () => {
-                                await navigate('/panel/management');
+                                navigate('/panel/management');
                             });
                             if (isManagementActive) {
                                 button.setClass('button-active');
@@ -56,20 +56,11 @@ const PanelSection: FC = () => {
                 />
             </MiniNavbar>
 
-            <Routes>
-                <Route
-                    index
-                    element={<Settings />}
-                />
-                <Route
-                    path='settings'
-                    element={<Settings />}
-                />
-                <Route
-                    path='management'
-                    element={<Management />}
-                />
-            </Routes>
+            <Switch location={location}>
+                <Route path=''>{() => <Settings />}</Route>
+                <Route path='/settings'>{() => <Settings />}</Route>
+                <Route path='/management'>{() => <Management />}</Route>
+            </Switch>
         </>
     );
 };

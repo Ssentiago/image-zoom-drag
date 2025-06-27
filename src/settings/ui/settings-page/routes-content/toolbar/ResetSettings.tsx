@@ -1,16 +1,17 @@
+import { t } from '@/lang';
+
 import { FC } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
-import { t } from '../../../../../lang';
 import { useSettingsContext } from '../../../core/SettingsContext';
 
 const ResetSettings: FC = () => {
     const { plugin, forceReload, setCurrentPath } = useSettingsContext();
 
-    const location = useLocation();
+    const [location, setLocation] = useLocation();
 
     return (
         <ReactObsidianSetting
@@ -19,7 +20,7 @@ const ResetSettings: FC = () => {
                     button.setIcon('rotate-ccw');
                     button.setTooltip('Reset settings to default');
                     button.onClick(async () => {
-                        setCurrentPath(location.pathname);
+                        setCurrentPath(location);
                         await plugin.settings.resetSettings();
                         plugin.settings.eventBus.emit('settings-reset', {
                             eventName: 'settings-reset',

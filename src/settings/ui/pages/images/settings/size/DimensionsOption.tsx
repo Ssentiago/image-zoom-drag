@@ -1,3 +1,5 @@
+import { t } from '@/lang';
+
 import React, {
     FC,
     useCallback,
@@ -10,7 +12,6 @@ import React, {
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { setTooltip, TextComponent } from 'obsidian';
 
-import { t } from '../../../../../../lang';
 import { DimensionType } from '../../../../../types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { ComponentType } from './types/constants';

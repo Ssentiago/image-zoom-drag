@@ -1,9 +1,10 @@
+import { t } from '@/lang';
+
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ArrowLeft, ArrowRight, RotateCcw, RotateCw } from 'lucide-react';
 
-import { t } from '../../../../../../lang';
 import { LocaleString } from '../../../../../../lang/proxy/types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../context/HistoryContext';
