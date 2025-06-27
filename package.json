@@ -66,8 +66,8 @@
         "preact": "^10.26.9",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
-        "react-router-dom": "^7.6.2",
-        "styled-components": "^6.1.19"
+        "styled-components": "^6.1.19",
+        "wouter": "^3.7.1"
     },
     "repository": "https://github.com/Ssentiago/Interactify.git"
 }
