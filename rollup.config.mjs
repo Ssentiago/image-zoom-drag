@@ -4,6 +4,7 @@ import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import fs from 'fs';
+import path from 'node:path';
 import analyze from 'rollup-plugin-analyzer';
 import copy from 'rollup-plugin-copy';
 import del from 'rollup-plugin-delete';
@@ -67,11 +68,12 @@ const baseConfig = {
                     find: 'react/jsx-runtime',
                     replacement: 'preact/jsx-runtime',
                 },
+                { find: '@', replacement: path.resolve(process.cwd(), 'src') },
             ],
         }),
         nodeResolve({
             preferBuiltins: true,
-            extensions: ['.js', '.ts'],
+            extensions: ['.ts', '.tsx', '.js', '.jsx'],
             browser: true,
         }),
         commonjs({
