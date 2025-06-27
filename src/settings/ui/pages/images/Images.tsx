@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
-import { Route, Router, Switch, useLocation } from 'wouter';
+import { Route, Switch, useLocation } from 'wouter';
 
 import { MiniNavbar } from './Images.styled';
 import Management from './management/Management';
