@@ -69,19 +69,29 @@ export default abstract class BaseAdapter {
             return false;
         }
 
-        const initializationStatus = !(context.element as HTMLElementWithCMView)
-            .cmView
-            ? InteractiveInitialization.Initialized
-            : InteractiveInitialization.NotInitialized;
+        let status = false;
 
+        if (
+            context.adapter === InteractifyAdapters.LivePreview &&
+            !(context.element as HTMLElementWithCMView).cmView
+        ) {
+            status = false;
+        } else if (
+            [
+                InteractifyAdapters.Preview,
+                InteractifyAdapters.PickerMode,
+            ].includes(context.adapter!)
+        ) {
+            status = true;
+        }
         context.element!.setAttribute(
             'data-interactive-initialization-status',
-            initializationStatus
+            status
+                ? InteractiveInitialization.Initialized
+                : InteractiveInitialization.NotInitialized
         );
 
-        return (
-            initializationStatus !== InteractiveInitialization.NotInitialized
-        );
+        return status;
     }
 
     isThisSvgIcon(element: Element): boolean {
