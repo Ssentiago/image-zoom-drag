@@ -108,4 +108,20 @@ export class UnitActions {
             );
         }
     }
+
+    async toggleFullscreen(): Promise<void> {
+        const container = this.unit.context.container;
+
+        if (!document.fullscreenElement) {
+            container.addClass('is-fullscreen');
+            await container.requestFullscreen({ navigationUI: 'auto' });
+        } else {
+            container.removeClass('is-fullscreen');
+            await document.exitFullscreen();
+        }
+
+        requestAnimationFrame(() => {
+            this.resetZoomAndMove();
+        });
+    }
 }
