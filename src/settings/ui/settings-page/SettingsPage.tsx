@@ -10,12 +10,12 @@ import RoutesContent from './routes-content/RoutesContent';
 const SettingsPage: FC = () => {
     const { reloadCount, currentPath } = useSettingsContext();
 
-    const { hook } = memoryLocation({ path: currentPath });
+    const { hook: memoryHook } = memoryLocation({ path: currentPath });
 
     return (
         <Router
-            hook={hook}
             key={reloadCount}
+            hook={memoryHook}
         >
             <RoutesContent />
         </Router>
