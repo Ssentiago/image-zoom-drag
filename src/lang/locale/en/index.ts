@@ -60,7 +60,7 @@ const Locale: LocaleSchema  = {
                 },
                 hide: {
                     hidden: "Show panels",
-                    name: "PanelSwitcher",
+                    name: "Panel Visibility",
                     shown: "Hide panels"
                 },
                 name: "Service",
@@ -146,7 +146,7 @@ const Locale: LocaleSchema  = {
                         "Warning: This may impact performance temporarily.",
                         "2. Reproduce the issue with logging enabled.",
                         "3. Export logs using the button below.",
-                        "4. Click \"Report an issue\" and fill out the form.",
+                        "4. Click `Report an issue` and fill out the form.",
                         "5. Attach the exported log file.\n6. Submit the issue."
                     ],
                     linkButtonTooltip: "Report an issue",
@@ -171,12 +171,12 @@ const Locale: LocaleSchema  = {
                             newConfigAdded: "New image config was added"
                         },
                         placeholders: {
-                            name: "Example Unit",
-                            selector: ".example-unit"
+                            name: "Example config name",
+                            selector: ".example-config-selector"
                         },
                         tooltips: {
-                            infoButton: "Click for more information on how the plugin works and how you can find image unit selectors",
-                            saveButton: "Add this unit"
+                            infoButton: "Click for more information on how the plugin works",
+                            saveButton: "Add this config"
                         },
                         undoStack: {
                             addAction: "Add image config\nName: {{name}}\nSelector: {{selector}}"
@@ -258,7 +258,7 @@ const Locale: LocaleSchema  = {
                         },
                         pagination: {
                             buttons: {
-                                editingBlocked: "Can't change page while editing",
+                                editingBlocked: "Can`t change page while editing",
                                 next: {
                                     disabled: "No next page",
                                     enabled: "Go to next page"
@@ -291,13 +291,13 @@ const Locale: LocaleSchema  = {
                         }
                     },
                     unitsValidation: {
-                        bothInvalid: "Unit name and selector are both invalid",
-                        fillOutField: "Fill out unit {field} field!",
+                        bothInvalid: "Config name and selector are both invalid",
+                        fillOutField: "Fill out config {field} field!",
                         invalidSelectorPrefix: "Invalid CSS selector: {{err}}",
-                        nameAlreadyExists: "Unit with that name already exists",
+                        nameAlreadyExists: "Config with that name already exists",
                         nothingToSave: "Nothing to save",
-                        oneInvalid: "Unit {field} is invalid",
-                        selectorAlreadyExists: "Unit with that selector already exists"
+                        oneInvalid: "Config {field} is invalid",
+                        selectorAlreadyExists: "Config with that selector already exists"
                     }
                 },
                 miniNavbar: {
