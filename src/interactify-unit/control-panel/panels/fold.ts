@@ -1,6 +1,5 @@
 import { t } from '@/lang';
 
-import { updateUnitSize } from '../../helpers';
 import { TriggerType } from '../../types/constants';
 import { updateButton } from '../helpers/helpers';
 import { IControlPanel } from '../types/interfaces';
@@ -44,19 +43,23 @@ export class FoldPanel extends BasePanel<FoldButtons> {
             {
                 icon: isFolded ? 'unfold-vertical' : 'fold-vertical',
                 action: (): void => {
-                    const isFolded =
+                    const wasFolded =
                         this.controlPanel.unit.context.container.dataset
                             .folded === 'true';
 
-                    isFolded ? this.unfold() : this.fold();
+                    wasFolded ? this.unfold() : this.fold();
+
+                    const isFolded =
+                        this.controlPanel.unit.context.container.dataset
+                            .folded === 'true';
 
                     const button = this.buttons.get(FoldButtons.Fold);
 
                     if (button) {
                         updateButton(
                             button.element,
-                            isFolded ? 'fold-vertical' : 'unfold-vertical',
-                            titleGetter(isFolded ? 'folded' : 'expanded')
+                            isFolded ? 'unfold-vertical' : 'fold-vertical',
+                            titleGetter(wasFolded ? 'expanded' : 'folded')
                         );
                     }
                 },
@@ -68,26 +71,14 @@ export class FoldPanel extends BasePanel<FoldButtons> {
 
     fold() {
         this.unit.context.container.setAttribute('data-folded', 'true');
-
-        updateUnitSize(
-            this.unit.context,
-            this.unit.context.size,
-            this.unit.plugin.settings.data.units.size,
-            this.unit.plugin.context.inLivePreviewMode
-        );
+        this.unit.applyRealSize();
 
         this.controlPanel.hide(TriggerType.FOLD);
     }
 
     unfold() {
         this.unit.context.container.setAttribute('data-folded', 'false');
-
-        updateUnitSize(
-            this.unit.context,
-            this.unit.context.size,
-            this.unit.plugin.settings.data.units.size,
-            this.unit.plugin.context.inLivePreviewMode
-        );
+        this.unit.applyRealSize();
 
         this.controlPanel.show(TriggerType.FOLD);
     }
