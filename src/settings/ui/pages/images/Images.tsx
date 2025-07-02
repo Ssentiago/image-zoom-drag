@@ -1,6 +1,6 @@
 import { t } from '@/lang';
 
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ButtonComponent } from 'obsidian';
@@ -14,7 +14,8 @@ import Settings from './settings/Settings';
 const Images: FC = () => {
     const [location, setLocation] = useLocation();
     const navigate = (path: string) => setLocation(path);
-    console.log(location);
+
+    useEffect(() => {}, [location]);
 
     return (
         <UnitsManagerProvider>
@@ -28,12 +29,9 @@ const Images: FC = () => {
                                     .settingsButtonTooltip
                             );
                             button.onClick(async () => {
-                                navigate('/images/settings');
+                                navigate('/settings');
                             });
-                            if (
-                                location === '/' ||
-                                location === '/images/settings'
-                            ) {
+                            if (location === '/' || location === '/settings') {
                                 button.setClass('button-active');
                             }
                             return button;
@@ -45,9 +43,9 @@ const Images: FC = () => {
                                     .managementButtonTooltip
                             );
                             button.onClick(async () => {
-                                navigate('/images/management');
+                                navigate('/management');
                             });
-                            if (location === '/images/management') {
+                            if (location === '/management') {
                                 button.setClass('button-active');
                             }
                             return button;
@@ -56,10 +54,10 @@ const Images: FC = () => {
                 />
             </MiniNavbar>
             <Switch location={location}>
-                <Route path=''>{() => <Settings />}</Route>
-                <Route path='/settings'>{() => <Settings />}</Route>
                 <Route path='/management'>{() => <Management />}</Route>
-            </Switch>{' '}
+                <Route path='/settings'>{() => <Settings />}</Route>
+                <Route path=''>{() => <Settings />}</Route>{' '}
+            </Switch>
         </UnitsManagerProvider>
     );
 };
