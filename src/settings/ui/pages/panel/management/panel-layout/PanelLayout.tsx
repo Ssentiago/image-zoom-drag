@@ -19,7 +19,16 @@ const PanelLayout: FC = () => {
     const [panels, setPanels] = useState(
         plugin.settings.data.panels.local.panels
     );
-    const tL = useMemo(() => t.image.controlPanel, []);
+
+    const panelNames = useMemo(
+        () => ({
+            zoom: t.image.controlPanel.zoom.name,
+            move: t.image.controlPanel.move.name,
+            service: t.image.controlPanel.service.name,
+            fold: t.image.controlPanel.fold.name,
+        }),
+        []
+    );
 
     const [, setUpdateTrigger] = useState(false);
     const unitPreviewRef = React.useRef<HTMLDivElement>(null);
@@ -72,11 +81,11 @@ const PanelLayout: FC = () => {
                                     ...config.position,
                                 }}
                             >
-                                {tL[name as keyof typeof tL].name}
+                                {panelNames[name as keyof typeof panelNames]}
                             </PanelPreview>
                         )
                 )}
-                <FoldPanel>{tL['fold' as keyof typeof tL].name}</FoldPanel>
+                <FoldPanel>{panelNames.fold}</FoldPanel>
             </UnitPreview>
             <PanelControl>
                 {Object.entries(panels).map(([name, config]) => (
@@ -88,7 +97,7 @@ const PanelLayout: FC = () => {
                                 togglePanelState(name as keyof PanelsConfig)
                             }
                         />
-                        {tL[name as keyof typeof tL].name}
+                        {panelNames[name as keyof typeof panelNames]}
                     </PanelToggle>
                 ))}
             </PanelControl>

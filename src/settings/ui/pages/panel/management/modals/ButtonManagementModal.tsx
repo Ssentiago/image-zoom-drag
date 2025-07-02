@@ -29,24 +29,22 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
         const { zoom, move, service } =
             plugin.settings.data.panels.local.panels;
 
-        const tL = t.image.controlPanel;
-
         return {
             zoom: [
                 {
-                    tooltip: tL.zoom.in,
+                    tooltip: t.image.controlPanel.zoom.in,
                     icon: 'zoom-in',
                     getValue: () => zoom.buttons.in,
                     setValue: (v: boolean) => (zoom.buttons.in = v),
                 },
                 {
-                    tooltip: tL.zoom.out,
+                    tooltip: t.image.controlPanel.zoom.out,
                     icon: 'zoom-out',
                     getValue: () => zoom.buttons.out,
                     setValue: (v: boolean) => (zoom.buttons.out = v),
                 },
                 {
-                    tooltip: tL.zoom.reset,
+                    tooltip: t.image.controlPanel.zoom.reset,
                     icon: 'refresh-cw',
                     getValue: () => zoom.buttons.reset,
                     setValue: (v: boolean) => (zoom.buttons.reset = v),
@@ -54,49 +52,49 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             ],
             move: [
                 {
-                    tooltip: tL.move.up,
+                    tooltip: t.image.controlPanel.move.up,
                     icon: 'arrow-up',
                     getValue: () => move.buttons.up,
                     setValue: (v: boolean) => (move.buttons.up = v),
                 },
                 {
-                    tooltip: tL.move.down,
+                    tooltip: t.image.controlPanel.move.down,
                     icon: 'arrow-down',
                     getValue: () => move.buttons.down,
                     setValue: (v: boolean) => (move.buttons.down = v),
                 },
                 {
-                    tooltip: tL.move.left,
+                    tooltip: t.image.controlPanel.move.left,
                     icon: 'arrow-left',
                     getValue: () => move.buttons.left,
                     setValue: (v: boolean) => (move.buttons.left = v),
                 },
                 {
-                    tooltip: tL.move.right,
+                    tooltip: t.image.controlPanel.move.right,
                     icon: 'arrow-right',
                     getValue: () => move.buttons.right,
                     setValue: (v: boolean) => (move.buttons.right = v),
                 },
                 {
-                    tooltip: tL.move.upRight,
+                    tooltip: t.image.controlPanel.move.upRight,
                     icon: 'arrow-up-right',
                     getValue: () => move.buttons.upRight,
                     setValue: (v: boolean) => (move.buttons.upRight = v),
                 },
                 {
-                    tooltip: tL.move.downRight,
+                    tooltip: t.image.controlPanel.move.downRight,
                     icon: 'arrow-down-right',
                     getValue: () => move.buttons.downRight,
                     setValue: (v: boolean) => (move.buttons.downRight = v),
                 },
                 {
-                    tooltip: tL.move.upLeft,
+                    tooltip: t.image.controlPanel.move.upLeft,
                     icon: 'arrow-up-left',
                     getValue: () => move.buttons.upLeft,
                     setValue: (v: boolean) => (move.buttons.upLeft = v),
                 },
                 {
-                    tooltip: tL.move.downLeft,
+                    tooltip: t.image.controlPanel.move.downLeft,
                     icon: 'arrow-down-left',
                     getValue: () => move.buttons.downLeft,
                     setValue: (v: boolean) => (move.buttons.downLeft = v),
@@ -104,13 +102,13 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             ],
             service: [
                 {
-                    tooltip: tL.service.hide.name,
+                    tooltip: t.image.controlPanel.service.hide.name,
                     icon: 'eye',
                     getValue: () => service.buttons.hide,
                     setValue: (v: boolean) => (service.buttons.hide = v),
                 },
                 {
-                    tooltip: tL.service.fullscreen.name,
+                    tooltip: t.image.controlPanel.service.fullscreen.name,
                     icon: 'fullscreen',
                     getValue: () => service.buttons.fullscreen,
                     setValue: (v: boolean) => (service.buttons.fullscreen = v),
@@ -118,6 +116,12 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             ],
         };
     }, [plugin]);
+
+    const panelNames = {
+        zoom: t.image.controlPanel.zoom.name,
+        move: t.image.controlPanel.move.name,
+        service: t.image.controlPanel.service.name,
+    };
 
     return (
         <ReactObsidianModal
@@ -127,11 +131,7 @@ const ButtonManagementModal: React.FC<ButtonManagementModalProps> = ({
             {Object.entries(buttonData).map(([panel, panelData]) => (
                 <React.Fragment key={panel}>
                     <ReactObsidianSetting
-                        name={
-                            t.image.controlPanel[
-                                panel as keyof typeof t.image.controlPanel
-                            ].name
-                        }
+                        name={panelNames[panel as keyof typeof panelNames]}
                         setHeading
                     />
                     {panelData.map(

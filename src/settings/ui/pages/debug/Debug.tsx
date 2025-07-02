@@ -1,4 +1,4 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
 import { FC, useCallback, useMemo, useState } from 'react';
 
@@ -30,12 +30,10 @@ const Debug: FC = () => {
         URL.revokeObjectURL(url);
     }, [plugin.logger]);
 
-    const storageMessage = t.settings.pages.debug.clearLogsStorage.desc.$format(
-        {
-            storage: plugin.logger.getStorageUsage(),
-            entries: plugin.logger.getAllLogs().length.toString(),
-        }
-    );
+    const storageMessage = tf(t.settings.pages.debug.clearLogsStorage.desc, {
+        storage: plugin.logger.getStorageUsage(),
+        entries: plugin.logger.getAllLogs().length.toString(),
+    });
 
     return (
         <>

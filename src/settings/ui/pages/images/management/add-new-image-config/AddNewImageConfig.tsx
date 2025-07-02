@@ -1,4 +1,4 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
 import { FC, useRef, useState } from 'react';
 
@@ -90,7 +90,9 @@ const AddNewImageConfig: FC = () => {
         await saveUnits(newUnits);
         updateUndoStack(
             oldUnits,
-            t.settings.pages.images.management.addNewImageConfig.undoStack.addAction.$format(
+            tf(
+                t.settings.pages.images.management.addNewImageConfig.undoStack
+                    .addAction,
                 {
                     name: newUnit.name,
                     selector: newUnit.selector,

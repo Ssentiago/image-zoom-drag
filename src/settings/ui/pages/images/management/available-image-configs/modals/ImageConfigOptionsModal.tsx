@@ -1,4 +1,4 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
 import { FC, useMemo } from 'react';
 
@@ -19,21 +19,28 @@ export const ImageConfigOptionsModal: FC<UnitOptionsProps> = ({
     const { plugin } = useSettingsContext();
     const { units } = useUnitsManagerContext();
     const unit = useMemo(() => units[unitIndex], [unitIndex]);
-    const opT = useMemo(
-        () =>
-            t.settings.pages.images.management.availableImageConfigs
-                .optionsModal,
-        [plugin]
-    );
+
     return (
         <ReactObsidianModal
             onClose={onClose}
-            title={opT.name.$format({ name: unit.name })}
+            title={tf(
+                t.settings.pages.images.management.availableImageConfigs
+                    .optionsModal.name,
+                { name: unit.name }
+            )}
         >
-            <ReactObsidianSetting desc={opT.desc} />
+            <ReactObsidianSetting
+                desc={
+                    t.settings.pages.images.management.availableImageConfigs
+                        .optionsModal.desc
+                }
+            />
 
             <ReactObsidianSetting
-                name={opT.panels.header}
+                name={
+                    t.settings.pages.images.management.availableImageConfigs
+                        .optionsModal.panels.header
+                }
                 setHeading={true}
             />
 
@@ -56,15 +63,24 @@ export const ImageConfigOptionsModal: FC<UnitOptionsProps> = ({
                                 ].panels[panel].on = value;
                                 await plugin.settings.saveSettings();
                                 const state = value
-                                    ? opT.panels.states.on
-                                    : opT.panels.states.off;
+                                    ? t.settings.pages.images.management
+                                          .availableImageConfigs.optionsModal
+                                          .panels.states.on
+                                    : t.settings.pages.images.management
+                                          .availableImageConfigs.optionsModal
+                                          .panels.states.off;
                                 onChanges(
                                     oldUnits,
-                                    opT.panels.action.$format({
-                                        state: state,
-                                        panel: panel,
-                                        name: unit.name,
-                                    })
+                                    tf(
+                                        t.settings.pages.images.management
+                                            .availableImageConfigs.optionsModal
+                                            .panels.action,
+                                        {
+                                            state: state,
+                                            panel: panel,
+                                            name: unit.name,
+                                        }
+                                    )
                                 );
                             });
 

@@ -1,13 +1,13 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
+import { ImageConfig } from '@/settings/types/interfaces';
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { ImageConfig } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';
 import {
-    UnitValidationResult,
     GlobalValidationResult,
+    UnitValidationResult,
 } from './typing/interfaces';
 
 // const unitRegexp = /^[\w-]+$/;
@@ -17,11 +17,6 @@ export const useUnitsValidation = () => {
     const { units } = useUnitsManagerContext();
     const [unitNamesIndex, setUnitNamesIndex] = useState(new Set());
     const [unitSelectorsIndex, setUnitSelectorsIndex] = useState(new Set());
-
-    const unitL = useMemo(
-        () => t.settings.pages.images.management.unitsValidation,
-        [plugin]
-    );
 
     const updateUnitNameAndSelectors = (units: ImageConfig[]) => {
         const unitIndexData = {
@@ -89,7 +84,9 @@ export const useUnitsValidation = () => {
         if (unitNamesIndex.has(name) && (!exclude || exclude.name !== name)) {
             return {
                 valid: false,
-                tooltip: unitL.nameAlreadyExists,
+                tooltip:
+                    t.settings.pages.images.management.unitsValidation
+                        .nameAlreadyExists,
                 empty: false,
             };
         }
@@ -113,9 +110,11 @@ export const useUnitsValidation = () => {
         if (!valid) {
             return {
                 valid: false,
-                tooltip: unitL.invalidSelectorPrefix.$format({
-                    err: err ?? '',
-                }),
+                tooltip: tf(
+                    t.settings.pages.images.management.unitsValidation
+                        .invalidSelectorPrefix,
+                    { err: err ?? '' }
+                ),
                 empty: false,
             };
         }
@@ -126,7 +125,9 @@ export const useUnitsValidation = () => {
         ) {
             return {
                 valid: false,
-                tooltip: unitL.selectorAlreadyExists,
+                tooltip:
+                    t.settings.pages.images.management.unitsValidation
+                        .selectorAlreadyExists,
                 empty: false,
             };
         }
@@ -165,13 +166,21 @@ export const useUnitsValidation = () => {
         applyValidationToElement(selectorInput, result.selectorResult);
 
         if (result.bothEmpty) {
-            plugin.showNotice(unitL.nothingToSave);
+            plugin.showNotice(
+                t.settings.pages.images.management.unitsValidation.nothingToSave
+            );
             return false;
         }
 
         if (result.oneEmpty) {
             const field = result.nameResult.empty ? 'name' : 'selector';
-            plugin.showNotice(unitL.fillOutField.$format({ field }));
+            plugin.showNotice(
+                tf(
+                    t.settings.pages.images.management.unitsValidation
+                        .fillOutField,
+                    { field }
+                )
+            );
             return false;
         }
 
@@ -181,13 +190,21 @@ export const useUnitsValidation = () => {
             !result.nameResult.valid || !result.selectorResult.valid;
 
         if (bothInvalid) {
-            plugin.showNotice(unitL.bothInvalid);
+            plugin.showNotice(
+                t.settings.pages.images.management.unitsValidation.bothInvalid
+            );
             return false;
         }
 
         if (oneInvalid) {
             const field = !result.nameResult.valid ? 'name' : 'selector';
-            plugin.showNotice(unitL.oneInvalid.$format({ field }));
+            plugin.showNotice(
+                tf(
+                    t.settings.pages.images.management.unitsValidation
+                        .oneInvalid,
+                    { field }
+                )
+            );
             return false;
         }
 

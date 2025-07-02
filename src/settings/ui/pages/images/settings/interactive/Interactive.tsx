@@ -61,17 +61,17 @@ const Interactive: FC = () => {
                     return m;
                 }}
                 toggles={[
-                    (t) => {
-                        t.setValue(
+                    (toggle) => {
+                        toggle.setValue(
                             plugin.settings.data.units.interactivity.picker
                                 .enabled
                         );
-                        t.onChange(async (value) => {
+                        toggle.onChange(async (value) => {
                             plugin.settings.data.units.interactivity.picker.enabled =
                                 value;
                             await plugin.settings.saveSettings();
                         });
-                        return t;
+                        return toggle;
                     },
                 ]}
             />

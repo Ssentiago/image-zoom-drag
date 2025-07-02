@@ -1,11 +1,10 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { ArrowLeft, ArrowRight, RotateCcw, RotateCw } from 'lucide-react';
 
-import { LocaleString } from '../../../../../../lang/proxy/types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../context/HistoryContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';
@@ -24,14 +23,12 @@ import { ModeState } from './types/interfaces';
 const AvailableImageConfigs: FC = () => {
     const { plugin } = useSettingsContext();
 
-    const paginationTitle: LocaleString = useMemo(
+    const paginationTitle: string = useMemo(
         () =>
             t.settings.pages.images.management.availableImageConfigs.pagination
                 .page,
         [plugin]
     );
-
-    debugger;
 
     const [unitsPerPage, setUnitsPerPage] = useState(
         plugin.settings.data.units.settingsPagination.perPage
@@ -83,17 +80,26 @@ const AvailableImageConfigs: FC = () => {
 
     const getPageChangeButtonLabel = (type: 'previous' | 'next') => {
         const canChange = type === 'next' ? page < totalPages : page > 1;
-        const buttons =
-            t.settings.pages.images.management.availableImageConfigs.pagination
-                .buttons;
 
         if (modeState.mode === 'edit' && canChange) {
-            return buttons.editingBlocked;
+            return t.settings.pages.images.management.availableImageConfigs
+                .pagination.buttons.editingBlocked;
         }
 
-        const buttonConfig =
-            type === 'previous' ? buttons.previous : buttons.next;
-        return canChange ? buttonConfig.enabled : buttonConfig.disabled;
+        switch (type) {
+            case 'previous':
+                return canChange
+                    ? t.settings.pages.images.management.availableImageConfigs
+                          .pagination.buttons.previous.enabled
+                    : t.settings.pages.images.management.availableImageConfigs
+                          .pagination.buttons.previous.disabled;
+            case 'next':
+                return canChange
+                    ? t.settings.pages.images.management.availableImageConfigs
+                          .pagination.buttons.next.enabled
+                    : t.settings.pages.images.management.availableImageConfigs
+                          .pagination.buttons.next.disabled;
+        }
     };
 
     return (
@@ -145,7 +151,7 @@ const AvailableImageConfigs: FC = () => {
                     >
                         <ArrowLeft size={'20px'} />
                     </PaginationButton>
-                    {paginationTitle.$format({
+                    {tf(paginationTitle, {
                         current: page.toString(),
                         total: totalPages.toString(),
                         count: units.length.toString(),

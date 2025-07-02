@@ -1,13 +1,6 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
-import React, {
-    FC,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import { setTooltip, TextComponent } from 'obsidian';
@@ -48,13 +41,15 @@ const getErrorMessage = (field: 'width' | 'height', unit: DimensionType) => {
             : dimensionSpec['%'].rangeMessage;
     switch (field) {
         case 'width':
-            return t.settings.pages.images.settings.size.validation.invalidWidth.$format(
+            return tf(
+                t.settings.pages.images.settings.size.validation.invalidWidth,
                 {
                     range: range,
                 }
             );
         case 'height':
-            return t.settings.pages.images.settings.size.validation.invalidHeight.$format(
+            return tf(
+                t.settings.pages.images.settings.size.validation.invalidHeight,
                 {
                     range: range,
                 }
@@ -78,19 +73,23 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
 
     const inputsRef = useRef<HTMLDivElement>(null);
 
-    const nameAndDesc = useMemo(
-        () =>
-            type === ComponentType.Folded
-                ? {
-                      desc: t.settings.pages.images.settings.size.folded.desc,
-                      name: t.settings.pages.images.settings.size.folded.name,
-                  }
-                : {
-                      desc: t.settings.pages.images.settings.size.expanded.desc,
-                      name: t.settings.pages.images.settings.size.expanded.name,
-                  },
-        [type]
-    );
+    const getName = useCallback(() => {
+        switch (type) {
+            case ComponentType.Expanded:
+                return t.settings.pages.images.settings.size.expanded.name;
+            case ComponentType.Folded:
+                return t.settings.pages.images.settings.size.folded.name;
+        }
+    }, [type]);
+
+    const getDesc = useCallback(() => {
+        switch (type) {
+            case ComponentType.Expanded:
+                return t.settings.pages.images.settings.size.expanded.desc;
+            case ComponentType.Folded:
+                return t.settings.pages.images.settings.size.folded.desc;
+        }
+    }, [type]);
 
     const validateDimensionInput = useCallback(
         (
@@ -214,11 +213,9 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
     return (
         <>
             <ReactObsidianSetting
-                name={nameAndDesc.name}
+                name={getName()}
                 multiDesc={(multiDesc) => {
-                    debugger;
-                    console.log(JSON.stringify(nameAndDesc.desc));
-                    multiDesc.addDescriptions(nameAndDesc.desc);
+                    multiDesc.addDescriptions(getDesc());
                     return multiDesc;
                 }}
                 noBorder={true}
@@ -270,7 +267,10 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                             inputWidth.setValue(
                                 widthValueRef.current.toString()
                             );
-                            inputWidth.setPlaceholder('width');
+                            inputWidth.setPlaceholder(
+                                t.settings.pages.images.settings.size
+                                    .placeholders.width
+                            );
                             inputWidth.onChange((value) => {
                                 const replaced = value.replace(/\D/, '');
                                 inputWidth.setValue(replaced);
