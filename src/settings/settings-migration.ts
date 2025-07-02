@@ -1,3 +1,5 @@
+import { defaultSettings } from '@/settings/default-settings';
+
 import { MigrateFrom_5_2_0_To_5_3_0 } from './migrations/5.2.0_5.3.0';
 import SettingsManager from './settings-manager';
 import { DefaultSettings, MigrationResult } from './types/interfaces';
@@ -29,7 +31,7 @@ export class SettingsMigration {
                 this.settingsManager.plugin.logger.warn(
                     `Unknown settings version: ${sourceVersion}, using defaults`
                 );
-                migrated = this.settingsManager.defaultSettings;
+                migrated = defaultSettings();
             }
 
             return {

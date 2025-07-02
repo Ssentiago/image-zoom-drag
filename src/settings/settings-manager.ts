@@ -1,18 +1,14 @@
+import { defaultSettings } from '@/settings/default-settings';
+
 import EventEmitter2 from 'eventemitter2';
 import { normalizePath } from 'obsidian';
 
 import InteractifyPlugin from '../core/interactify-plugin';
-import { ImageConfigs } from '../interactify-unit/types/constants';
 import { createEventsWrapper } from './proxy/events-wrapper';
 import { createSettingsProxy } from './proxy/settings-proxy';
 import { EventsWrapper } from './proxy/types/definitions';
 import { SettingsMigration } from './settings-migration';
-import {
-    ActivationMode,
-    DebugLevel,
-    DefaultSettings,
-    PanelsTriggering,
-} from './types/interfaces';
+import { DefaultSettings } from './types/interfaces';
 
 export default class SettingsManager {
     readonly eventBus: EventEmitter2;
@@ -29,128 +25,9 @@ export default class SettingsManager {
         this.migration = new SettingsMigration(this);
     }
 
-    get defaultSettings(): DefaultSettings {
-        return {
-            version: '5.3.0',
-            units: {
-                interactivity: {
-                    markdown: {
-                        autoDetect: true,
-                        activationMode: ActivationMode.Immediate,
-                    },
-                    picker: {
-                        enabled: false,
-                    },
-                },
-                folding: {
-                    foldByDefault: false,
-                    autoFoldOnFocusChange: false,
-                },
-                settingsPagination: {
-                    perPage: 5,
-                },
-                size: {
-                    expanded: {
-                        width: {
-                            value: 100,
-                            type: '%',
-                        },
-                        height: {
-                            value: 100,
-                            type: '%',
-                        },
-                    },
-                    folded: {
-                        width: {
-                            value: 50,
-                            type: '%',
-                        },
-                        height: {
-                            value: 50,
-                            type: '%',
-                        },
-                    },
-                },
-                configs: Object.entries(ImageConfigs).map(([key, value]) => ({
-                    name: key,
-                    selector: value,
-                    on: value !== ImageConfigs.IMG_SVG,
-                    panels: {
-                        move: {
-                            on: true,
-                        },
-                        zoom: {
-                            on: true,
-                        },
-                        service: {
-                            on: true,
-                        },
-                    },
-                })),
-            },
-            panels: {
-                global: {
-                    triggering: {
-                        mode: PanelsTriggering.ALWAYS,
-                        ignoreService: true,
-                    },
-                },
-                local: {
-                    preset: 'none',
-                    panels: {
-                        service: {
-                            on: true,
-                            buttons: {
-                                hide: true,
-                                fullscreen: true,
-                            },
-                            position: {
-                                top: '0px',
-                                right: '0px',
-                            },
-                        },
-                        move: {
-                            on: true,
-                            buttons: {
-                                up: true,
-                                down: true,
-                                left: true,
-                                right: true,
-                                upLeft: true,
-                                upRight: true,
-                                downLeft: true,
-                                downRight: true,
-                            },
-                            position: {
-                                bottom: '0px',
-                                right: '0px',
-                            },
-                        },
-                        zoom: {
-                            on: true,
-                            buttons: {
-                                in: true,
-                                out: true,
-                                reset: true,
-                            },
-                            position: {
-                                top: '50%',
-                                right: '0px',
-                            },
-                        },
-                    },
-                },
-            },
-            debug: {
-                enabled: false,
-                level: DebugLevel.None,
-            },
-        } as DefaultSettings;
-    }
-
     async loadSettings(): Promise<void> {
         const userSettings =
-            (await this.plugin.loadData()) ?? this.defaultSettings;
+            (await this.plugin.loadData()) ?? defaultSettings();
 
         const migrationResult = this.migration.migrate(userSettings);
 
@@ -161,13 +38,13 @@ export default class SettingsManager {
             console.error(
                 `Interactify: Error loading settings: ${JSON.stringify(migrationResult.errors)}. Resetting to defaults...`
             );
-            settings = this.defaultSettings;
+            settings = defaultSettings();
             needsSave = true;
         } else if (!migrationResult.data) {
             console.error(
                 'Migration succeeded but data is empty. Using defaults...'
             );
-            settings = this.defaultSettings;
+            settings = defaultSettings();
             needsSave = true;
         } else {
             settings = migrationResult.data;
