@@ -4,9 +4,8 @@ import InteractifyPlugin from '../core/interactify-plugin';
 import { UnitActions } from './actions/unit-actions';
 import { ControlPanel } from './control-panel/control-panel';
 import Events from './events/events';
-import { updateUnitSize } from './helpers';
 import InteractifyUnitStateManager from './interactify-unit-state-manager';
-import { UnitContext, FileStats } from './types/interfaces';
+import { FileStats, UnitContext } from './types/interfaces';
 
 export default class InteractifyUnit extends Component {
     id!: string;
@@ -30,7 +29,6 @@ export default class InteractifyUnit extends Component {
         fileStats: FileStats
     ) {
         super();
-
         this.id = crypto.randomUUID();
 
         this.plugin = plugin;
@@ -63,15 +61,53 @@ export default class InteractifyUnit extends Component {
         });
     }
 
-    applyLayout() {
-        updateUnitSize(
-            this.context,
-            this.context.size,
-            this.plugin.settings.data.units.size,
-            this.plugin.context.inLivePreviewMode
-        );
+    realSize() {
+        const settingsSizeData = this.plugin.settings.data.units.size;
+        const isFolded = this.context.container.dataset.folded === 'true';
+        const setting = isFolded
+            ? settingsSizeData.folded
+            : settingsSizeData.expanded;
+        const heightValue = setting.height.value;
+        const widthValue = setting.width.value;
+        const heightInPx =
+            setting.height.type === '%'
+                ? (heightValue / 100) * this.context.size.height
+                : heightValue;
+        const widthInPx =
+            setting.width.type === '%'
+                ? (widthValue / 100) * this.context.size.width
+                : widthValue;
 
-        this.actions.fitToContainer({ animated: true });
+        return {
+            width: widthInPx,
+            height: heightInPx,
+        };
+    }
+
+    applyLayout() {
+        this.applyRealSize();
+        this.actions.fitToContainer({ animated: false });
+    }
+
+    applyRealSize() {
+        const realSize = this.realSize();
+
+        this.context.container.style.height = `${realSize.height}px`;
+        this.context.container.style.width = `${realSize.width}px`;
+
+        if (this.plugin.context.inLivePreviewMode) {
+            const parent = this.context.livePreviewWidget!;
+            parent.style.setProperty(
+                'height',
+                `${realSize.height}px`,
+                'important'
+            );
+            parent.style.setProperty(
+                'width',
+                `${realSize.width}px`,
+                'important'
+            );
+        }
     }
 
     async onDelete() {

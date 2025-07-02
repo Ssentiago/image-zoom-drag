@@ -1,6 +1,6 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useRef } from 'react';
 
 import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
 import {
@@ -27,11 +27,6 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
         processNameValidation,
         processSelectorValidation,
     } = useUnitsValidation();
-
-    const itemL = useMemo(
-        () => t.settings.pages.images.management.availableImageConfigs.item,
-        [unit]
-    );
 
     const { handleSaveEditing, handleDelete, handleToggle } =
         useImageConfigOperations();
@@ -89,7 +84,10 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
                 buttons={[
                     (button): ButtonComponent => {
                         button.setIcon('circle-x');
-                        button.setTooltip(itemL.buttons.cancel);
+                        button.setTooltip(
+                            t.settings.pages.images.management
+                                .availableImageConfigs.item.buttons.cancel
+                        );
                         button.onClick(() => {
                             setModeState({
                                 index: -1,
@@ -101,7 +99,11 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
                     (button): ButtonComponent => {
                         button.setIcon('save');
                         button.setTooltip(
-                            itemL.buttons.save.$format({ name: unit.name })
+                            tf(
+                                t.settings.pages.images.management
+                                    .availableImageConfigs.item.buttons.save,
+                                { name: unit.name }
+                            )
                         );
                         button.onClick(async (cb) => {
                             await handleSaveEditing(index);
@@ -124,12 +126,21 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
                     toggle.setValue(unit.on);
                     toggle.setTooltip(
                         unit.on
-                            ? itemL.toggle.disable.$format({
-                                  name: unit.name,
-                              })
-                            : itemL.toggle.enable.$format({
-                                  name: unit.name,
-                              })
+                            ? tf(
+                                  t.settings.pages.images.management
+                                      .availableImageConfigs.item.toggle
+                                      .disable,
+                                  {
+                                      name: unit.name,
+                                  }
+                              )
+                            : tf(
+                                  t.settings.pages.images.management
+                                      .availableImageConfigs.item.toggle.enable,
+                                  {
+                                      name: unit.name,
+                                  }
+                              )
                     );
                     toggle.onChange(async (value) => {
                         await handleToggle(index, value);
@@ -144,9 +155,13 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
                     ((button: ButtonComponent): ButtonComponent => {
                         button.setIcon('edit');
                         button.setTooltip(
-                            itemL.buttons.edit.$format({
-                                name: unit.name,
-                            })
+                            tf(
+                                t.settings.pages.images.management
+                                    .availableImageConfigs.item.buttons.edit,
+                                {
+                                    name: unit.name,
+                                }
+                            )
                         );
                         button.onClick(async () => {
                             setModeState({
@@ -162,9 +177,13 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
                     ((button: ButtonComponent): ButtonComponent => {
                         button.setIcon('trash');
                         button.setTooltip(
-                            itemL.buttons.delete.$format({
-                                name: unit.name,
-                            })
+                            tf(
+                                t.settings.pages.images.management
+                                    .availableImageConfigs.item.buttons.delete,
+                                {
+                                    name: unit.name,
+                                }
+                            )
                         );
                         button.onClick(async () => {
                             await handleDelete(index);
@@ -175,7 +194,11 @@ export const ImageConfigItem: FC<UnitItemProps> = ({
             extraButtons={[
                 (button: ExtraButtonComponent): ExtraButtonComponent => {
                     button.setTooltip(
-                        itemL.buttons.options.$format({ name: unit.name })
+                        tf(
+                            t.settings.pages.images.management
+                                .availableImageConfigs.item.buttons.options,
+                            { name: unit.name }
+                        )
                     );
                     button.onClick(() => {
                         setModeState({

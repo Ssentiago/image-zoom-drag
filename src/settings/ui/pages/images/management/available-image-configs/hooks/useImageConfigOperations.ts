@@ -1,4 +1,4 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
 import { useMemo } from 'react';
 
@@ -12,12 +12,6 @@ export const useImageConfigOperations = () => {
     const { validateBoth, processBothValidation } = useUnitsValidation();
     const { units, saveUnits } = useUnitsManagerContext();
     const { updateUndoStack } = useUnitsHistoryContext();
-    const actionL = useMemo(
-        () =>
-            t.settings.pages.images.management.availableImageConfigs.item
-                .actions,
-        [plugin]
-    );
 
     const handleDelete = async (index: number) => {
         const oldUnits = [...units];
@@ -28,10 +22,14 @@ export const useImageConfigOperations = () => {
         await saveUnits(newUnits);
         updateUndoStack(
             oldUnits,
-            actionL.delete.$format({
-                name: deleted.name,
-                selector: deleted.selector,
-            })
+            tf(
+                t.settings.pages.images.management.availableImageConfigs.item
+                    .actions.delete,
+                {
+                    name: deleted.name,
+                    selector: deleted.selector,
+                }
+            )
         );
     };
 
@@ -39,8 +37,12 @@ export const useImageConfigOperations = () => {
         const oldUnits = JSON.parse(JSON.stringify(units));
         units[index].on = value;
         await saveUnits([...units]);
-        const action = value ? actionL.enable : actionL.disable;
-        const undoDesc = action.$format({
+        const action = value
+            ? t.settings.pages.images.management.availableImageConfigs.item
+                  .actions.enable
+            : t.settings.pages.images.management.availableImageConfigs.item
+                  .actions.disable;
+        const undoDesc = tf(action, {
             name: units[index].name,
         });
         updateUndoStack(oldUnits, undoDesc);
@@ -82,27 +84,39 @@ export const useImageConfigOperations = () => {
             const changes = [];
             if (nameChanged) {
                 changes.push(
-                    actionL.changes.name.$format({
-                        old: oldName,
-                        new: units[index].name,
-                    })
+                    tf(
+                        t.settings.pages.images.management.availableImageConfigs
+                            .item.actions.changes.name,
+                        {
+                            old: oldName,
+                            new: units[index].name,
+                        }
+                    )
                 );
             }
             if (selectorChanged) {
                 changes.push(
-                    actionL.changes.selector.$format({
-                        old: oldSelector,
-                        new: units[index].selector,
-                    })
+                    tf(
+                        t.settings.pages.images.management.availableImageConfigs
+                            .item.actions.changes.selector,
+                        {
+                            old: oldSelector,
+                            new: units[index].selector,
+                        }
+                    )
                 );
             }
 
             updateUndoStack(
                 units,
-                actionL.edit.$format({
-                    name: units[index].name,
-                    changes: changes.join('\n'),
-                })
+                tf(
+                    t.settings.pages.images.management.availableImageConfigs
+                        .item.actions.edit,
+                    {
+                        name: units[index].name,
+                        changes: changes.join('\n'),
+                    }
+                )
             );
         }
         return validated;

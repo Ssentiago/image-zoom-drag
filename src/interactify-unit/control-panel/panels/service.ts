@@ -50,11 +50,6 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
         const serviceButtons =
             this.unit.plugin.settings.data.panels.local.panels.service.buttons;
 
-        const getHideTitle = (state: 'hidden' | 'shown') =>
-            state === 'hidden'
-                ? t.image.controlPanel.service.hide.hidden
-                : t.image.controlPanel.service.hide.shown;
-
         if (serviceButtons.hide) {
             buttons.push({
                 id: ServiceButtons.Hide,
@@ -80,20 +75,17 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
                     updateButton(
                         button,
                         isCurrentlyHiding ? 'eye' : 'eye-off',
-                        getHideTitle(willBeHiding ? 'hidden' : 'shown')
+                        willBeHiding
+                            ? t.image.controlPanel.service.hide.hidden
+                            : t.image.controlPanel.service.hide.shown
                     );
                 },
-                title: getHideTitle('shown'),
+                title: t.image.controlPanel.service.hide.shown,
                 dataAttributes: {
                     hiding: 'false',
                 },
             });
         }
-
-        const getFullscreenTitle = (state: 'on' | 'off') =>
-            state === 'on'
-                ? t.image.controlPanel.service.fullscreen.on
-                : t.image.controlPanel.service.fullscreen.off;
 
         if (serviceButtons.fullscreen) {
             buttons.push({
@@ -108,34 +100,28 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
                         return;
                     }
 
-                    if (!document.fullscreenElement) {
-                        container.addClass('is-fullscreen');
-                        await container.requestFullscreen({
-                            navigationUI: 'auto',
-                        });
-                        updateButton(
-                            button,
-                            'minimize',
-                            getFullscreenTitle('off')
-                        );
-                    } else {
-                        container.removeClass('is-fullscreen');
-                        await document.exitFullscreen();
+                    await this.unit.actions.toggleFullscreen();
+
+                    if (
+                        document.fullscreenElement ===
+                        this.unit.context.container
+                    ) {
                         updateButton(
                             button,
                             'maximize',
-                            getFullscreenTitle('on')
+                            t.image.controlPanel.service.fullscreen.on
+                        );
+                    } else {
+                        updateButton(
+                            button,
+                            'minimize',
+                            t.image.controlPanel.service.fullscreen.off
                         );
                     }
                 },
-                title: getFullscreenTitle('off'),
+                title: t.image.controlPanel.service.fullscreen.on,
             });
         }
-
-        const getTouchTitle = (enabled: boolean) =>
-            enabled
-                ? t.image.controlPanel.service.touch.on
-                : t.image.controlPanel.service.touch.off;
 
         if (Platform.isMobileApp) {
             buttons.push({
@@ -161,7 +147,9 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
                         this.unit.nativeTouchEventsEnabled
                             ? 'circle-slash-2'
                             : 'hand',
-                        getTouchTitle(actualNativeTouchEventsEnabled)
+                        actualNativeTouchEventsEnabled
+                            ? t.image.controlPanel.service.touch.on
+                            : t.image.controlPanel.service.touch.off
                     );
 
                     this.unit.plugin.showNotice(
@@ -169,7 +157,9 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
             You ${actualNativeTouchEventsEnabled ? 'cannot' : 'can'} move and pinch zoom image.`
                     );
                 },
-                title: getTouchTitle(this.unit.nativeTouchEventsEnabled),
+                title: this.unit.nativeTouchEventsEnabled
+                    ? t.image.controlPanel.service.touch.on
+                    : t.image.controlPanel.service.touch.off,
             });
         }
 

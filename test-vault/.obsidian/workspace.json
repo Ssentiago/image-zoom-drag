@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "0bc43364ab579108",
+        "id": "8a4032fdda9c1488",
         "type": "tabs",
         "children": [
           {
-            "id": "2904fd391665fbc5",
+            "id": "7fc1d3eede02d035",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "one mermaid.md",
+                "mode": "preview",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "one mermaid"
             }
           }
         ]
@@ -164,20 +168,23 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "2904fd391665fbc5",
+  "active": "7fc1d3eede02d035",
   "lastOpenFiles": [
-    "two embed local images.md",
-    "some mermaids.md",
-    "one mermaid.md",
-    "mehrmaid.md",
-    "huge plantuml.md",
-    "very huge mermaid.md",
-    "two simple mermaid and one huge.md",
-    "three simple mermaids.md",
-    "one huge mermaid and two mehrmaids.md",
     "one embed internal image.md",
-    "graphviz.md",
+    "one mermaid.md",
+    "some mermaids.md",
+    "three simple mermaids.md",
+    "screenshot test.md",
+    "one huge mermaid and two mehrmaids.md",
+    "Untitled.canvas",
+    "mehrmaid.md",
+    "two embed local images.md",
+    "two simple mermaid and one huge.md",
     "Pasted image 20250616233435.png",
+    "Pasted image 20250630225538.png",
+    "very huge mermaid.md",
+    "huge plantuml.md",
+    "graphviz.md",
     "simple mermaid.md"
   ]
 }

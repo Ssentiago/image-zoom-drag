@@ -67,6 +67,13 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
             return;
         }
 
+        if (
+            !this.controlPanel.canRender &&
+            !('fold' in this && 'unfold' in this)
+        ) {
+            return;
+        }
+
         this.panel = this.createPanelElement();
         this.setupPanelContents();
 

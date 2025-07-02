@@ -1,4 +1,4 @@
-import { t } from '@/lang';
+import { t, tf } from '@/lang';
 
 import { useEffect, useMemo, useState } from 'react';
 
@@ -16,11 +16,6 @@ export const useHistory = <T extends readonly unknown[]>(
     const [redoStack, setRedoStack] = useState<HistoryAction<T>[]>([]);
     const [undoDescription, setUndoDescription] = useState('');
     const [redoDescription, setRedoDescription] = useState('');
-
-    const historyL = useMemo(
-        () => t.settings.pages.images.management.history,
-        [plugin]
-    );
 
     if (process.env.NODE_ENV === 'development') {
         useEffect(() => {
@@ -53,27 +48,35 @@ export const useHistory = <T extends readonly unknown[]>(
 
     const getUndoLabel = () => {
         if (!undoDescription) {
-            return historyL.tooltips.undo.nothing;
+            return t.settings.pages.images.management.history.tooltips.undo
+                .nothing;
         }
         const count =
             undoStack.length > 1 ? ` (${undoStack.length - 1} more)` : '';
 
-        return historyL.tooltips.undo.available.$format({
-            description: undoDescription,
-            count,
-        });
+        return tf(
+            t.settings.pages.images.management.history.tooltips.undo.available,
+            {
+                description: undoDescription,
+                count,
+            }
+        );
     };
 
     const getRedoLabel = () => {
         if (!redoDescription) {
-            return historyL.tooltips.redo.nothing;
+            return t.settings.pages.images.management.history.tooltips.redo
+                .nothing;
         }
         const count =
             redoStack.length > 1 ? ` (${redoStack.length - 1} more)` : '';
-        return historyL.tooltips.redo.available.$format({
-            description: redoDescription,
-            count,
-        });
+        return tf(
+            t.settings.pages.images.management.history.tooltips.redo.available,
+            {
+                description: redoDescription,
+                count,
+            }
+        );
     };
 
     useEffect(() => {
@@ -168,14 +171,20 @@ export const useHistory = <T extends readonly unknown[]>(
                 if (canRedo) {
                     await redo();
                 } else {
-                    plugin.showNotice(historyL.notices.nothingToRedo);
+                    plugin.showNotice(
+                        t.settings.pages.images.management.history.notices
+                            .nothingToRedo
+                    );
                 }
             } else if (e.ctrlKey || e.metaKey) {
                 e.preventDefault();
                 if (canUndo) {
                     await undo();
                 } else {
-                    plugin.showNotice(historyL.notices.nothingToUndo);
+                    plugin.showNotice(
+                        t.settings.pages.images.management.history.notices
+                            .nothingToUndo
+                    );
                 }
             }
 

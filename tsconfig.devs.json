@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "outDir": "test-vault/.obsidian/plugins/Mermaid Zoom Drag/",
+        "outDir": "test-vault/.obsidian/plugins/Interactify/",
         "esModuleInterop": true,
         "removeComments": false,
         "incremental": true,
