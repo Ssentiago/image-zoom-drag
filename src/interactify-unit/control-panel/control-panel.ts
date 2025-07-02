@@ -9,6 +9,10 @@ import { ZoomPanel } from './panels/zoom';
 import { IControlPanel } from './types/interfaces';
 
 export class ControlPanel extends Component implements IControlPanel {
+    private static readonly BUTTON_SIZE = 34; // size 30 px plus padding 4 px
+    private static readonly MIN_BUTTONS_HEIGHT = 7; // move(3) + zoom(3) + service(1)
+    private static readonly MIN_BUTTONS_WIDTH = 4; // move+service(3) + fold(1)
+
     fold!: FoldPanel;
     move!: MovePanel;
     zoom!: ZoomPanel;
@@ -21,6 +25,7 @@ export class ControlPanel extends Component implements IControlPanel {
 
     initialize(): void {
         this.load();
+
         this.controlPanel = this.unit.context.container.createDiv();
         this.controlPanel.addClass('interactify-control-panel');
 
@@ -37,15 +42,31 @@ export class ControlPanel extends Component implements IControlPanel {
         this.unit.context.container.appendChild(this.controlPanel);
     }
 
+    get canRender(): boolean {
+        const { width, height } = this.unit.realSize();
+
+        return (
+            height >=
+                ControlPanel.BUTTON_SIZE * ControlPanel.MIN_BUTTONS_HEIGHT &&
+            width >= ControlPanel.BUTTON_SIZE * ControlPanel.MIN_BUTTONS_WIDTH
+        );
+    }
+
     private get panels() {
         return [this.move, this.zoom, this.fold, this.service];
     }
 
     show(triggerType: TriggerType = TriggerType.FORCE): void {
+        if (!this.canRender) {
+            return;
+        }
         this.panels.forEach((panel) => panel.show(triggerType));
     }
 
     hide(triggerType: TriggerType = TriggerType.FORCE) {
+        if (!this.canRender) {
+            return;
+        }
         this.panels.forEach((panel) => panel.hide(triggerType));
     }
 
