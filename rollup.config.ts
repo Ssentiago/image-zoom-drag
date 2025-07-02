@@ -3,53 +3,28 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import fs from 'fs';
 import path from 'node:path';
 import analyze from 'rollup-plugin-analyzer';
 import copy from 'rollup-plugin-copy';
 import del from 'rollup-plugin-delete';
 import esbuild from 'rollup-plugin-esbuild';
-import visualizer from 'rollup-plugin-visualizer';
 import watch from 'rollup-plugin-watch';
-import * as sass from 'sass';
 
-function buildSass() {
-    return {
-        name: 'build-sass',
-        buildStart() {
-            const compileSass = () => {
-                try {
-                    const result = sass.compile('styles.scss', {
-                        style:
-                            process.env.NODE_ENV === 'production'
-                                ? 'compressed'
-                                : 'expanded',
-                    });
-
-                    fs.writeFileSync('styles.css', result.css);
-                    console.log('SCSS compiled successfully');
-                } catch (error) {
-                    this.error('SCSS compilation failed: ' + error.message);
-                }
-            };
-
-            compileSass();
-        },
-    };
-}
+import addLoggerContext from './rollup-plugins/addLoggerContext';
+import { buildSass } from './rollup-plugins/buildSass';
+import replaceDevLocaleSystemWithProd from './rollup-plugins/replaceDevLocaleSystemWithProd.js';
 
 const baseConfig = {
     input: 'src/main.ts',
     external: ['obsidian', 'electron'],
     plugins: [
-        json(),
-        buildSass(),
         replace({
             preventAssignment: true,
-            'process.env.NODE_ENV': JSON.stringify(
-                process.env.NODE_ENV || 'development'
-            ),
+            'process.env.NODE_ENV': `'${process.env.NODE_ENV}'`,
         }),
+        addLoggerContext(),
+        json(),
+        buildSass(),
         alias({
             entries: [
                 {
@@ -85,8 +60,9 @@ const baseConfig = {
             target: 'es2023',
             jsx: 'automatic',
             jsxImportSource: 'preact',
+            // minify: false,
             minify: process.env.NODE_ENV === 'production',
-            sourcemap: process.env.NODE_ENV === 'development',
+            sourceMap: process.env.NODE_ENV === 'development',
         }),
         del({
             targets: ['styles.css'],
@@ -103,6 +79,7 @@ const developmentConfig = {
         sourcemap: false,
         format: 'cjs',
         exports: 'auto',
+        inlineDynamicImports: true,
     },
     plugins: [
         ...baseConfig.plugins,
@@ -137,9 +114,14 @@ const productionConfig = {
         sourcemapExcludeSources: true,
         format: 'cjs',
         exports: 'auto',
+        inlineDynamicImports: true,
     },
     plugins: [
         ...baseConfig.plugins,
+        replaceDevLocaleSystemWithProd({
+            enLocalePath: 'src/lang/locale/en/flat.json',
+            verbose: true,
+        }),
         copy({
             targets: [
                 { src: './styles.css', dest: 'dist/' },
