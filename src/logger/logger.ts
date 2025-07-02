@@ -382,15 +382,30 @@ export default class Logger {
         regularLogs.forEach((log) => {
             const date = new Date(log.timestamp);
             const time = date.toLocaleTimeString();
-            const dateStr = date.toLocaleDateString();
+            const ctx = log.context;
+            console.log(log);
+            console.log(ctx);
+            const location = ctx?.file
+                ? `${ctx.file}:${ctx.lineNumber}${ctx.functionName ? ` (${ctx.functionName})` : ''}`
+                : 'unknown';
 
-            result += `[${dateStr} ${time}] ${log.level}: ${log.message} ${log.context ? `context: ${JSON.stringify(log.context, null, 2)}` : ''}\n`;
+            result += `[${time}] ${log.level.toUpperCase().padEnd(5)} | ${location}\n`;
+            result += `  ${log.message}\n`;
+
+            const extraContext = { ...ctx };
+            delete extraContext.file;
+            delete extraContext.lineNumber;
+            delete extraContext.columnNumber;
+            delete extraContext.functionName;
+
+            if (Object.keys(extraContext).length > 0) {
+                result += `  Context: ${JSON.stringify(extraContext)}\n`;
+            }
             result += '\n';
         });
 
         return result;
     }
-
     /**
      * Clears all stored logs from local storage.
      *
