@@ -15,64 +15,41 @@ export class Keyboard extends Component implements Handler {
         this.registerDomEvent(container, 'keydown', this.keyDown);
     }
 
-    keyDown = (event: KeyboardEvent): void => {
-        const key = event.code;
-        const KEYS = [
-            'ArrowUp',
-            'ArrowDown',
-            'ArrowLeft',
-            'ArrowRight',
-            'Equal',
-            'Minus',
-            'Digit0',
-        ];
-        if (!KEYS.includes(key)) {
-            return;
-        }
-        event.preventDefault();
-        event.stopPropagation();
+    keyDown = async (event: KeyboardEvent): Promise<void> => {
+        const { code, ctrlKey, shiftKey, altKey } = event;
+        const actions = this.events.unit.actions;
 
-        switch (key) {
-            case 'ArrowUp':
-                this.events.unit.actions.moveElement(0, 50, {
-                    animated: true,
-                });
-                break;
-            case 'ArrowDown':
-                this.events.unit.actions.moveElement(0, -50, {
-                    animated: true,
-                });
-                break;
-            case 'ArrowLeft':
-                this.events.unit.actions.moveElement(50, 0, {
-                    animated: true,
-                });
-                break;
-            case 'ArrowRight':
-                this.events.unit.actions.moveElement(-50, 0, {
-                    animated: true,
-                });
-                break;
+        const moveKeys = {
+            ArrowUp: () => actions.moveElement(0, 50, { animated: true }),
+            ArrowDown: () => actions.moveElement(0, -50, { animated: true }),
+            ArrowLeft: () => actions.moveElement(50, 0, { animated: true }),
+            ArrowRight: () => actions.moveElement(-50, 0, { animated: true }),
+        };
+
+        const ctrlKeys = {
+            Equal: () => actions.zoomElement(1.1, { animated: true }),
+            Minus: () => actions.zoomElement(0.9, { animated: true }),
+            Digit0: () => actions.resetZoomAndMove({ animated: true }),
+        };
+
+        const ctrlAltKeys = {
+            KeyF: async () => await actions.toggleFullscreen(),
+        };
+
+        let handler = null;
+
+        if (ctrlKey && altKey && code in ctrlAltKeys) {
+            handler = ctrlAltKeys[code as keyof typeof ctrlAltKeys];
+        } else if (ctrlKey && code in ctrlKeys) {
+            handler = ctrlKeys[code as keyof typeof ctrlKeys];
+        } else if (!ctrlKey && !shiftKey && code in moveKeys) {
+            handler = moveKeys[code as keyof typeof moveKeys];
         }
 
-        if (event.ctrlKey) {
-            switch (key) {
-                case 'Equal':
-                    this.events.unit.actions.zoomElement(1.1, {
-                        animated: true,
-                    });
-                    break;
-                case 'Minus':
-                    this.events.unit.actions.zoomElement(0.9, {
-                        animated: true,
-                    });
-                    break;
-                case 'Digit0':
-                    this.events.unit.actions.resetZoomAndMove({
-                        animated: true,
-                    });
-                    break;
-            }
+        if (handler) {
+            event.preventDefault();
+            event.stopPropagation();
+            handler();
         }
     };
 }
