@@ -1,9 +1,9 @@
 [
   "mermaid-zoom-drag",
   "example",
-  "mehrmaid",
   "obsidian-graphviz",
   "obsidian-plantuml",
   "hot-reload",
+  "mehrmaid",
   "diagram-zoom-drag"
 ]
