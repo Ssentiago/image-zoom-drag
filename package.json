@@ -18,10 +18,10 @@
         "locale:template": "locale-tools template",
         "locale:check-locale": "locale-tools check-locale",
         "locale:check-locales": "locale-tools check-locales",
-        "locale:update-all-nested": "locale-tools update-all-nested"
+        "locale:flat": "locale-tools flat"
     },
     "dependencies": {
-        "@obsidian-devkit/native-react-components": "1.1.1",
+        "@obsidian-devkit/native-react-components": "1.1.2",
         "eventemitter2": "^6.4.9",
         "lucide-react": "^0.525.0",
         "preact": "^10.26.9",
@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "@obsidian-devkit/cli": "^1.1.11",
-        "@obsidian-devkit/locale-tools": "^1.0.30",
+        "@obsidian-devkit/locale-tools": "^1.0.31",
         "@rollup/plugin-alias": "^5.1.1",
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-json": "^6.1.0",
