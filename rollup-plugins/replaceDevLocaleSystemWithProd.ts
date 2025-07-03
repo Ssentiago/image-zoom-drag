@@ -178,6 +178,10 @@ export default function replaceDevLocaleSystemWithProd(options: {
         transform(code: string, id: string) {
             if (!id.match(/(ts|tsx)$/)) return;
 
+            if (process.env.NODE_ENV !== 'production') {
+                return;
+            }
+
             const sourceFile = ts.createSourceFile(
                 id,
                 code,
@@ -193,7 +197,7 @@ export default function replaceDevLocaleSystemWithProd(options: {
             return { code: transformedCode, map: null };
         },
         buildEnd() {
-            if (!options.verbose) {
+            if (process.env.NODE_ENV !== 'production' || !options.verbose) {
                 return;
             }
 
