@@ -89,9 +89,6 @@ const Locale: LocaleSchema  = {
         }
     },
     settings: {
-        notice: {
-            resetSettings: "Settings have been reset to default."
-        },
         pages: {
             about: {
                 githubPage: {
@@ -154,157 +151,27 @@ const Locale: LocaleSchema  = {
                 }
             },
             images: {
-                management: {
-                    addNewImageConfig: {
-                        desc: [
-                            "Here you can configure which images will receive enhanced controls and UI.",
-                            "Adding a Image Config:",
-                            "1. Enter a unique name using only Latin letters, numbers and `-` (A-Z, a-z, 0-9, -)",
-                            "2. Specify a valid CSS selector for your image",
-                            "Once added, matching units will get:",
-                            "• Mouse and keyboard navigation",
-                            "• Additional control buttons",
-                            "Note: Red border indicates invalid input - hover to see details"
-                        ],
-                        header: "Add new image config",
-                        notices: {
-                            newConfigAdded: "New image config was added"
+                controls: {
+                    serviceIgnoring: {
+                        desc: "Service panel will always be visible regardless of visibility mode",
+                        name: "Ignore panel visibility rule for service panel"
+                    },
+                    visibility: {
+                        desc: "Set when panels will be visible",
+                        dropdown: {
+                            always: "Always",
+                            focus: "On focus",
+                            hover: "On hover"
                         },
-                        placeholders: {
-                            name: "Example config name",
-                            selector: ".example-config-selector"
-                        },
+                        name: "Controls visibility",
                         tooltips: {
-                            infoButton: "Click for more information on how the plugin works",
-                            saveButton: "Add this config"
-                        },
-                        undoStack: {
-                            addAction: "Add image config\nName: {{name}}\nSelector: {{selector}}"
-                        },
-                        userGuideModal: {
-                            customSelectors: {
-                                desc: "Selectors are only needed for specific behavior overrides. For example, to disable UI panels for SVG inside Mermaid diagrams.",
-                                name: "Custom selectors (optional)"
-                            },
-                            findingSelectors: {
-                                desc: [
-                                    "1. Open DevTools (Ctrl+Shift+I)",
-                                    "2. Use element selector (Ctrl+Shift+C)",
-                                    "3. Click on the specific element you want to customize",
-                                    "4. Find the class attribute: `.mermaid`, `.block-language-plantuml`, etc.",
-                                    "5. Use this selector to create specific settings overrides"
-                                ],
-                                name: "Finding selectors (when needed):"
-                            },
-                            header: "User Guide",
-                            howItWorks: {
-                                desc: [
-                                    "The plugin automatically processes all images and SVG elements in your markdown files.",
-                                    "In auto-detect mode, it finds all suitable images and makes them interactive",
-                                    "In picker mode, hover over any image and click to make it interactive with zoom, drag, and control panels."
-                                ],
-                                name: "How this plugin works"
-                            },
-                            video: {
-                                failed: "Video failed to load. Please try again later.",
-                                loading: "Loading video..."
-                            },
-                            workingModes: {
-                                desc: [
-                                    "• Auto-detect: Plugin automatically finds and processes all images",
-                                    "• Picker toggle: Hover over images and click to activate interaction",
-                                    "• Use ribbon button or command palette to toggle picker mode"
-                                ],
-                                name: "Working modes"
-                            }
+                            always: "Controls are always visible when this option is selected.",
+                            focus: "Controls become visible when the image is focused (e.g., clicked). The service panel may remain hidden if the ignore option is enabled.",
+                            hover: "Controls become visible when hovering the mouse over the image. The service panel may remain hidden if the ignore option is enabled."
                         }
-                    },
-                    availableImageConfigs: {
-                        header: "Available image configs",
-                        item: {
-                            actions: {
-                                changes: {
-                                    name: "name: \"{{old}}\" → \"{{new}}\"",
-                                    selector: "selector: \"{{old}}\" → \"{{new}}\""
-                                },
-                                delete: "Delete unit\n`Name: {{name}}\nSelector: {{selector}}`",
-                                disable: "Disable {{name}} unit",
-                                edit: "Edit unit \"{{name}}\":\n{{changes}}",
-                                enable: "Enable {{name}} unit"
-                            },
-                            buttons: {
-                                cancel: "Cancel operation? All changes will be lost.",
-                                delete: "Delete {{name}} unit",
-                                edit: "Edit {{name}} unit",
-                                options: "Options for {{name}} unit",
-                                save: "Save changes for {{name}}?"
-                            },
-                            toggle: {
-                                disable: "Disable {{name}} unit",
-                                enable: "Enable {{name}} unit"
-                            }
-                        },
-                        optionsModal: {
-                            desc: "These settings will only apply to this unit.",
-                            name: "{{name}} unit options",
-                            panels: {
-                                action: "Turn {{state}} panel `{{panel}}` for unit `{{name}}`",
-                                header: "Panels",
-                                states: {
-                                    off: "off",
-                                    on: "on"
-                                }
-                            }
-                        },
-                        pagination: {
-                            buttons: {
-                                editingBlocked: "Can`t change page while editing",
-                                next: {
-                                    disabled: "No next page",
-                                    enabled: "Go to next page"
-                                },
-                                previous: {
-                                    disabled: "No previous page",
-                                    enabled: "Go to previous page"
-                                }
-                            },
-                            page: "Page {{current}} of {{total}} (Total image configs: {{count}})"
-                        },
-                        perPageSlider: {
-                            name: "Image configs per page"
-                        }
-                    },
-                    history: {
-                        notices: {
-                            nothingToRedo: "Nothing to redo",
-                            nothingToUndo: "Nothing to undo"
-                        },
-                        tooltips: {
-                            redo: {
-                                available: "Redo\n{{description}}{{count}}\nShortcut: CTRL+SHIFT+Z",
-                                nothing: "Nothing to redo\nShortcut: CTRL+SHIFT+Z"
-                            },
-                            undo: {
-                                available: "Undo\n{{description}}{{count}}\nShortcut: CTRL+Z",
-                                nothing: "Nothing to undo\nShortcut: CTRL+Z"
-                            }
-                        }
-                    },
-                    unitsValidation: {
-                        bothInvalid: "Config name and selector are both invalid",
-                        fillOutField: "Fill out config {field} field!",
-                        invalidSelectorPrefix: "Invalid CSS selector: {{err}}",
-                        nameAlreadyExists: "Config with that name already exists",
-                        nothingToSave: "Nothing to save",
-                        oneInvalid: "Config {field} is invalid",
-                        selectorAlreadyExists: "Config with that selector already exists"
                     }
                 },
-                miniNavbar: {
-                    managementButtonTooltip: "Images management",
-                    settingsButtonTooltip: "Images settings"
-                },
-                settings: {
+                general: {
                     fold: {
                         autoFoldOnFocusChange: {
                             name: "Automatically fold images on focus change"
@@ -379,83 +246,204 @@ const Locale: LocaleSchema  = {
                             savedSuccessfully: "Saved successfully"
                         }
                     }
-                }
-            },
-            panels: {
-                management: {
+                },
+                layout: {
                     buttonsLayout: {
                         desc: "Configure which buttons are shown on each panel",
+                        modal: {
+                            preset: {
+                                buttons: {
+                                    full: "Full",
+                                    minimal: "Minimal",
+                                    presentation: "Presentation mode"
+                                },
+                                name: "Quick presets"
+                            },
+                            title: "Buttons layout"
+                        },
                         name: "Buttons layout",
-                        tooltip: "Open panel buttons editor"
+                        tooltip: "Open control buttons layout editor"
                     },
-                    buttonsLayoutModal: {
-                        title: "Panels buttons"
-                    },
-                    panelLayout: {
-                        desc: "Adjust panel positions and visibility",
-                        name: "Panel layout",
-                        tooltip: "Open panel layout editor"
-                    },
-                    panelLayoutModal: {
-                        availablePanels: {
-                            desc: [
-                                "• Move Panel: By default located at bottom right - Contains 8 directional buttons for images movement",
-                                "• Zoom Panel: By default located at center right - Features zoom in/out and reset controls",
-                                "• Service Panel: By default located at upper right - Contains additional functionality buttons"
-                            ],
-                            name: "Available panels"
+                    controlsLayout: {
+                        desc: "Adjust controls positions and visibility",
+                        modal: {
+                            availablePanels: {
+                                desc: [
+                                    "• Move Panel: By default located at bottom right - Contains 8 directional buttons for images movement",
+                                    "• Zoom Panel: By default located at center right - Features zoom in/out and reset controls",
+                                    "• Service Panel: By default located at upper right - Contains additional functionality buttons"
+                                ],
+                                name: "Available panels"
+                            },
+                            howTo: {
+                                desc: [
+                                    "1. Use checkboxes below to toggle panel visibility on/off",
+                                    "2. Click and drag any panel to reposition it on the image",
+                                    "3. Panel positions are saved automatically",
+                                    "4. Reload the view to see your changes take effect"
+                                ],
+                                name: "How to customize panels"
+                            },
+                            panelConfig: {
+                                desc: "Customize control panels appearance and position",
+                                name: "Panel configuration"
+                            },
+                            title: "Controls layout"
                         },
-                        howTo: {
-                            desc: [
-                                "1. Use checkboxes below to toggle panel visibility on/off",
-                                "2. Click and drag any panel to reposition it on the image",
-                                "3. Panel positions are saved automatically",
-                                "4. Reload the view to see your changes take effect"
-                            ],
-                            name: "How to customize panels"
-                        },
-                        panelConfig: {
-                            desc: "Customize control panels appearance and position",
-                            name: "Panel configuration"
-                        },
-                        title: "Panel layout editor"
-                    },
-                    preset: {
-                        desc: "Apply button visibility preset",
-                        dropdown: {
-                            full: "Full",
-                            minimal: "Minimal",
-                            none: "Select preset...",
-                            presentation: "Presentation mode"
-                        },
-                        name: "Apply preset"
+                        name: "Controls layout",
+                        tooltip: "Open controls layout editor"
                     }
                 },
-                miniNavbar: {
-                    managementButtonTooltip: "Panels Management",
-                    settingsButtonTooltip: "Panels Settings"
-                },
-                settings: {
-                    header: "Panels behavior",
-                    panelsVisibility: {
-                        desc: "Control when panels will be visible",
-                        dropdown: {
-                            always: "Always",
-                            focus: "On focus",
-                            hover: "On hover"
+                presets: {
+                    addNewImagePreset: {
+                        desc: [
+                            "Add new image preset to override default settings for specific images.",
+                            "Name: alphanumeric + hyphens only",
+                            "Selector: CSS selector for target images"
+                        ],
+                        header: "Add new image preset",
+                        notice: {
+                            newConfigAdded: "New image preset was added"
                         },
-                        name: "Panels visibility",
+                        placeholders: {
+                            name: "Example preset name",
+                            selector: ".example-preset-selector"
+                        },
                         tooltips: {
-                            always: "Panels are always visible when this option is selected.",
-                            focus: "Panels become visible when the image is focused (e.g., clicked). The service panel may remain hidden if the ignore option is enabled.",
-                            hover: "Panels become visible when hovering the mouse over the image. The service panel may remain hidden if the ignore option is enabled."
+                            infoButton: "Click for more information on how the plugin works",
+                            saveButton: "Add this preset"
+                        },
+                        undoStack: {
+                            addAction: "Add image preset\nName: {{name}}\nSelector: {{selector}}"
+                        },
+                        userGuideModal: {
+                            customSelectors: {
+                                desc: "Selectors are only needed for specific behavior overrides. For example, to disable UI panels for SVG inside Mermaid diagrams.",
+                                name: "Custom selectors (optional)"
+                            },
+                            findingSelectors: {
+                                desc: [
+                                    "1. Open DevTools (Ctrl+Shift+I)",
+                                    "2. Use element selector (Ctrl+Shift+C)",
+                                    "3. Click on the specific element you want to customize",
+                                    "4. Find the class attribute: `.mermaid`, `.block-language-plantuml`, etc.",
+                                    "5. Use this selector to create specific settings overrides"
+                                ],
+                                name: "Finding selectors (when needed):"
+                            },
+                            header: "User Guide",
+                            howItWorks: {
+                                desc: [
+                                    "The plugin automatically processes all images and SVG elements in your markdown files.",
+                                    "In auto-detect mode, it finds all suitable images and makes them interactive",
+                                    "In picker mode, hover over any image and click to make it interactive with zoom, drag, and control panels."
+                                ],
+                                name: "How this plugin works"
+                            },
+                            video: {
+                                failed: "Video failed to load. Please try again later.",
+                                loading: "Loading video..."
+                            },
+                            workingModes: {
+                                desc: [
+                                    "• Auto-detect: Plugin automatically finds and processes all images",
+                                    "• Picker toggle: Hover over images and click to activate interaction",
+                                    "• Use ribbon button or command palette to toggle picker mode"
+                                ],
+                                name: "Working modes"
+                            }
                         }
                     },
-                    serviceIgnoring: {
-                        desc: "Service panel will always be visible regardless of visibility mode",
-                        name: "Ignore panel visibility rule for service panel"
+                    availableImageConfigs: {
+                        header: "Available image presets",
+                        item: {
+                            actions: {
+                                changes: {
+                                    name: "name: \"{{old}}\" → \"{{new}}\"",
+                                    selector: "selector: \"{{old}}\" → \"{{new}}\""
+                                },
+                                delete: "Delete unit\n`Name: {{name}}\nSelector: {{selector}}`",
+                                disable: "Disable {{name}} unit",
+                                edit: "Edit unit \"{{name}}\":\n{{changes}}",
+                                enable: "Enable {{name}} unit"
+                            },
+                            buttons: {
+                                cancel: "Cancel operation? All changes will be lost.",
+                                delete: "Delete {{name}} unit",
+                                edit: "Edit {{name}} unit",
+                                options: "Options for {{name}} unit",
+                                save: "Save changes for {{name}}?"
+                            },
+                            toggle: {
+                                disable: "Disable {{name}} unit",
+                                enable: "Enable {{name}} unit"
+                            }
+                        },
+                        optionsModal: {
+                            desc: "These settings will only apply to this unit.",
+                            name: "{{name}} unit options",
+                            panels: {
+                                action: "Turn {{state}} panel `{{panel}}` for unit `{{name}}`",
+                                header: "Panels",
+                                states: {
+                                    off: "off",
+                                    on: "on"
+                                }
+                            }
+                        },
+                        pagination: {
+                            buttons: {
+                                editingBlocked: "Can`t change page while editing",
+                                next: {
+                                    disabled: "No next page",
+                                    enabled: "Go to next page"
+                                },
+                                previous: {
+                                    disabled: "No previous page",
+                                    enabled: "Go to previous page"
+                                }
+                            },
+                            page: "Page {{current}} of {{total}} (Total image presets: {{count}})"
+                        },
+                        perPageSlider: {
+                            name: "Image presets per page"
+                        }
+                    },
+                    history: {
+                        notices: {
+                            nothingToRedo: "Nothing to redo",
+                            nothingToUndo: "Nothing to undo"
+                        },
+                        tooltips: {
+                            redo: {
+                                available: "Redo\n{{description}}{{count}}\nShortcut: CTRL+SHIFT+Z",
+                                nothing: "Nothing to redo\nShortcut: CTRL+SHIFT+Z"
+                            },
+                            undo: {
+                                available: "Undo\n{{description}}{{count}}\nShortcut: CTRL+Z",
+                                nothing: "Nothing to undo\nShortcut: CTRL+Z"
+                            }
+                        }
+                    },
+                    unitsValidation: {
+                        bothInvalid: "Config name and selector are both invalid",
+                        fillOutField: "Fill out preset {field} field!",
+                        invalidSelectorPrefix: "Invalid CSS selector: {{err}}",
+                        nameAlreadyExists: "Config with that name already exists",
+                        nothingToSave: "Nothing to save",
+                        oneInvalid: "Config {field} is invalid",
+                        selectorAlreadyExists: "Config with that selector already exists"
                     }
                 }
+            }
+        },
+        toolbar: {
+            reset: {
+                notice: "Settings have been reset to default.",
+                tooltip: "Reset settings to default"
+            },
+            sidebar: {
+                tooltip: "Toggle sidebar"
             }
         }
     }

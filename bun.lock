@@ -4,7 +4,7 @@
     "": {
       "name": "interactify",
       "dependencies": {
-        "@obsidian-devkit/native-react-components": "1.1.1",
+        "@obsidian-devkit/native-react-components": "1.1.2",
         "eventemitter2": "^6.4.9",
         "lucide-react": "^0.525.0",
         "preact": "^10.26.9",
@@ -15,7 +15,7 @@
       },
       "devDependencies": {
         "@obsidian-devkit/cli": "^1.1.11",
-        "@obsidian-devkit/locale-tools": "^1.0.30",
+        "@obsidian-devkit/locale-tools": "^1.0.31",
         "@rollup/plugin-alias": "^5.1.1",
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-json": "^6.1.0",
@@ -263,9 +263,9 @@
 
     "@obsidian-devkit/cli": ["@obsidian-devkit/cli@1.1.11", "", { "bin": { "obsidian-cli": "dist/index.js" } }, "sha512-o4R9V9irSNrJbklrNifVYq2ZrPZtjPWWNd3nFI4GUekUi8BByJOflActfhZIeDY4+45XrhBgugjKECcXnQlTaw=="],
 
-    "@obsidian-devkit/locale-tools": ["@obsidian-devkit/locale-tools@1.0.30", "", { "bin": { "locale-tools": "dist/index.js" } }, "sha512-h0N4psBWSnsaUjIGwOBL1u6Wd3BaS0Z91EYpk14JEZGl3aoge1wCFGUeFpRwtj2VgJmxjywLiQOaqHIfEz5FUg=="],
+    "@obsidian-devkit/locale-tools": ["@obsidian-devkit/locale-tools@1.0.31", "", { "bin": { "locale-tools": "dist/index.js" } }, "sha512-xSqlrFk5xEwPM9wr60HIObIIDrTaTYo/oamuWcY1jDmpk9nLAeaKq9ieBUTIsl/bGnkVHohoa6Isr0uMsBhsGw=="],
 
-    "@obsidian-devkit/native-react-components": ["@obsidian-devkit/native-react-components@1.1.1", "", {}, "sha512-LQLcSEn7qh0ufp3VbBQHewb0NDBbbyCSb56REc6GnoA9nPdo2d5qzK62NbI25/uN9a6etJSKHu+sOji/Fiwg9g=="],
+    "@obsidian-devkit/native-react-components": ["@obsidian-devkit/native-react-components@1.1.2", "", {}, "sha512-nXMMs6o8PdijH5FbYhn2O5mm58GO+/V2F8BmHa0uzBpFejKNi0sAc3yXZivtKW/c3hq9ZmuAqrLO/LwzRQJysA=="],
 
     "@parcel/watcher": ["@parcel/watcher@2.5.1", "", { "dependencies": { "detect-libc": "^1.0.3", "is-glob": "^4.0.3", "micromatch": "^4.0.5", "node-addon-api": "^7.0.0" }, "optionalDependencies": { "@parcel/watcher-android-arm64": "2.5.1", "@parcel/watcher-darwin-arm64": "2.5.1", "@parcel/watcher-darwin-x64": "2.5.1", "@parcel/watcher-freebsd-x64": "2.5.1", "@parcel/watcher-linux-arm-glibc": "2.5.1", "@parcel/watcher-linux-arm-musl": "2.5.1", "@parcel/watcher-linux-arm64-glibc": "2.5.1", "@parcel/watcher-linux-arm64-musl": "2.5.1", "@parcel/watcher-linux-x64-glibc": "2.5.1", "@parcel/watcher-linux-x64-musl": "2.5.1", "@parcel/watcher-win32-arm64": "2.5.1", "@parcel/watcher-win32-ia32": "2.5.1", "@parcel/watcher-win32-x64": "2.5.1" } }, "sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg=="],
 

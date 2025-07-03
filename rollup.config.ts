@@ -22,6 +22,10 @@ const baseConfig = {
             preventAssignment: true,
             'process.env.NODE_ENV': `'${process.env.NODE_ENV}'`,
         }),
+        replaceDevLocaleSystemWithProd({
+            enLocalePath: 'src/lang/locale/en/flat.json',
+            verbose: true,
+        }),
         addLoggerContext(),
         json(),
         buildSass(),
@@ -68,7 +72,7 @@ const baseConfig = {
             targets: ['styles.css'],
             hook: 'writeBundle',
         }),
-        analyze({ summaryOnly: true }),
+        // analyze({ summaryOnly: true }),
     ],
 };
 
@@ -118,10 +122,6 @@ const productionConfig = {
     },
     plugins: [
         ...baseConfig.plugins,
-        replaceDevLocaleSystemWithProd({
-            enLocalePath: 'src/lang/locale/en/flat.json',
-            verbose: true,
-        }),
         copy({
             targets: [
                 { src: './styles.css', dest: 'dist/' },

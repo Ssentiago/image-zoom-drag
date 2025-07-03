@@ -61,22 +61,31 @@ export default class InteractifyUnit extends Component {
         });
     }
 
-    realSize() {
+    get realSize() {
+        const { innerHeight, innerWidth } = this.plugin.context.view!.contentEl;
+
         const settingsSizeData = this.plugin.settings.data.units.size;
         const isFolded = this.context.container.dataset.folded === 'true';
         const setting = isFolded
             ? settingsSizeData.folded
             : settingsSizeData.expanded;
+
         const heightValue = setting.height.value;
         const widthValue = setting.width.value;
-        const heightInPx =
+
+        let heightInPx =
             setting.height.type === '%'
                 ? (heightValue / 100) * this.context.size.height
                 : heightValue;
-        const widthInPx =
+        let widthInPx =
             setting.width.type === '%'
                 ? (widthValue / 100) * this.context.size.width
                 : widthValue;
+
+        if (innerWidth > 0 && innerHeight > 0) {
+            heightInPx = Math.min(heightInPx, innerHeight);
+            widthInPx = Math.min(widthInPx, innerWidth);
+        }
 
         return {
             width: widthInPx,
@@ -90,7 +99,7 @@ export default class InteractifyUnit extends Component {
     }
 
     applyRealSize() {
-        const realSize = this.realSize();
+        const realSize = this.realSize;
 
         this.context.container.style.height = `${realSize.height}px`;
         this.context.container.style.width = `${realSize.width}px`;

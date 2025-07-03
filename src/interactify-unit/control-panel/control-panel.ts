@@ -43,7 +43,7 @@ export class ControlPanel extends Component implements IControlPanel {
     }
 
     get canRender(): boolean {
-        const { width, height } = this.unit.realSize();
+        const { width, height } = this.unit.realSize;
 
         return (
             height >=

@@ -17,7 +17,7 @@ import { useSettingsContext } from '../../core/SettingsContext';
  */
 const Debug: FC = () => {
     const { plugin } = useSettingsContext();
-    const [, setReload] = useState(false);
+    const [_, setReload] = useState(false);
 
     const downloadLogs = useCallback(() => {
         const logs = plugin.logger.exportLogs();

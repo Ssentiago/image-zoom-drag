@@ -1,8 +1,16 @@
 .interactify-settings {
-    padding: 16px;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 10px;
+    padding-bottom: 5px;
     overflow-y: scroll;
     height: 100%;
     width: 100%;
+
+    &.sidebar-open {
+        overflow: hidden;
+        padding-right: 17px;
+    }
 
     .invalid {
         $error-color: #ef4444;
