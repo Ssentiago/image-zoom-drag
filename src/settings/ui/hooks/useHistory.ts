@@ -48,14 +48,14 @@ export const useHistory = <T extends readonly unknown[]>(
 
     const getUndoLabel = () => {
         if (!undoDescription) {
-            return t.settings.pages.images.management.history.tooltips.undo
+            return t.settings.pages.images.presets.history.tooltips.undo
                 .nothing;
         }
         const count =
             undoStack.length > 1 ? ` (${undoStack.length - 1} more)` : '';
 
         return tf(
-            t.settings.pages.images.management.history.tooltips.undo.available,
+            t.settings.pages.images.presets.history.tooltips.undo.available,
             {
                 description: undoDescription,
                 count,
@@ -65,13 +65,13 @@ export const useHistory = <T extends readonly unknown[]>(
 
     const getRedoLabel = () => {
         if (!redoDescription) {
-            return t.settings.pages.images.management.history.tooltips.redo
+            return t.settings.pages.images.presets.history.tooltips.redo
                 .nothing;
         }
         const count =
             redoStack.length > 1 ? ` (${redoStack.length - 1} more)` : '';
         return tf(
-            t.settings.pages.images.management.history.tooltips.redo.available,
+            t.settings.pages.images.presets.history.tooltips.redo.available,
             {
                 description: redoDescription,
                 count,
@@ -172,7 +172,7 @@ export const useHistory = <T extends readonly unknown[]>(
                     await redo();
                 } else {
                     plugin.showNotice(
-                        t.settings.pages.images.management.history.notices
+                        t.settings.pages.images.presets.history.notices
                             .nothingToRedo
                     );
                 }
@@ -182,7 +182,7 @@ export const useHistory = <T extends readonly unknown[]>(
                     await undo();
                 } else {
                     plugin.showNotice(
-                        t.settings.pages.images.management.history.notices
+                        t.settings.pages.images.presets.history.notices
                             .nothingToUndo
                     );
                 }
