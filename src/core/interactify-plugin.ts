@@ -1,7 +1,13 @@
+import { LeafID } from '@/core/types/definitions';
 import { t } from '@/lang';
 
 import EventEmitter2 from 'eventemitter2';
-import { MarkdownPostProcessorContext, Notice, Plugin } from 'obsidian';
+import {
+    debounce,
+    MarkdownPostProcessorContext,
+    Notice,
+    Plugin,
+} from 'obsidian';
 
 import { LivePreviewAdapter } from '../adapters/markdown-view-adapters/live-preview-adapter';
 import { PreviewAdapter } from '../adapters/markdown-view-adapters/preview-adapter';
@@ -145,9 +151,10 @@ export default class InteractifyPlugin extends Plugin {
             event: 'active-leaf-change' | 'layout-change'
         ) => {
             this.context.cleanup((leafID) => this.state.cleanupLeaf(leafID));
-            this.context.initialize((leafID) =>
-                this.state.initializeLeaf(leafID)
-            );
+            this.context.initialize((leafID) => {
+                this.state.initializeLeaf(leafID);
+                this.setupResizeObserver(leafID);
+            });
 
             if (!this.settings.data.units.interactivity.markdown.autoDetect) {
                 return;
@@ -179,7 +186,7 @@ export default class InteractifyPlugin extends Plugin {
             await adapter.initialize(
                 this.context.leafID!,
                 sourceContainer,
-                this.state.hasObserver(this.context.leafID!)
+                this.state.hasLiveObserver(this.context.leafID!)
             );
             this.logger.debug('Initialized adapter for Live Preview Mode...');
         };
@@ -285,6 +292,27 @@ export default class InteractifyPlugin extends Plugin {
                 return true;
             },
         });
+    }
+
+    private setupResizeObserver(leafID: LeafID) {
+        if (this.state.hasResizeObserver(leafID)) {
+            return;
+        }
+        const debouncedApplyLayout = debounce(
+            () => {
+                this.state
+                    .getUnits(leafID)
+                    .forEach((unit) => unit.applyLayout());
+            },
+            50,
+            true
+        );
+
+        const obs = new ResizeObserver((entries, observer) => {
+            debouncedApplyLayout();
+        });
+        obs.observe(this.context.view?.contentEl!);
+        this.state.setResizeObserver(leafID, obs);
     }
 
     /**

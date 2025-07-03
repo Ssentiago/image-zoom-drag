@@ -22,6 +22,7 @@ export default class State {
             this.data.set(leafID, {
                 units: [],
                 livePreviewObserver: undefined,
+                resizeObserver: undefined,
             });
             this.plugin.logger.debug(
                 `Initialized data for leaf width id: ${leafID}...`
@@ -37,6 +38,8 @@ export default class State {
         }
         data.livePreviewObserver?.disconnect();
         data.livePreviewObserver = undefined;
+        data.resizeObserver?.disconnect();
+        data.resizeObserver = undefined;
 
         for (const unit of data.units) {
             await unit.onDelete();
@@ -99,8 +102,22 @@ export default class State {
      * @param leafID - The ID of the leaf to check for an associated observer.
      * @returns `true` if a live preview observer exists for the leaf, `false` otherwise.
      */
-    hasObserver(leafID: LeafID): boolean {
+    hasLiveObserver(leafID: LeafID): boolean {
         return !!this.getLivePreviewObserver(leafID);
+    }
+
+    getResizeObserver(leafID: LeafID): ResizeObserver | undefined {
+        return this.data.get(leafID)?.resizeObserver;
+    }
+
+    setResizeObserver(leafID: LeafID, observer: ResizeObserver) {
+        const data = this.data.get(leafID);
+        if (data) {
+            data.resizeObserver = observer;
+        }
+    }
+    hasResizeObserver(leafID: LeafID): boolean {
+        return !!this.getResizeObserver(leafID);
     }
 
     getUnits(leafID: LeafID): InteractifyUnit[] {
