@@ -78,9 +78,6 @@ export interface LocaleSchema {
         };
     };
     settings: {
-        notice: {
-            resetSettings: string;
-        };
         pages: {
             about: {
                 githubPage: {
@@ -128,11 +125,131 @@ export interface LocaleSchema {
                 };
             };
             images: {
-                management: {
-                    addNewImageConfig: {
+                controls: {
+                    serviceIgnoring: {
+                        desc: string;
+                        name: string;
+                    };
+                    visibility: {
+                        desc: string;
+                        dropdown: {
+                            always: string;
+                            focus: string;
+                            hover: string;
+                        };
+                        name: string;
+                        tooltips: {
+                            always: string;
+                            focus: string;
+                            hover: string;
+                        };
+                    };
+                };
+                general: {
+                    fold: {
+                        autoFoldOnFocusChange: {
+                            name: string;
+                        };
+                        foldByDefault: {
+                            name: string;
+                        };
+                        header: string;
+                    };
+                    interactive: {
+                        activationMode: {
+                            desc: string;
+                            dropdown: {
+                                immediate: string;
+                                lazy: string;
+                            };
+                            name: string;
+                            tooltips: {
+                                immediate: string;
+                                lazy: string;
+                            };
+                        };
+                        autoDetect: {
+                            desc: string[];
+                            name: string;
+                        };
+                        header: string;
+                        pickerMode: {
+                            desc: string[];
+                            name: string;
+                        };
+                    };
+                    size: {
+                        desc: string;
+                        expanded: {
+                            desc: string[];
+                            name: string;
+                        };
+                        folded: {
+                            desc: string[];
+                            name: string;
+                        };
+                        header: string;
+                        labels: {
+                            height: string;
+                            width: string;
+                        };
+                        placeholders: {
+                            height: string;
+                            width: string;
+                        };
+                        saveButtonTooltip: string;
+                        validation: {
+                            fixErrors: string;
+                            invalidHeight: string;
+                            invalidWidth: string;
+                            nothingToSave: string;
+                            savedSuccessfully: string;
+                        };
+                    };
+                };
+                layout: {
+                    buttonsLayout: {
+                        desc: string;
+                        modal: {
+                            preset: {
+                                buttons: {
+                                    full: string;
+                                    minimal: string;
+                                    presentation: string;
+                                };
+                                name: string;
+                            };
+                            title: string;
+                        };
+                        name: string;
+                        tooltip: string;
+                    };
+                    controlsLayout: {
+                        desc: string;
+                        modal: {
+                            availablePanels: {
+                                desc: string[];
+                                name: string;
+                            };
+                            howTo: {
+                                desc: string[];
+                                name: string;
+                            };
+                            panelConfig: {
+                                desc: string;
+                                name: string;
+                            };
+                            title: string;
+                        };
+                        name: string;
+                        tooltip: string;
+                    };
+                };
+                presets: {
+                    addNewImagePreset: {
                         desc: string[];
                         header: string;
-                        notices: {
+                        notice: {
                             newConfigAdded: string;
                         };
                         placeholders: {
@@ -251,139 +368,15 @@ export interface LocaleSchema {
                         selectorAlreadyExists: string;
                     };
                 };
-                miniNavbar: {
-                    managementButtonTooltip: string;
-                    settingsButtonTooltip: string;
-                };
-                settings: {
-                    fold: {
-                        autoFoldOnFocusChange: {
-                            name: string;
-                        };
-                        foldByDefault: {
-                            name: string;
-                        };
-                        header: string;
-                    };
-                    interactive: {
-                        activationMode: {
-                            desc: string;
-                            dropdown: {
-                                immediate: string;
-                                lazy: string;
-                            };
-                            name: string;
-                            tooltips: {
-                                immediate: string;
-                                lazy: string;
-                            };
-                        };
-                        autoDetect: {
-                            desc: string[];
-                            name: string;
-                        };
-                        header: string;
-                        pickerMode: {
-                            desc: string[];
-                            name: string;
-                        };
-                    };
-                    size: {
-                        desc: string;
-                        expanded: {
-                            desc: string[];
-                            name: string;
-                        };
-                        folded: {
-                            desc: string[];
-                            name: string;
-                        };
-                        header: string;
-                        labels: {
-                            height: string;
-                            width: string;
-                        };
-                        placeholders: {
-                            height: string;
-                            width: string;
-                        };
-                        saveButtonTooltip: string;
-                        validation: {
-                            fixErrors: string;
-                            invalidHeight: string;
-                            invalidWidth: string;
-                            nothingToSave: string;
-                            savedSuccessfully: string;
-                        };
-                    };
-                };
             };
-            panels: {
-                management: {
-                    buttonsLayout: {
-                        desc: string;
-                        name: string;
-                        tooltip: string;
-                    };
-                    buttonsLayoutModal: {
-                        title: string;
-                    };
-                    panelLayout: {
-                        desc: string;
-                        name: string;
-                        tooltip: string;
-                    };
-                    panelLayoutModal: {
-                        availablePanels: {
-                            desc: string[];
-                            name: string;
-                        };
-                        howTo: {
-                            desc: string[];
-                            name: string;
-                        };
-                        panelConfig: {
-                            desc: string;
-                            name: string;
-                        };
-                        title: string;
-                    };
-                    preset: {
-                        desc: string;
-                        dropdown: {
-                            full: string;
-                            minimal: string;
-                            none: string;
-                            presentation: string;
-                        };
-                        name: string;
-                    };
-                };
-                miniNavbar: {
-                    managementButtonTooltip: string;
-                    settingsButtonTooltip: string;
-                };
-                settings: {
-                    header: string;
-                    panelsVisibility: {
-                        desc: string;
-                        dropdown: {
-                            always: string;
-                            focus: string;
-                            hover: string;
-                        };
-                        name: string;
-                        tooltips: {
-                            always: string;
-                            focus: string;
-                            hover: string;
-                        };
-                    };
-                    serviceIgnoring: {
-                        desc: string;
-                        name: string;
-                    };
-                };
+        };
+        toolbar: {
+            reset: {
+                notice: string;
+                tooltip: string;
+            };
+            sidebar: {
+                tooltip: string;
             };
         };
     };
