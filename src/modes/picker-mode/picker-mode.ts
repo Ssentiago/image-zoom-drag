@@ -1,15 +1,15 @@
+import InteractifyPlugin from '@/core/interactify-plugin';
 import { t } from '@/lang';
-
-import { Component } from 'obsidian';
-
-import PickerModeAdapter from '../../adapters/direct-element-adapters/picker-mode-adapter';
-import InteractifyPlugin from '../../core/interactify-plugin';
+import DirectElementAdapter from '@/modes/integrated-mode/adapters/direct-element-adapters/direct-element-adapter';
 import {
     InteractiveInitialization,
     InteractiveMode,
-} from '../../interactify-unit/types/constants';
-import { SettingsEventPayload } from '../../settings/types/interfaces';
+} from '@/modes/integrated-mode/interactify-unit/types/constants';
+import { SettingsEventPayload } from '@/settings/types/interfaces';
 
+import { Component } from 'obsidian';
+
+// TODO поменять логику чтоб просто передавать управление в адаптер - Popup / Integrated
 export default class PickerMode extends Component {
     private isActive: boolean = false;
     private tooltip: HTMLDivElement | null = null;
@@ -18,7 +18,9 @@ export default class PickerMode extends Component {
 
     constructor(private readonly plugin: InteractifyPlugin) {
         super();
+    }
 
+    initialize() {
         this.load();
 
         this.setupEvents();
@@ -254,13 +256,10 @@ export default class PickerMode extends Component {
             return;
         }
 
-        const adapter = new PickerModeAdapter(this.plugin, {
-            ctime: 0,
-            mtime: 0,
-            size: 0,
-        });
+        await this.plugin.integratedMode.createDirectlyIntegratedElement(
+            interactive
+        );
 
-        await adapter.initialize(interactive);
         this.showTooltip(interactive);
     };
 

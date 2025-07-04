@@ -64,7 +64,7 @@ export class Export extends Component {
 
     private downloadFile(blob: Blob, extension: string): void {
         const { unit } = this.contextMenu.events;
-        const filename = `export_${unit.plugin.context.view?.file?.basename ?? 'unit'}}_${moment().format('YYYYMMDDHHmmss')}.${extension}`;
+        const filename = `export_${unit.plugin.integratedMode.context.view?.file?.basename ?? 'unit'}}_${moment().format('YYYYMMDDHHmmss')}.${extension}`;
         const url = URL.createObjectURL(blob);
         const downloadLink = document.createElement('a');
         downloadLink.href = url;

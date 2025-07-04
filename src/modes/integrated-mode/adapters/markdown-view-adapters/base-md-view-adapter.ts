@@ -1,17 +1,19 @@
-import InteractifyPlugin from '../../core/interactify-plugin';
-import { LeafID } from '../../core/types/definitions';
+import InteractifyPlugin from '@/core/interactify-plugin';
+import { LeafID } from '@/core/types/definitions';
+import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import {
-    UnitContext,
     FileStats,
-} from '../../interactify-unit/types/interfaces';
+    UnitContext,
+} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+
 import BaseAdapter from '../base-adapter';
 
 export abstract class BaseMdViewAdapter extends BaseAdapter {
     protected constructor(
-        protected plugin: InteractifyPlugin,
+        protected integratedMode: IntegratedMode,
         protected fileStat: FileStats
     ) {
-        super(plugin, fileStat);
+        super(integratedMode, fileStat);
     }
 
     abstract initialize: (

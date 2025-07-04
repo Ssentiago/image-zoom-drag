@@ -1,6 +1,6 @@
 import { t } from '@/lang';
 
-import { PanelsTriggering } from '../../../settings/types/interfaces';
+import { PanelsTriggering } from '../../../../../settings/types/interfaces';
 import { IControlPanel } from '../types/interfaces';
 import { BasePanel } from './base-panel';
 import { MoveButtons } from './types/constants';

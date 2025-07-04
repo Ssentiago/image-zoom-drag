@@ -1,17 +1,19 @@
-import InteractifyPlugin from '../../core/interactify-plugin';
-import { LeafID } from '../../core/types/definitions';
+import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import {
     UnitContext,
     FileStats,
     SourceData,
-} from '../../interactify-unit/types/interfaces';
+} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+
+import InteractifyPlugin from '../../../../core/interactify-plugin';
+import { LeafID } from '../../../../core/types/definitions';
 import { InteractifyAdapters } from '../types/constants';
 import { HTMLElementWithCMView } from '../types/interfaces';
 import { BaseMdViewAdapter } from './base-md-view-adapter';
 
 export class LivePreviewAdapter extends BaseMdViewAdapter {
-    constructor(plugin: InteractifyPlugin, fileStats: FileStats) {
-        super(plugin, fileStats);
+    constructor(integratedMode: IntegratedMode, fileStats: FileStats) {
+        super(integratedMode, fileStats);
     }
 
     initialize = async (
@@ -19,8 +21,6 @@ export class LivePreviewAdapter extends BaseMdViewAdapter {
         el: Element,
         hasExistingObserver: boolean
     ) => {
-        if (!this.plugin.context.inLivePreviewMode) return;
-
         if (hasExistingObserver) {
             return;
         }
@@ -71,9 +71,12 @@ export class LivePreviewAdapter extends BaseMdViewAdapter {
 
     private setupMutationObserver(leafID: LeafID, el: Element): void {
         const observer = new MutationObserver(async (mutations) => {
-            this.plugin.logger.debug('Preview MutationObserver triggered', {
-                mutationsCount: mutations.length,
-            });
+            this.integratedMode.plugin.logger.debug(
+                'Preview MutationObserver triggered',
+                {
+                    mutationsCount: mutations.length,
+                }
+            );
 
             for (const mutation of this.childListMutations(mutations)) {
                 for (const context of this.interactiveElementContexts(
@@ -94,7 +97,10 @@ export class LivePreviewAdapter extends BaseMdViewAdapter {
             }
         });
 
-        this.plugin.state.setLivePreviewObserver(leafID, observer);
+        this.integratedMode.plugin.state.setLivePreviewObserver(
+            leafID,
+            observer
+        );
         observer.observe(el, { childList: true, subtree: true });
     }
 

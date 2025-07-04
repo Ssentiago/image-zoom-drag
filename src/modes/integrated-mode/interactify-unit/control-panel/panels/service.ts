@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import { Platform } from 'obsidian';
 
-import { PanelsTriggering } from '../../../settings/types/interfaces';
+import { PanelsTriggering } from '../../../../../settings/types/interfaces';
 import { TriggerType } from '../../types/constants';
 import { updateButton } from '../helpers/helpers';
 import { IControlPanel } from '../types/interfaces';

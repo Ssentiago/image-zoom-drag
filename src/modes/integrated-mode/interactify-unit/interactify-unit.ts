@@ -1,6 +1,6 @@
 import { Component } from 'obsidian';
 
-import InteractifyPlugin from '../core/interactify-plugin';
+import InteractifyPlugin from '../../../core/interactify-plugin';
 import { UnitActions } from './actions/unit-actions';
 import { ControlPanel } from './control-panel/control-panel';
 import Events from './events/events';
@@ -62,7 +62,8 @@ export default class InteractifyUnit extends Component {
     }
 
     get realSize() {
-        const { innerHeight, innerWidth } = this.plugin.context.view!.contentEl;
+        const { innerHeight, innerWidth } =
+            this.plugin.integratedMode.context.view!.contentEl;
 
         const settingsSizeData = this.plugin.settings.data.units.size;
         const isFolded = this.context.container.dataset.folded === 'true';
@@ -104,7 +105,7 @@ export default class InteractifyUnit extends Component {
         this.context.container.style.height = `${realSize.height}px`;
         this.context.container.style.width = `${realSize.width}px`;
 
-        if (this.plugin.context.inLivePreviewMode) {
+        if (this.plugin.integratedMode.context.inLivePreviewMode) {
             const parent = this.context.livePreviewWidget!;
             parent.style.setProperty(
                 'height',

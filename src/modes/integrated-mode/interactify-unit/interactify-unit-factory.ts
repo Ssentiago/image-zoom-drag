@@ -1,4 +1,4 @@
-import InteractifyPlugin from '../core/interactify-plugin';
+import InteractifyPlugin from '../../../core/interactify-plugin';
 import InteractifyUnit from './interactify-unit';
 import { UnitContext, FileStats } from './types/interfaces';
 

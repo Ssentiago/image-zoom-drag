@@ -1,14 +1,14 @@
+import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
+
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
 
-import InteractifyPlugin from './interactify-plugin';
-import { LeafID } from './types/definitions';
-import { IPluginContext } from './types/interfaces';
+import { LeafID } from '../../core/types/definitions';
 
-export class PluginContext implements IPluginContext {
+export class IntegratedModeContext {
     leaf: WorkspaceLeaf | undefined;
     view: MarkdownView | undefined;
 
-    constructor(private readonly plugin: InteractifyPlugin) {}
+    constructor(private readonly integratedMode: IntegratedMode) {}
 
     get leafID(): undefined | LeafID {
         return this.leaf && (this.leaf.id as LeafID);
@@ -53,7 +53,9 @@ export class PluginContext implements IPluginContext {
      */
     initialize(onInitialize: (leafID: LeafID) => void): void {
         const view =
-            this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+            this.integratedMode.plugin.app.workspace.getActiveViewOfType(
+                MarkdownView
+            );
         if (!view) {
             return;
         }
@@ -71,7 +73,8 @@ export class PluginContext implements IPluginContext {
             return;
         }
 
-        const isLeafAlive = this.plugin.app.workspace.getLeafById(this.leafID!);
+        const isLeafAlive =
+            this.integratedMode.plugin.app.workspace.getLeafById(this.leafID!);
         if (isLeafAlive === null) {
             onCleanup(this.leafID!);
             this.view = undefined;

@@ -1,6 +1,7 @@
+import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
+
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
 
-import InteractifyUnit from '../../interactify-unit/interactify-unit';
 import { LeafID } from './definitions';
 
 export interface Data {
@@ -11,13 +12,4 @@ export interface Data {
 
 export interface OrphanData {
     units: InteractifyUnit[];
-}
-
-export interface IPluginContext {
-    leaf: WorkspaceLeaf | undefined;
-    view: MarkdownView | undefined;
-    leafID: LeafID | undefined;
-    active: boolean;
-    inPreviewMode: boolean;
-    inLivePreviewMode: boolean;
 }

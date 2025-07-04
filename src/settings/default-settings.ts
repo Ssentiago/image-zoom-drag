@@ -1,4 +1,4 @@
-import { ImageConfigs } from '@/interactify-unit/types/constants';
+import { ImageConfigs } from '@/modes/integrated-mode/interactify-unit/types/constants';
 import {
     ActivationMode,
     DebugLevel,

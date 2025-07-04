@@ -1,7 +1,8 @@
+import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
+import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
+
 import { FileStats } from 'obsidian';
 
-import { InteractifyAdapters } from '../adapters/types/constants';
-import InteractifyUnit from '../interactify-unit/interactify-unit';
 import InteractifyPlugin from './interactify-plugin';
 import { LeafID } from './types/definitions';
 import { Data, OrphanData } from './types/interfaces';

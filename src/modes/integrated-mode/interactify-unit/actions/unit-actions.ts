@@ -96,7 +96,7 @@ export class UnitActions {
         });
 
         if (options?.animated) {
-            this.unit.plugin.context.view!.registerDomEvent(
+            this.unit.registerDomEvent(
                 content,
                 'transitionend',
                 () => {

@@ -1,8 +1,9 @@
+import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
+import { HTMLElementWithCMView } from '@/modes/integrated-mode/adapters/types/interfaces';
+
 import { MarkdownPostProcessorContext } from 'obsidian';
 
-import { InteractifyAdapters } from '../../adapters/types/constants';
-import { HTMLElementWithCMView } from '../../adapters/types/interfaces';
-import { ImageConfig } from '../../settings/types/interfaces';
+import { ImageConfig } from '../../../../settings/types/interfaces';
 
 export interface SourceData {
     source: string;

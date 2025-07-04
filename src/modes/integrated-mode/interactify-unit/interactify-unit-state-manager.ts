@@ -1,7 +1,8 @@
+import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
+
 import { Component } from 'obsidian';
 
-import { InteractifyAdapters } from '../adapters/types/constants';
-import { ActivationMode } from '../settings/types/interfaces';
+import { ActivationMode } from '../../../settings/types/interfaces';
 import InteractifyUnit from './interactify-unit';
 import { InteractiveMode } from './types/constants';
 

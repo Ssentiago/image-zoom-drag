@@ -1,19 +1,21 @@
-import { MarkdownPostProcessorContext } from 'obsidian';
-
-import InteractifyPlugin from '../../core/interactify-plugin';
-import { LeafID } from '../../core/types/definitions';
+import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import {
     PreviewContextData,
     UnitContext,
     FileStats,
     SourceData,
-} from '../../interactify-unit/types/interfaces';
+} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+
+import { MarkdownPostProcessorContext } from 'obsidian';
+
+import InteractifyPlugin from '../../../../core/interactify-plugin';
+import { LeafID } from '../../../../core/types/definitions';
 import { InteractifyAdapters } from '../types/constants';
 import { BaseMdViewAdapter } from './base-md-view-adapter';
 
 export class PreviewAdapter extends BaseMdViewAdapter {
-    constructor(plugin: InteractifyPlugin, fileStats: FileStats) {
-        super(plugin, fileStats);
+    constructor(integratedMode: IntegratedMode, fileStats: FileStats) {
+        super(integratedMode, fileStats);
     }
 
     initialize = async (
@@ -21,9 +23,12 @@ export class PreviewAdapter extends BaseMdViewAdapter {
         el: Element,
         context: MarkdownPostProcessorContext
     ): Promise<void> => {
-        this.plugin.logger.debug('MarkdownPreviewAdapter initializing', {
-            leafID,
-        });
+        this.integratedMode.plugin.logger.debug(
+            'MarkdownPreviewAdapter initializing',
+            {
+                leafID,
+            }
+        );
 
         const contextData = {
             context: context,
@@ -68,11 +73,14 @@ export class PreviewAdapter extends BaseMdViewAdapter {
         contextData: PreviewContextData
     ): Promise<void> {
         const observer = new MutationObserver(async (mutations) => {
-            this.plugin.logger.debug('Preview MutationObserver triggered', {
-                mutationsCount: mutations.length,
-            });
+            this.integratedMode.plugin.logger.debug(
+                'Preview MutationObserver triggered',
+                {
+                    mutationsCount: mutations.length,
+                }
+            );
 
-            if (!this.plugin._loaded) {
+            if (!this.integratedMode.plugin._loaded) {
                 observer.disconnect();
                 return;
             }
@@ -93,7 +101,7 @@ export class PreviewAdapter extends BaseMdViewAdapter {
 
         setTimeout(() => {
             observer.disconnect();
-            this.plugin.logger.debug(
+            this.integratedMode.plugin.logger.debug(
                 'Preview MutationObserver disconnected after timeout'
             );
         }, 5000);

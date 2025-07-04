@@ -1,23 +1,27 @@
+import InteractifyPlugin from '@/core/interactify-plugin';
 import { t } from '@/lang';
-
-import InteractifyPlugin from '../../core/interactify-plugin';
+import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import {
     FileStats,
     SourceData,
     UnitContext,
-} from '../../interactify-unit/types/interfaces';
+} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+
 import BaseAdapter from '../base-adapter';
 import { InteractifyAdapters } from '../types/constants';
 
-export default class PickerModeAdapter extends BaseAdapter {
-    constructor(plugin: InteractifyPlugin, fileStats: FileStats) {
-        super(plugin, fileStats);
+export default class DirectElementAdapter extends BaseAdapter {
+    constructor(integratedMode: IntegratedMode, fileStats: FileStats) {
+        super(integratedMode, fileStats);
     }
 
     initialize = async (el: SVGElement | HTMLImageElement) => {
         const ctx = this.matchInteractiveElement(el);
         if (ctx === undefined) {
-            this.plugin.showNotice(t.adapters.pickerMode.notice.error, 5000);
+            this.integratedMode.plugin.showNotice(
+                t.adapters.pickerMode.notice.error,
+                5000
+            );
             return;
         }
         await this.processUnit(ctx);

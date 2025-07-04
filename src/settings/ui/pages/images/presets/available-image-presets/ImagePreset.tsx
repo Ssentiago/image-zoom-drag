@@ -1,4 +1,5 @@
 import { t, tf } from '@/lang';
+import { ImageConfigs } from '@/modes/integrated-mode/interactify-unit/types/constants';
 
 import React, { FC, useRef } from 'react';
 
@@ -10,7 +11,6 @@ import {
     ToggleComponent,
 } from 'obsidian';
 
-import { ImageConfigs } from '../../../../../../interactify-unit/types/constants';
 import { useUnitsValidation } from '../hooks/useUnitsValidation';
 import { useImageConfigOperations } from './hooks/useImageConfigOperations';
 import { UnitItemProps } from './types/interfaces';

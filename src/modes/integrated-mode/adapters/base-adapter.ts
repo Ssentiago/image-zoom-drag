@@ -1,22 +1,24 @@
-import InteractifyPlugin from '../core/interactify-plugin';
-import InteractifyUnit from '../interactify-unit/interactify-unit';
-import InteractifyUnitFactory from '../interactify-unit/interactify-unit-factory';
+import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
+import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
+import InteractifyUnitFactory from '@/modes/integrated-mode/interactify-unit/interactify-unit-factory';
 import {
     InteractiveInitialization,
     ImageConfigs,
-} from '../interactify-unit/types/constants';
+} from '@/modes/integrated-mode/interactify-unit/types/constants';
 import {
     UnitContext,
     UnitSize,
     FileStats,
-} from '../interactify-unit/types/interfaces';
-import { ImageConfig } from '../settings/types/interfaces';
+} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+
+import InteractifyPlugin from '../../../core/interactify-plugin';
+import { ImageConfig } from '../../../settings/types/interfaces';
 import { InteractifyAdapters } from './types/constants';
 import { HTMLElementWithCMView } from './types/interfaces';
 
 export default abstract class BaseAdapter {
     protected constructor(
-        protected plugin: InteractifyPlugin,
+        protected integratedMode: IntegratedMode,
         protected fileStat: FileStats
     ) {}
 
@@ -31,7 +33,7 @@ export default abstract class BaseAdapter {
           }
         | undefined {
         const interactive = element as HTMLImageElement | SVGElement;
-        const units = this.plugin.settings.data.units.configs;
+        const units = this.integratedMode.plugin.settings.data.units.configs;
 
         const specific = units.filter(
             (u) =>
@@ -152,7 +154,7 @@ export default abstract class BaseAdapter {
 
     protected createUnit(context: UnitContext): void {
         const unit = InteractifyUnitFactory.createUnit(
-            this.plugin,
+            this.integratedMode.plugin,
             context,
             this.fileStat
         );
@@ -160,7 +162,7 @@ export default abstract class BaseAdapter {
     }
 
     protected emitCreated(unit: InteractifyUnit): void {
-        this.plugin.eventBus.emit('unit.created', unit);
+        this.integratedMode.plugin.eventBus.emit('unit.created', unit);
     }
 
     finalizeContext(ctx: Partial<UnitContext>): UnitContext {
@@ -189,7 +191,8 @@ export default abstract class BaseAdapter {
         const el = context.element!;
         const originalParent = el.parentElement as HTMLElement;
 
-        const renderingMode = this.plugin.context.inPreviewMode
+        const renderingMode = this.integratedMode.plugin.integratedMode.context
+            .inPreviewMode
             ? 'preview'
             : 'live-preview';
 
@@ -199,7 +202,7 @@ export default abstract class BaseAdapter {
         );
         container.setAttribute(
             'data-folded',
-            this.plugin.settings.data.units.folding.foldByDefault.toString()
+            this.integratedMode.plugin.settings.data.units.folding.foldByDefault.toString()
         );
         container.setAttribute('tabindex', '0');
 
@@ -213,14 +216,17 @@ export default abstract class BaseAdapter {
     ) {
         context.adapter = adapter;
 
-        this.plugin.logger.debug(`Processing unit for adapter: ${adapter}`, {
-            unitType: context.options!.name,
-        });
+        this.integratedMode.plugin.logger.debug(
+            `Processing unit for adapter: ${adapter}`,
+            {
+                unitType: context.options!.name,
+            }
+        );
 
         const canContinue = this.initializationGuard(context);
 
         if (!canContinue) {
-            this.plugin.logger.debug(
+            this.integratedMode.plugin.logger.debug(
                 `Initialization guard failed for adapter: ${adapter}`
             );
             return;
@@ -241,7 +247,7 @@ export default abstract class BaseAdapter {
         const fContext = this.finalizeContext(context);
 
         this.createUnit(fContext);
-        this.plugin.logger.debug(
+        this.integratedMode.plugin.logger.debug(
             `Adapter ${adapter} was processed successfully.`
         );
     }
