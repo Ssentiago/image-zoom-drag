@@ -1,6 +1,6 @@
-import { moment, normalizePath, Platform } from 'obsidian';
+import InteractifyPlugin from '@/core/interactify-plugin';
 
-import InteractifyPlugin from '../core/interactify-plugin';
+import { moment, normalizePath, Platform } from 'obsidian';
 
 export default class Logger {
     private readonly maxEntries = 2000;

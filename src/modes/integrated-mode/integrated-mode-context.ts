@@ -2,7 +2,7 @@ import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
 
-import { LeafID } from '../../core/types/definitions';
+import { LeafID } from './types/definitions';
 
 export class IntegratedModeContext {
     leaf: WorkspaceLeaf | undefined;
