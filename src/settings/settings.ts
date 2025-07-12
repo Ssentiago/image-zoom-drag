@@ -10,15 +10,15 @@ import { EventsWrapper } from './proxy/types/definitions';
 import { SettingsMigration } from './settings-migration';
 import { DefaultSettings } from './types/interfaces';
 
-export default class SettingsManager {
-    readonly eventBus: EventEmitter2;
-    readonly migration: SettingsMigration;
+export default class Settings {
+    readonly emitter: EventEmitter2;
+    private data!: DefaultSettings;
+    private readonly migration: SettingsMigration;
 
-    events!: EventsWrapper<DefaultSettings>;
-    data!: DefaultSettings;
+    $$!: EventsWrapper<DefaultSettings>;
 
     constructor(public readonly plugin: InteractifyPlugin) {
-        this.eventBus = new EventEmitter2({
+        this.emitter = new EventEmitter2({
             wildcard: true,
             delimiter: '.',
         });
@@ -29,7 +29,7 @@ export default class SettingsManager {
         return this.data;
     }
 
-    async loadSettings(): Promise<void> {
+    async load(): Promise<void> {
         const userSettings =
             (await this.plugin.loadData()) ?? defaultSettings();
 
@@ -57,21 +57,18 @@ export default class SettingsManager {
         }
 
         this.data = createSettingsProxy(this, { ...settings }, []);
-        this.events = createEventsWrapper(settings);
+        this.$$ = createEventsWrapper(settings);
 
         if (needsSave) {
-            await this.saveSettings();
+            await this.save();
         }
     }
 
-    async saveSettings(): Promise<void> {
-        const saveData = {
-            ...this.data,
-        };
-        await this.plugin.saveData(saveData);
+    async save(): Promise<void> {
+        await this.plugin.saveData(this.$);
     }
 
-    async resetSettings(): Promise<void> {
+    async reset(): Promise<void> {
         const pluginPath = this.plugin.manifest.dir;
 
         if (!pluginPath) {
@@ -82,6 +79,6 @@ export default class SettingsManager {
         const existsPath =
             await this.plugin.app.vault.adapter.exists(configPath);
         existsPath && (await this.plugin.app.vault.adapter.remove(configPath));
-        await this.loadSettings();
+        await this.load();
     }
 }

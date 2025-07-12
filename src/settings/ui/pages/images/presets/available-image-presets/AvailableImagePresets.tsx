@@ -31,7 +31,7 @@ const AvailableImagePresets: FC = () => {
     );
 
     const [unitsPerPage, setUnitsPerPage] = useState(
-        plugin.settings.data.units.settingsPagination.perPage
+        plugin.settings.$.units.settingsPagination.perPage
     );
     const { units } = useUnitsManagerContext();
     const [modeState, setModeState] = useState<ModeState>({
@@ -57,18 +57,16 @@ const AvailableImagePresets: FC = () => {
 
     useEffect(() => {
         const handler = async () => {
-            setUnitsPerPage(
-                plugin.settings.data.units.settingsPagination.perPage
-            );
+            setUnitsPerPage(plugin.settings.$.units.settingsPagination.perPage);
         };
 
-        plugin.settings.eventBus.on(
-            plugin.settings.events.units.settingsPagination.perPage.$path,
+        plugin.settings.emitter.on(
+            plugin.settings.$$.units.settingsPagination.perPage.$path,
             handler
         );
         return (): void => {
-            plugin.settings.eventBus.off(
-                plugin.settings.events.units.settingsPagination.perPage.$path,
+            plugin.settings.emitter.off(
+                plugin.settings.$$.units.settingsPagination.perPage.$path,
                 handler
             );
         };
@@ -119,15 +117,14 @@ const AvailableImagePresets: FC = () => {
                 sliders={[
                     (slider) => {
                         slider.setValue(
-                            plugin.settings.data.units.settingsPagination
-                                .perPage
+                            plugin.settings.$.units.settingsPagination.perPage
                         );
                         slider.setLimits(1, 50, 1);
                         slider.setDynamicTooltip();
                         slider.onChange(async (value) => {
-                            plugin.settings.data.units.settingsPagination.perPage =
+                            plugin.settings.$.units.settingsPagination.perPage =
                                 value;
-                            await plugin.settings.saveSettings();
+                            await plugin.settings.save();
                         });
                         return slider;
                     },

@@ -171,7 +171,7 @@ const useDragDrop = ({ unitPreviewRef, panels }: useDragDropProps) => {
         const panelName = data.panelName as keyof typeof panels;
         panels[panelName].position = position;
         setDraggedPanel(null);
-        await plugin.settings.saveSettings();
+        await plugin.settings.save();
     };
 
     const handleTouchStart = (e: React.TouchEvent, panelName: string): void => {
@@ -226,7 +226,7 @@ const useDragDrop = ({ unitPreviewRef, panels }: useDragDropProps) => {
         panels[panelName].position = position;
 
         setDraggedPanel(null);
-        await plugin.settings.saveSettings();
+        await plugin.settings.save();
     };
 
     const props = Platform.isDesktopApp

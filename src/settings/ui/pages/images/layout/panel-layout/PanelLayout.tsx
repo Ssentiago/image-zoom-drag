@@ -16,9 +16,7 @@ import useDragDrop from './hooks/useDragDrop';
 
 const PanelLayout: FC = () => {
     const { plugin } = useSettingsContext();
-    const [panels, setPanels] = useState(
-        plugin.settings.data.panels.local.panels
-    );
+    const [panels, setPanels] = useState(plugin.settings.$.panels.local.panels);
 
     const panelNames = useMemo(
         () => ({
@@ -43,14 +41,14 @@ const PanelLayout: FC = () => {
             setUpdateTrigger((prev) => !prev);
         };
 
-        plugin.settings.eventBus.on(
-            plugin.settings.events.panels.local.panels.$all,
+        plugin.settings.emitter.on(
+            plugin.settings.$$.panels.local.panels.$all,
             handler
         );
 
         return () => {
-            plugin.settings.eventBus.off(
-                plugin.settings.events.panels.local.panels.$all,
+            plugin.settings.emitter.off(
+                plugin.settings.$$.panels.local.panels.$all,
                 handler
             );
         };
@@ -60,7 +58,7 @@ const PanelLayout: FC = () => {
         panelName: keyof Panels['local']['panels']
     ): Promise<void> => {
         panels[panelName].on = !panels[panelName].on;
-        await plugin.settings.saveSettings();
+        await plugin.settings.save();
     };
 
     return (

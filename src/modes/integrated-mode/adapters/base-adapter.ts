@@ -33,7 +33,7 @@ export default abstract class BaseAdapter {
           }
         | undefined {
         const interactive = element as HTMLImageElement | SVGElement;
-        const units = this.integratedMode.plugin.settings.data.units.configs;
+        const units = this.integratedMode.plugin.settings.$.units.configs;
 
         const specific = units.filter(
             (u) =>
@@ -162,7 +162,7 @@ export default abstract class BaseAdapter {
     }
 
     protected emitCreated(unit: InteractifyUnit): void {
-        this.integratedMode.plugin.eventBus.emit('unit.created', unit);
+        this.integratedMode.plugin.emitter.emit('unit.created', unit);
     }
 
     finalizeContext(ctx: Partial<UnitContext>): UnitContext {
@@ -202,7 +202,7 @@ export default abstract class BaseAdapter {
         );
         container.setAttribute(
             'data-folded',
-            this.integratedMode.plugin.settings.data.units.folding.foldByDefault.toString()
+            this.integratedMode.plugin.settings.$.units.folding.foldByDefault.toString()
         );
         container.setAttribute('tabindex', '0');
 

@@ -84,10 +84,10 @@ const Debug: FC = () => {
                 desc={t.settings.pages.debug.enableLogging.desc}
                 toggles={[
                     (toggle) => {
-                        toggle.setValue(plugin.settings.data.debug.enabled);
+                        toggle.setValue(plugin.settings.$.debug.enabled);
                         toggle.onChange(async (value) => {
-                            plugin.settings.data.debug.enabled = value;
-                            await plugin.settings.saveSettings();
+                            plugin.settings.$.debug.enabled = value;
+                            await plugin.settings.save();
                         });
                         return toggle;
                     },
@@ -106,11 +106,10 @@ const Debug: FC = () => {
                             info: 'Info',
                             debug: 'Debug',
                         });
-                        dropdown.setValue(plugin.settings.data.debug.level);
+                        dropdown.setValue(plugin.settings.$.debug.level);
                         dropdown.onChange(async (value) => {
-                            plugin.settings.data.debug.level =
-                                value as DebugLevel;
-                            await plugin.settings.saveSettings();
+                            plugin.settings.$.debug.level = value as DebugLevel;
+                            await plugin.settings.save();
                         });
 
                         return dropdown;

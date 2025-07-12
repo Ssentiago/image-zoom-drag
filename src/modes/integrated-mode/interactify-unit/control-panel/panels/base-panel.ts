@@ -135,7 +135,7 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
 
     visibilityInitialization(): void {
         const triggeringMode =
-            this.controlPanel.unit.plugin.settings.data.panels.global.triggering
+            this.controlPanel.unit.plugin.settings.$.panels.global.triggering
                 .mode;
 
         const isFolded =
@@ -198,7 +198,7 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
 
     protected get supportedTriggers(): number {
         const triggeringOptions =
-            this.unit.plugin.settings.data.panels.global.triggering;
+            this.unit.plugin.settings.$.panels.global.triggering;
 
         let base =
             TriggerType.FORCE | TriggerType.FOLD | TriggerType.SERVICE_HIDING;

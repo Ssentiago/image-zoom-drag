@@ -80,7 +80,7 @@ export default class IntegratedMode extends Component {
     }
 
     private setupInternalEventHandlers(): void {
-        this.plugin.eventBus.on('unit.created', (unit: InteractifyUnit) => {
+        this.plugin.emitter.on('unit.created', (unit: InteractifyUnit) => {
             const leafID = this.context.leafID;
             if (!leafID) {
                 this.plugin.logger.warn('No active leaf found.');

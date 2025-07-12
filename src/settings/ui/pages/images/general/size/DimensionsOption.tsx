@@ -184,12 +184,12 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
         initialOptions.height.type = heightUnit;
 
         if (type === ComponentType.Folded) {
-            plugin.settings.data.units.size.folded = initialOptions;
+            plugin.settings.$.units.size.folded = initialOptions;
         } else {
-            plugin.settings.data.units.size.expanded = initialOptions;
+            plugin.settings.$.units.size.expanded = initialOptions;
         }
 
-        await plugin.settings.saveSettings();
+        await plugin.settings.save();
         plugin.showNotice(
             t.settings.pages.images.general.size.validation.savedSuccessfully
         );

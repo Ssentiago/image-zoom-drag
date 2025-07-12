@@ -5,20 +5,20 @@ import { useSettingsContext } from '../../../../core/SettingsContext';
 
 export const useUnitsManager = () => {
     const { plugin } = useSettingsContext();
-    const [units, setUnits] = useState(plugin.settings.data.units.configs);
+    const [units, setUnits] = useState(plugin.settings.$.units.configs);
 
     useEffect(() => {
         const handler = () => {
-            setUnits(plugin.settings.data.units.configs);
+            setUnits(plugin.settings.$.units.configs);
         };
 
-        plugin.settings.eventBus.on(
-            plugin.settings.events.units.configs.$path,
+        plugin.settings.emitter.on(
+            plugin.settings.$$.units.configs.$path,
             handler
         );
         return () => {
-            plugin.settings.eventBus.off(
-                plugin.settings.events.units.configs.$path,
+            plugin.settings.emitter.off(
+                plugin.settings.$$.units.configs.$path,
                 handler
             );
         };
@@ -27,8 +27,8 @@ export const useUnitsManager = () => {
     const saveUnits = useCallback(
         async (newUnits: ImageConfig[]) => {
             setUnits(newUnits);
-            plugin.settings.data.units.configs = newUnits;
-            await plugin.settings.saveSettings();
+            plugin.settings.$.units.configs = newUnits;
+            await plugin.settings.save();
         },
         [plugin]
     );

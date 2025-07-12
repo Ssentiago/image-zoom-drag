@@ -11,10 +11,10 @@ import { useSettingsContext } from '../../../../core/SettingsContext';
 const Interactive: FC = () => {
     const { plugin } = useSettingsContext();
     const [isIMOptionEnabled, setIsIMOptionEnabled] = useState(
-        plugin.settings.data.units.interactivity.markdown.autoDetect
+        plugin.settings.$.units.interactivity.markdown.autoDetect
     );
     const [activationMode, setActivationMode] = useState(
-        plugin.settings.data.units.interactivity.markdown.activationMode
+        plugin.settings.$.units.interactivity.markdown.activationMode
     );
 
     const [activationModeTooltip, setActivationModeTooltip] =
@@ -63,13 +63,12 @@ const Interactive: FC = () => {
                 toggles={[
                     (toggle) => {
                         toggle.setValue(
-                            plugin.settings.data.units.interactivity.picker
-                                .enabled
+                            plugin.settings.$.units.interactivity.picker.enabled
                         );
                         toggle.onChange(async (value) => {
-                            plugin.settings.data.units.interactivity.picker.enabled =
+                            plugin.settings.$.units.interactivity.picker.enabled =
                                 value;
-                            await plugin.settings.saveSettings();
+                            await plugin.settings.save();
                         });
                         return toggle;
                     },
@@ -89,14 +88,14 @@ const Interactive: FC = () => {
                 toggles={[
                     (toggle) => {
                         toggle.setValue(
-                            plugin.settings.data.units.interactivity.markdown
+                            plugin.settings.$.units.interactivity.markdown
                                 .autoDetect
                         );
                         toggle.onChange(async (value) => {
                             setIsIMOptionEnabled(value);
-                            plugin.settings.data.units.interactivity.markdown.autoDetect =
+                            plugin.settings.$.units.interactivity.markdown.autoDetect =
                                 value;
-                            await plugin.settings.saveSettings();
+                            await plugin.settings.save();
                         });
                         return toggle;
                     },
@@ -130,17 +129,17 @@ const Interactive: FC = () => {
                                     .interactive.activationMode.dropdown.lazy,
                             });
                             dropdown.setValue(
-                                plugin.settings.data.units.interactivity
-                                    .markdown.activationMode
+                                plugin.settings.$.units.interactivity.markdown
+                                    .activationMode
                             );
                             updateActivationModeTooltip(dropdown);
                             dropdown.onChange(async (value) => {
                                 const mode = value as ActivationMode;
 
                                 setActivationMode(mode);
-                                plugin.settings.data.units.interactivity.markdown.activationMode =
+                                plugin.settings.$.units.interactivity.markdown.activationMode =
                                     mode;
-                                await plugin.settings.saveSettings();
+                                await plugin.settings.save();
                                 updateActivationModeTooltip(dropdown);
                             });
 

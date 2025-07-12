@@ -26,7 +26,7 @@ export default class PickerMode extends Component {
         this.setupEvents();
         this.setupCommands();
 
-        this.plugin.settings.data.units.interactivity.picker.enabled &&
+        this.plugin.settings.$.units.interactivity.picker.enabled &&
             this.createRibbon();
     }
 
@@ -42,8 +42,8 @@ export default class PickerMode extends Component {
     };
 
     private setupEvents(): void {
-        const events = this.plugin.settings.events;
-        this.plugin.eventBus.on(
+        const events = this.plugin.settings.$$;
+        this.plugin.emitter.on(
             events.units.interactivity.picker.enabled.$path,
             this.pickerModeToggleHandler
         );
@@ -55,13 +55,12 @@ export default class PickerMode extends Component {
             name: 'Toggle picker mode',
             checkCallback: (checking) => {
                 if (checking) {
-                    return this.plugin.settings.data.units.interactivity.picker
+                    return this.plugin.settings.$.units.interactivity.picker
                         .enabled;
                 }
 
                 if (
-                    !this.plugin.settings.data.units.interactivity.picker
-                        .enabled
+                    !this.plugin.settings.$.units.interactivity.picker.enabled
                 ) {
                     this.plugin.showNotice(
                         t.commands.pickerMode.notice.disabled
@@ -251,7 +250,7 @@ export default class PickerMode extends Component {
             InteractiveInitialization.Initialized;
 
         if (wasAlreadyInitialized) {
-            this.plugin.eventBus.emit('toggle-element', { element });
+            this.plugin.emitter.emit('toggle-integrated-element', { element });
             this.showTooltip(interactive);
             return;
         }
@@ -266,9 +265,8 @@ export default class PickerMode extends Component {
     onunload() {
         this.deactivate();
         super.onunload();
-        this.plugin.eventBus.on(
-            this.plugin.settings.events.units.interactivity.picker.enabled
-                .$path,
+        this.plugin.emitter.off(
+            this.plugin.settings.$$.units.interactivity.picker.enabled.$path,
             this.pickerModeToggleHandler
         );
     }

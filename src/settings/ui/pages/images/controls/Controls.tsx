@@ -12,7 +12,7 @@ const Controls: React.FC = () => {
     const { plugin } = useSettingsContext();
 
     const [serviceOptionVisible, setServiceOptionVisible] = useState(
-        plugin.settings.data.panels.global.triggering.mode !==
+        plugin.settings.$.panels.global.triggering.mode !==
             PanelsTriggering.ALWAYS
     );
 
@@ -61,18 +61,18 @@ const Controls: React.FC = () => {
                                 .dropdown.focus,
                         });
                         dropdown.setValue(
-                            plugin.settings.data.panels.global.triggering.mode
+                            plugin.settings.$.panels.global.triggering.mode
                         );
                         extractTooltipDependsOnOption(dropdown);
 
                         dropdown.onChange(async (value) => {
-                            plugin.settings.data.panels.global.triggering.mode =
+                            plugin.settings.$.panels.global.triggering.mode =
                                 value as PanelsTriggering;
                             setServiceOptionVisible(
                                 value !== PanelsTriggering.ALWAYS
                             );
                             extractTooltipDependsOnOption(dropdown);
-                            await plugin.settings.saveSettings();
+                            await plugin.settings.save();
                         });
                         return dropdown;
                     },
@@ -93,13 +93,13 @@ const Controls: React.FC = () => {
                     toggles={[
                         (toggle) => {
                             toggle.setValue(
-                                plugin.settings.data.panels.global.triggering
+                                plugin.settings.$.panels.global.triggering
                                     .ignoreService
                             );
                             toggle.onChange(async (value) => {
-                                plugin.settings.data.panels.global.triggering.ignoreService =
+                                plugin.settings.$.panels.global.triggering.ignoreService =
                                     value;
-                                await plugin.settings.saveSettings();
+                                await plugin.settings.save();
                             });
                             return toggle;
                         },

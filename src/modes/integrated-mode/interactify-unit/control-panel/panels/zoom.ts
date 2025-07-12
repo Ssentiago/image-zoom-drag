@@ -15,7 +15,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
 
     get enabled(): boolean {
         return (
-            this.controlPanel.unit.plugin.settings.data.panels.local.panels.zoom
+            this.controlPanel.unit.plugin.settings.$.panels.local.panels.zoom
                 .on && this.controlPanel.unit.context.options.panels.zoom.on
         );
     }
@@ -26,8 +26,8 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
 
     get cssStyles() {
         return {
-            ...this.controlPanel.unit.plugin.settings.data.panels.local.panels
-                .zoom.position,
+            ...this.controlPanel.unit.plugin.settings.$.panels.local.panels.zoom
+                .position,
             transform: 'translateY(-50%)',
             gridTemplateColumns: '1fr',
         };
@@ -35,7 +35,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
 
     getButtonsConfig() {
         const zoomButtons =
-            this.controlPanel.unit.plugin.settings.data.panels.local.panels.zoom
+            this.controlPanel.unit.plugin.settings.$.panels.local.panels.zoom
                 .buttons;
 
         const buttons = [];
@@ -80,7 +80,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
     setupPanelContents() {
         this.panel.toggleClass(
             'hidden',
-            this.controlPanel.unit.plugin.settings.data.panels.global.triggering
+            this.controlPanel.unit.plugin.settings.$.panels.global.triggering
                 .mode !== PanelsTriggering.ALWAYS
         );
 

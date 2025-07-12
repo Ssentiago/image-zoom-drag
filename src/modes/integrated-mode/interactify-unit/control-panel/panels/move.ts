@@ -15,7 +15,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
 
     get enabled(): boolean {
         return (
-            this.unit.plugin.settings.data.panels.local.panels.move.on &&
+            this.unit.plugin.settings.$.panels.local.panels.move.on &&
             this.unit.context.options.panels.move?.on
         );
     }
@@ -26,7 +26,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
 
     get cssStyles() {
         return {
-            ...this.unit.plugin.settings.data.panels.local.panels.move.position,
+            ...this.unit.plugin.settings.$.panels.local.panels.move.position,
             gridTemplateColumns: 'repeat(3, 1fr)',
             gridTemplateRows: 'repeat(3, 1fr)',
         };
@@ -34,7 +34,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
 
     getButtonsConfig() {
         const moveButtons =
-            this.unit.plugin.settings.data.panels.local.panels.move.buttons;
+            this.unit.plugin.settings.$.panels.local.panels.move.buttons;
 
         const buttons = [
             {
@@ -121,7 +121,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
         super.setupPanelContents();
         this.panel.toggleClass(
             'hidden',
-            this.unit.plugin.settings.data.panels.global.triggering.mode !==
+            this.unit.plugin.settings.$.panels.global.triggering.mode !==
                 PanelsTriggering.ALWAYS
         );
     }

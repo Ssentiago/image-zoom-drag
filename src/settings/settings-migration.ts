@@ -1,13 +1,13 @@
 import { defaultSettings } from '@/settings/default-settings';
 
 import { MigrateFrom_5_2_0_To_5_3_0 } from './migrations/5.2.0_5.3.0';
-import SettingsManager from './settings-manager';
+import Settings from './settings';
 import { DefaultSettings, MigrationResult } from './types/interfaces';
 
 export class SettingsMigration {
     readonly CURRENT_VERSION = '5.3.0';
 
-    constructor(private readonly settingsManager: SettingsManager) {}
+    constructor(private readonly settings: Settings) {}
 
     migrate(oldSettings: any): MigrationResult {
         try {
@@ -23,12 +23,10 @@ export class SettingsMigration {
             const sourceVersion = oldSettings?.version ?? 'unknown';
 
             if (!oldSettings?.version || oldSettings.version === '5.2.0') {
-                const migrator = new MigrateFrom_5_2_0_To_5_3_0(
-                    this.settingsManager
-                );
+                const migrator = new MigrateFrom_5_2_0_To_5_3_0(this.settings);
                 migrated = migrator.apply(oldSettings);
             } else {
-                this.settingsManager.plugin.logger.warn(
+                this.settings.plugin.logger.warn(
                     `Unknown settings version: ${sourceVersion}, using defaults`
                 );
                 migrated = defaultSettings();

@@ -26,7 +26,7 @@ export function createSettingsProxy(
             const oldValue = target[prop];
             target[prop] = value;
             const fullPath = [...path, prop].join('.');
-            settingsManager.eventBus?.emit(`settings.${fullPath}`, {
+            settingsManager.emitter?.emit(`settings.${fullPath}`, {
                 eventName: `settings.${fullPath}`,
                 oldValue,
                 newValue: value,
@@ -42,7 +42,7 @@ export function createSettingsProxy(
 
             if (existed) {
                 const fullPath = [...path, prop].join('.');
-                settingsManager.eventBus?.emit(`settings.${fullPath}`, {
+                settingsManager.emitter?.emit(`settings.${fullPath}`, {
                     eventName: `settings.${fullPath}`,
                     operation: 'delete',
                     oldValue,

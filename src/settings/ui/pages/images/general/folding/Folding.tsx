@@ -22,12 +22,12 @@ const Folding: FC = (): React.ReactElement => {
                     (toggle): ToggleComponent => {
                         toggle
                             .setValue(
-                                plugin.settings.data.units.folding.foldByDefault
+                                plugin.settings.$.units.folding.foldByDefault
                             )
                             .onChange(async (value: boolean) => {
-                                plugin.settings.data.units.folding.foldByDefault =
+                                plugin.settings.$.units.folding.foldByDefault =
                                     value;
-                                await plugin.settings.saveSettings();
+                                await plugin.settings.save();
                             });
                         return toggle;
                     },
@@ -43,13 +43,13 @@ const Folding: FC = (): React.ReactElement => {
                     (toggle): ToggleComponent => {
                         toggle
                             .setValue(
-                                plugin.settings.data.units.folding
+                                plugin.settings.$.units.folding
                                     .autoFoldOnFocusChange
                             )
                             .onChange(async (value: boolean) => {
-                                plugin.settings.data.units.folding.autoFoldOnFocusChange =
+                                plugin.settings.$.units.folding.autoFoldOnFocusChange =
                                     value;
-                                await plugin.settings.saveSettings();
+                                await plugin.settings.save();
                             });
                         return toggle;
                     },

@@ -86,12 +86,12 @@ export const useHistory = <T extends readonly unknown[]>(
             setCanUndo(false);
             setCanRedo(false);
         };
-        plugin.settings.eventBus.on('settings-reset', handler);
-        plugin.settings.eventBus.on('settings-clear-history', handler);
+        plugin.settings.emitter.on('settings-reset', handler);
+        plugin.settings.emitter.on('settings-clear-history', handler);
 
         return () => {
-            plugin.settings.eventBus.off('settings-reset', handler);
-            plugin.settings.eventBus.off('settings-clear-history', handler);
+            plugin.settings.emitter.off('settings-reset', handler);
+            plugin.settings.emitter.off('settings-clear-history', handler);
         };
     }, []);
 

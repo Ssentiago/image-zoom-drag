@@ -58,10 +58,10 @@ export const ImageConfigOptionsModal: FC<UnitOptionsProps> = ({
                                 const oldUnits = JSON.parse(
                                     JSON.stringify(units)
                                 );
-                                plugin.settings.data.units.configs[
+                                plugin.settings.$.units.configs[
                                     unitIndex
                                 ].panels[panel].on = value;
-                                await plugin.settings.saveSettings();
+                                await plugin.settings.save();
                                 const state = value
                                     ? t.settings.pages.images.presets
                                           .availableImageConfigs.optionsModal

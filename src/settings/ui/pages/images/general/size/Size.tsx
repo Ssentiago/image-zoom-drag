@@ -24,11 +24,11 @@ const Size: FC = () => {
             />
             <DimensionsOption
                 type={ComponentType.Expanded}
-                initialOptions={plugin.settings.data.units.size.expanded}
+                initialOptions={plugin.settings.$.units.size.expanded}
             />
             <DimensionsOption
                 type={ComponentType.Folded}
-                initialOptions={plugin.settings.data.units.size.folded}
+                initialOptions={plugin.settings.$.units.size.folded}
                 border
             />
         </>

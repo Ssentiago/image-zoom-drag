@@ -15,7 +15,10 @@ export default class InteractifyUnitStateManager extends Component {
     }
 
     initialize() {
-        this.unit.plugin.eventBus.on('toggle-element', this.onToggleElement);
+        this.unit.plugin.emitter.on(
+            'toggle-integrated-element',
+            this.onToggleElement
+        );
         this.scheduleActivationIfNeeded();
     }
 
@@ -26,11 +29,11 @@ export default class InteractifyUnitStateManager extends Component {
         }
 
         const settings = this.unit.plugin.settings;
-        if (!settings.data.units.interactivity.markdown.autoDetect) {
+        if (!settings.$.units.interactivity.markdown.autoDetect) {
             return;
         }
 
-        switch (settings.data.units.interactivity.markdown.activationMode) {
+        switch (settings.$.units.interactivity.markdown.activationMode) {
             case ActivationMode.Immediate:
                 queueMicrotask(async () => await this.activate());
                 break;
@@ -242,7 +245,10 @@ export default class InteractifyUnitStateManager extends Component {
 
     onunload() {
         super.onunload();
-        this.unit.plugin.eventBus.off('toggle-element', this.onToggleElement);
+        this.unit.plugin.emitter.off(
+            'toggle-integrated-element',
+            this.onToggleElement
+        );
         this.intersectionObserver?.disconnect();
 
         this.unit.context.element.removeAttribute(

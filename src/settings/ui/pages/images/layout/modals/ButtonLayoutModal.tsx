@@ -29,8 +29,7 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
     const [reload, setReload] = useState(false);
 
     const buttonData = React.useMemo(() => {
-        const { zoom, move, service } =
-            plugin.settings.data.panels.local.panels;
+        const { zoom, move, service } = plugin.settings.$.panels.local.panels;
 
         return {
             zoom: [
@@ -181,20 +180,20 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
                 return;
             }
 
-            plugin.settings.data.panels.local.preset = 'none';
+            plugin.settings.$.panels.local.preset = 'none';
 
-            await plugin.settings.saveSettings();
+            await plugin.settings.save();
             setReload((prev) => !prev);
         };
 
-        plugin.settings.eventBus.on(
-            `${plugin.settings.events.panels.local.panels.$all}`,
+        plugin.settings.emitter.on(
+            `${plugin.settings.$$.panels.local.panels.$all}`,
             handler
         );
 
         return () => {
-            plugin.settings.eventBus.off(
-                `${plugin.settings.events.panels.local.panels.$all}`,
+            plugin.settings.emitter.off(
+                `${plugin.settings.$$.panels.local.panels.$all}`,
                 handler
             );
         };
@@ -203,19 +202,18 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
     const applyPreset = async (preset: keyof typeof presets) => {
         isApplyingPreset.current = true;
 
-        const { zoom, move, service } =
-            plugin.settings.data.panels.local.panels;
+        const { zoom, move, service } = plugin.settings.$.panels.local.panels;
         const config = presets[preset];
 
         Object.assign(zoom.buttons, config.zoom);
         Object.assign(move.buttons, config.move);
         Object.assign(service.buttons, config.service);
 
-        plugin.settings.data.panels.local.preset = preset;
-        await plugin.settings.saveSettings();
+        plugin.settings.$.panels.local.preset = preset;
+        await plugin.settings.save();
         isApplyingPreset.current = false;
         setReload((prev) => !prev);
-        console.log(plugin.settings.data.panels.local.preset);
+        console.log(plugin.settings.$.panels.local.preset);
     };
 
     return (
@@ -234,15 +232,15 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
                             t.settings.pages.images.layout.buttonsLayout.modal
                                 .preset.buttons.minimal
                         ).onClick(() => applyPreset('minimal'));
-                        plugin.settings.data.panels.local.preset ===
-                            'minimal' && btn.setCta();
+                        plugin.settings.$.panels.local.preset === 'minimal' &&
+                            btn.setCta();
                     },
                     (btn) => {
                         btn.setButtonText(
                             t.settings.pages.images.layout.buttonsLayout.modal
                                 .preset.buttons.full
                         ).onClick(() => applyPreset('full'));
-                        plugin.settings.data.panels.local.preset === 'full' &&
+                        plugin.settings.$.panels.local.preset === 'full' &&
                             btn.setCta();
                     },
                     (btn) => {
@@ -250,7 +248,7 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
                             t.settings.pages.images.layout.buttonsLayout.modal
                                 .preset.buttons.presentation
                         ).onClick(() => applyPreset('presentation'));
-                        plugin.settings.data.panels.local.preset ===
+                        plugin.settings.$.panels.local.preset ===
                             'presentation' && btn.setCta();
                     },
                 ]}
@@ -287,7 +285,7 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
                                                 .onChange(
                                                     async (value: boolean) => {
                                                         setValue(value);
-                                                        await plugin.settings.saveSettings();
+                                                        await plugin.settings.save();
                                                     }
                                                 );
                                             return toggle;

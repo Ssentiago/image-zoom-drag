@@ -32,19 +32,19 @@ export const useUnitsValidation = () => {
     };
 
     useEffect(() => {
-        updateUnitNameAndSelectors(plugin.settings.data.units.configs);
+        updateUnitNameAndSelectors(plugin.settings.$.units.configs);
         const handler = (payload: any) => {
             updateUnitNameAndSelectors(units);
         };
 
-        plugin.settings.eventBus.on(
-            plugin.settings.events.units.configs.$path,
+        plugin.settings.emitter.on(
+            plugin.settings.$$.units.configs.$path,
             handler
         );
 
         return () => {
-            plugin.settings.eventBus.off(
-                plugin.settings.events.units.configs.$path,
+            plugin.settings.emitter.off(
+                plugin.settings.$$.units.configs.$path,
                 handler
             );
         };

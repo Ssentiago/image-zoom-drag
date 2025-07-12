@@ -18,8 +18,7 @@ export default class Logger {
      */
     async init() {
         await this.ensureLogsDirExists();
-        this.plugin.settings.data.debug.enabled &&
-            (await this.writeSystemInfo());
+        this.plugin.settings.$.debug.enabled && (await this.writeSystemInfo());
     }
 
     /**
@@ -285,7 +284,7 @@ export default class Logger {
      * @param {string} message - The message to log.
      */
     private log(level: string, message: string, context?: any): void {
-        if (!this.plugin.settings.data.debug.enabled) {
+        if (!this.plugin.settings.$.debug.enabled) {
             return;
         }
         const logEntry = {
@@ -311,7 +310,7 @@ export default class Logger {
      */
     private shouldLog(messageLevel: string): boolean {
         const levels = ['none', 'debug', 'info', 'warn', 'error'];
-        const currentLevel = this.plugin.settings.data.debug.level;
+        const currentLevel = this.plugin.settings.$.debug.level;
 
         if (currentLevel === 'none') {
             return false;
