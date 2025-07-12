@@ -42,10 +42,11 @@ export default class InteractifyUnit extends Component {
 
         this.addChild(this.events);
         this.addChild(this.controlPanel);
-
-        this.interactiveStateManager.initialize();
     }
 
+    async setup() {
+        await this.interactiveStateManager.initialize();
+    }
     initialize(): void {
         this.plugin.logger.debug(`Initialize unit with id ${this.id}`);
 
@@ -62,10 +63,11 @@ export default class InteractifyUnit extends Component {
     }
 
     get realSize() {
-        const { innerHeight, innerWidth } =
-            this.plugin.integratedMode.context.view!.contentEl;
+        const contentEl = this.plugin.integratedMode.context.view?.contentEl;
+        const innerHeight = contentEl?.innerHeight ?? 0;
+        const innerWidth = contentEl?.innerWidth ?? 0;
 
-        const settingsSizeData = this.plugin.settings.data.units.size;
+        const settingsSizeData = this.plugin.settings.$.units.size;
         const isFolded = this.context.container.dataset.folded === 'true';
         const setting = isFolded
             ? settingsSizeData.folded
@@ -106,7 +108,14 @@ export default class InteractifyUnit extends Component {
         this.context.container.style.width = `${realSize.width}px`;
 
         if (this.plugin.integratedMode.context.inLivePreviewMode) {
-            const parent = this.context.livePreviewWidget!;
+            const parent = this.context.livePreviewWidget;
+            if (!parent) {
+                this.plugin.logger.error(
+                    'No parent found in live-preview mode'
+                );
+                return;
+            }
+
             parent.style.setProperty(
                 'height',
                 `${realSize.height}px`,
