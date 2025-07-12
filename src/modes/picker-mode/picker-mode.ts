@@ -139,7 +139,7 @@ export default class PickerMode extends Component {
         this.currentElement = null;
     }
 
-    activate() {
+    private activate() {
         this.isActive = true;
         document.body.addClass('picker-mode');
         this.createTooltip();
@@ -164,7 +164,7 @@ export default class PickerMode extends Component {
         this.plugin.showNotice(t.pickerMode.tooltip.onStart, 10000);
     }
 
-    deactivate() {
+    private deactivate() {
         if (!this.isActive) return;
 
         this.isActive = false;
