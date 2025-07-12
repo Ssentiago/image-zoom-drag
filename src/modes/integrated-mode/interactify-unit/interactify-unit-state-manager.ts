@@ -49,7 +49,7 @@ export default class InteractifyUnitStateManager extends Component {
         }
     };
 
-    activate = async () => {
+    activate = async (noAnimation?: boolean) => {
         if (this.unit.active) {
             return;
         }
@@ -59,13 +59,19 @@ export default class InteractifyUnitStateManager extends Component {
             InteractiveMode.Interactive
         );
 
-        await this.smoothTransition(
-            this.unit.context.originalParent,
-            async () => {
-                await this.switchToInteractive();
-                this.unit.initialize();
-            }
-        );
+        if (noAnimation) {
+            await this.switchToInteractive();
+            this.unit.initialize();
+        } else {
+            await this.smoothTransition(
+                this.unit.context.originalParent,
+                async () => {
+                    await this.switchToInteractive();
+                    this.unit.initialize();
+                }
+            );
+        }
+
         this.unit.context.originalParent.style.removeProperty('transition');
         this.unit.context.originalParent.style.removeProperty('transform');
     };
