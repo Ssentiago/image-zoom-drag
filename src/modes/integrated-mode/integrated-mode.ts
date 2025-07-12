@@ -1,20 +1,24 @@
 import InteractifyPlugin from '@/core/interactify-plugin';
-import { LeafID } from '@/core/types/definitions';
+import { BaseUnitContext } from '@/core/services/types/interfaces';
 import { t } from '@/lang';
-import DirectElementAdapter from '@/modes/integrated-mode/adapters/direct-element-adapters/direct-element-adapter';
-import { LivePreviewAdapter } from '@/modes/integrated-mode/adapters/markdown-view-adapters/live-preview-adapter';
-import { PreviewAdapter } from '@/modes/integrated-mode/adapters/markdown-view-adapters/preview-adapter';
 import { IntegratedModeContext } from '@/modes/integrated-mode/integrated-mode-context';
 import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
 import { TriggerType } from '@/modes/integrated-mode/interactify-unit/types/constants';
+import { LeafID } from '@/modes/integrated-mode/types/definitions';
 
-import { Component, debounce, MarkdownPostProcessorContext } from 'obsidian';
+import { Component, debounce, MarkdownView } from 'obsidian';
+
+import { MdViewAdapter } from './adapters/md-view-adapter';
+import State from './state';
 
 export default class IntegratedMode extends Component {
     readonly context: IntegratedModeContext;
+    state: State;
+
     constructor(public readonly plugin: InteractifyPlugin) {
         super();
         this.context = new IntegratedModeContext(this);
+        this.state = new State(this);
     }
 
     initialize() {
@@ -25,8 +29,8 @@ export default class IntegratedMode extends Component {
         this.setupObsidianEventHandlers();
     }
 
-    get settings() {
-        return this.plugin.settings.data;
+    async onunload() {
+        await this.state.clear();
     }
 
     private setupCommands(): void {
@@ -34,7 +38,7 @@ export default class IntegratedMode extends Component {
             id: 'toggle-panels-state',
             name: 'Toggle control panels visibility for all the active interactive images in current note',
             checkCallback: (checking: boolean) => {
-                const units = this.plugin.state.getUnits(this.context.leafID!);
+                const units = this.state.getUnits(this.context.leafID!);
 
                 if (checking) {
                     return (
@@ -84,100 +88,79 @@ export default class IntegratedMode extends Component {
             const leafID = this.context.leafID;
             if (!leafID) {
                 this.plugin.logger.warn('No active leaf found.');
-                this.plugin.state.pushOrphanUnit(unit);
-                this.plugin.logger.debug('orphan unit was added to state');
+                this.state.pushOrphanUnit(unit);
+                this.plugin.logger.debug(
+                    `'orphan unit with id ${unit.id} was added to state'`
+                );
                 return;
             }
-            this.plugin.state.pushUnit(leafID, unit);
+            this.state.pushUnit(leafID, unit);
             this.plugin.logger.debug('Unit added to state', {
                 leafID,
                 unitName: unit.context.options.name,
             });
         });
+
+        this.plugin.emitter.on('create-integrated-element', async (element) => {
+            const view =
+                this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+            const ctx = this.plugin.leafIndex.data
+                .get(view?.leaf.id!)
+                ?.imageIndex.get(element);
+
+            if (!ctx) {
+                return;
+            }
+
+            const mdAdapter = new MdViewAdapter(this, view!.file!.stat);
+
+            await mdAdapter.initialize(ctx);
+        });
+
+        this.plugin.emitter.on(
+            'leaf-index.image.added',
+            async (imageData: BaseUnitContext) => {
+                const view =
+                    this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+
+                if (!view) {
+                    this.plugin.logger.warn(
+                        'No active Markdown view found for image data',
+                        imageData
+                    );
+                    return;
+                }
+
+                const mdAdapter = new MdViewAdapter(this, view.file!.stat);
+
+                this.plugin.settings.$.units.interactivity.markdown
+                    .autoDetect && (await mdAdapter.initialize(imageData));
+            }
+        );
     }
 
     private setupObsidianEventHandlers(): void {
         const onLeafEvent = async (
             event: 'active-leaf-change' | 'layout-change'
         ) => {
-            this.context.cleanup((leafID) =>
-                this.plugin.state.cleanupLeaf(leafID)
-            );
+            this.context.cleanup((leafID) => this.state.cleanupLeaf(leafID));
             this.context.initialize((leafID) => {
-                this.plugin.state.initializeLeaf(leafID);
+                this.state.initializeLeaf(leafID);
                 this.setupResizeObserver(leafID);
             });
-
-            if (!this.settings.units.interactivity.markdown.autoDetect) {
-                return;
-            }
 
             if (!this.context.active) {
                 return;
             }
 
             if (event === 'layout-change') {
-                await this.plugin.state.cleanupUnitsOnFileChange(
+                await this.state.cleanupUnitsOnFileChange(
                     this.context.leafID!,
                     this.context.view!.file!.stat
                 );
-                await this.plugin.state.cleanOrphan();
+                await this.state.cleanOrphan();
             }
-
-            if (!this.context.inLivePreviewMode) {
-                return;
-            }
-
-            const adapter = new LivePreviewAdapter(this, {
-                ...this.context.view!.file!.stat,
-            });
-            const sourceContainer = this.context.view!.contentEl.querySelector(
-                '.markdown-source-view'
-            ) as HTMLElement;
-
-            await adapter.initialize(
-                this.context.leafID!,
-                sourceContainer,
-                this.plugin.state.hasLiveObserver(this.context.leafID!)
-            );
-            this.plugin.logger.debug(
-                'Initialized adapter for Live Preview Mode...'
-            );
         };
-
-        this.plugin.registerMarkdownPostProcessor(
-            async (
-                element: HTMLElement,
-                context: MarkdownPostProcessorContext
-            ) => {
-                this.context.initialize((leafID) =>
-                    this.plugin.state.initializeLeaf(leafID)
-                );
-
-                if (!this.settings.units.interactivity.markdown.autoDetect) {
-                    return;
-                }
-
-                if (this.context.active && this.context.inPreviewMode) {
-                    this.plugin.logger.debug(
-                        'Calling withing the Markdown PostProcessor...'
-                    );
-                    const adapter = new PreviewAdapter(this, {
-                        ...this.context.view!.file!.stat,
-                    });
-
-                    await adapter.initialize(
-                        this.context.leafID!,
-                        element,
-                        context
-                    );
-
-                    this.plugin.logger.debug(
-                        'Initialized adapter for Preview Mode...'
-                    );
-                }
-            }
-        );
 
         this.plugin.registerEvent(
             this.plugin.app.workspace.on('layout-change', async () => {
@@ -186,6 +169,36 @@ export default class IntegratedMode extends Component {
                 );
 
                 await onLeafEvent('layout-change');
+
+                const leafId = this.context.leafID;
+                if (!leafId) {
+                    return;
+                }
+
+                const images = this.plugin.leafIndex.data.get(leafId);
+                if (!images) {
+                    return;
+                }
+
+                const mode = this.context.inPreviewMode
+                    ? 'preview'
+                    : this.context.inLivePreviewMode
+                      ? 'live-preview'
+                      : undefined;
+                if (!mode) {
+                    return;
+                }
+
+                const adapter = new MdViewAdapter(
+                    this,
+                    this.context.view?.file?.stat!
+                );
+                const currentModeImages = images.imageIndex
+                    .values()
+                    .filter((i) => i.mode === mode);
+                for (const image of currentModeImages) {
+                    await adapter.initialize(image);
+                }
             })
         );
         this.plugin.registerEvent(
@@ -198,13 +211,13 @@ export default class IntegratedMode extends Component {
         );
     }
 
-    setupResizeObserver(leafID: LeafID) {
-        if (this.plugin.state.hasResizeObserver(leafID)) {
+    private setupResizeObserver(leafID: LeafID) {
+        if (this.state.hasResizeObserver(leafID)) {
             return;
         }
         const debouncedApplyLayout = debounce(
             () => {
-                this.plugin.state
+                this.state
                     .getUnits(leafID)
                     .forEach((unit) => unit.applyLayout());
             },
@@ -212,22 +225,10 @@ export default class IntegratedMode extends Component {
             true
         );
 
-        const obs = new ResizeObserver(() => {
+        const obs = new ResizeObserver((entries, observer) => {
             debouncedApplyLayout();
         });
         obs.observe(this.context.view?.contentEl!);
-        this.plugin.state.setResizeObserver(leafID, obs);
-    }
-
-    async createDirectlyIntegratedElement(
-        element: SVGElement | HTMLImageElement
-    ) {
-        const adapter = new DirectElementAdapter(this, {
-            ctime: 0,
-            size: 0,
-            mtime: 0,
-        });
-
-        await adapter.initialize(element);
+        this.state.setResizeObserver(leafID, obs);
     }
 }
