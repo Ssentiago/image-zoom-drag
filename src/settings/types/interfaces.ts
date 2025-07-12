@@ -118,9 +118,15 @@ export interface Interactivity {
     };
 }
 
+interface UnitContextMenu {
+    showForDiagrams: boolean;
+    showForOtherImages: boolean;
+}
+
 export interface Units {
     configs: ImageConfig[];
     interactivity: Interactivity;
+    contextMenu: UnitContextMenu;
     settingsPagination: {
         perPage: number;
     };
