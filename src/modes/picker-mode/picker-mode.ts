@@ -1,6 +1,5 @@
 import InteractifyPlugin from '@/core/interactify-plugin';
 import { t } from '@/lang';
-import DirectElementAdapter from '@/modes/integrated-mode/adapters/direct-element-adapters/direct-element-adapter';
 import {
     InteractiveInitialization,
     InteractiveMode,
@@ -10,7 +9,6 @@ import isThisSvgIcon from '@/utils/isThisSvgIcon';
 
 import { Component } from 'obsidian';
 
-// TODO поменять логику чтоб просто передавать управление в адаптер - Popup / Integrated
 export default class PickerMode extends Component {
     private isActive: boolean = false;
     private tooltip: HTMLDivElement | null = null;
