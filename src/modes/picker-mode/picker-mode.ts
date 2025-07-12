@@ -174,6 +174,7 @@ export default class PickerMode extends Component {
         document.removeEventListener('mouseover', this.onMouseOver);
         document.removeEventListener('mouseout', this.onMouseOut);
         document.removeEventListener('mousedown', this.onMouseDown, true);
+        document.removeEventListener('keydown', this.onKeyDown);
 
         document.querySelectorAll('svg, img').forEach((el) => {
             el.removeClass('interactive-candidate');
