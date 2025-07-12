@@ -11,9 +11,9 @@ import PluginStateChecker from './plugin-state-checker';
 import State from './state';
 
 export default class InteractifyPlugin extends Plugin {
-    state!: State;
-    settings!: SettingsManager;
-    pluginStateChecker!: PluginStateChecker;
+    noticeEl?: HTMLElement;
+
+    settings!: Settings;
     logger!: Logger;
     eventBus!: EventEmitter2;
     pickerMode!: PickerMode;
@@ -118,13 +118,17 @@ export default class InteractifyPlugin extends Plugin {
     }
 
     /**
-     * Displays a notice with the provided message for a specified duration.
+     * An alias for `new Notice` element creating.
      *
-     * @param message - The message to display in the notice.
-     * @param duration - The duration in milliseconds for which the notice should be displayed. Defaults to undefined.
+     * Saves the message object, deletes the old one on a call to avoid message spam
+     *
+     * @param message - The notice message to be displayed
+     * @param duration - The duration for which the notice should be displayed. If undefined, that message will be displayed until the user interacts with it explicitly
      * @returns void
      */
     showNotice(message: string, duration?: number): void {
-        new Notice(message, duration);
+        this.noticeEl?.remove();
+        const notice = new Notice(message, duration);
+        this.noticeEl = notice.containerEl;
     }
 }
