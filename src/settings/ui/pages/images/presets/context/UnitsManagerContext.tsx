@@ -1,10 +1,11 @@
-import { createContext, useContext, useMemo } from 'react';
-
-import { useUnitsManager } from '../hooks/useUnitsManager';
 import {
     UnitManagerContextProps,
     UnitsManagerProviderProps,
-} from './typing/interfaces';
+} from '@/settings/ui/pages/images/presets/context/types/interfaces';
+
+import { createContext, useContext, useMemo } from 'react';
+
+import { useUnitsManager } from '../hooks/useUnitsManager';
 
 const UnitsManagerContext = createContext<UnitManagerContextProps | undefined>(
     undefined

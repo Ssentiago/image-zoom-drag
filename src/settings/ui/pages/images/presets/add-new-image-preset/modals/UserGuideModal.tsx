@@ -1,4 +1,5 @@
 import { t } from '@/lang';
+import { UserGuideModalProps } from '@/settings/ui/pages/images/presets/add-new-image-preset/modals/types/interfaces';
 
 import React from 'react';
 
@@ -8,7 +9,6 @@ import {
 } from '@obsidian-devkit/native-react-components';
 
 import { useUserGuideVideo } from './hooks/useUserGuideVideo';
-import { UserGuideModalProps } from './typing/interfaces';
 
 const UserGuideModal: React.FC<UserGuideModalProps> = ({ onClose }) => {
     const { isLoading, videoUrl } = useUserGuideVideo();

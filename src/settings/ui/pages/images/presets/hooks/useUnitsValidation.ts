@@ -1,14 +1,14 @@
 import { t, tf } from '@/lang';
 import { ImageConfig } from '@/settings/types/interfaces';
+import {
+    GlobalValidationResult,
+    UnitValidationResult,
+} from '@/settings/ui/pages/images/presets/hooks/types/interfaces';
 
 import { useEffect, useMemo, useState } from 'react';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../context/UnitsManagerContext';
-import {
-    GlobalValidationResult,
-    UnitValidationResult,
-} from './typing/interfaces';
 
 // const unitRegexp = /^[\w-]+$/;
 
