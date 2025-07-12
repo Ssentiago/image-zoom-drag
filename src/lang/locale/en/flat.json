@@ -34,7 +34,7 @@
     "pickerMode.tooltip.imageState.off": "Activate interactive mode",
     "pickerMode.tooltip.imageState.on": "Deactivate interactive mode",
     "pickerMode.tooltip.onExit": "Picker mode disabled",
-    "pickerMode.tooltip.onStart": "Picker mode enabled\nClick on image to toggle interactive mode\nPress Esc to exit",
+    "pickerMode.tooltip.onStart": "Picker mode enabled\nClick on image to toggle interactive mode\nAlt + click on image to open in in Popup viewer & editor\nPress Esc to exit",
     "settings.pages.about.githubPage.linkButtonTooltip": "Go to GitHub page of this plugin",
     "settings.pages.about.githubPage.name": "GitHub page",
     "settings.pages.debug.aboutExportedLogs.desc": [
@@ -103,15 +103,11 @@
     "settings.pages.images.general.interactive.pickerMode.name": "Enable picker mode",
     "settings.pages.images.general.size.desc": "Note: You need to reopen all the open Markdown views with images in them to apply these settings.",
     "settings.pages.images.general.size.expanded.desc": [
-        "Set the container dimensions for expanded state.",
-        "px: 100-1000, %: 10-100",
-        "Click Save button or press Enter to apply changes."
+        "Set the container dimensions for expanded state."
     ],
     "settings.pages.images.general.size.expanded.name": "Expanded image container size",
     "settings.pages.images.general.size.folded.desc": [
-        "Set the container dimensions for folded state.",
-        "px: 100-1000, %: 10-100",
-        "Click Save button or press Enter to apply changes."
+        "Set the container dimensions for folded state."
     ],
     "settings.pages.images.general.size.folded.name": "Folded image container size",
     "settings.pages.images.general.size.header": "Image size",
