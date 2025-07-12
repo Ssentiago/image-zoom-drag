@@ -6,6 +6,7 @@ import {
     InteractiveMode,
 } from '@/modes/integrated-mode/interactify-unit/types/constants';
 import { SettingsEventPayload } from '@/settings/types/interfaces';
+import isThisSvgIcon from '@/utils/isThisSvgIcon';
 
 import { Component } from 'obsidian';
 
@@ -150,6 +151,10 @@ export default class PickerMode extends Component {
         document.addEventListener('mousedown', this.onMouseDown, true);
 
         document.querySelectorAll('svg, img').forEach((el) => {
+            if (isThisSvgIcon(el)) {
+                return;
+            }
+
             const rect = el.getBoundingClientRect();
             if (rect.width >= 64 && rect.height >= 64) {
                 el.addClass('interactive-candidate');
