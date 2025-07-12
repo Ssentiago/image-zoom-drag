@@ -9,3 +9,5 @@ bundle*
 .yarn
 
 dependency-graph.svg
+
+/.idea/
