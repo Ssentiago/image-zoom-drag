@@ -14,17 +14,17 @@ export default class InteractifyUnitStateManager extends Component {
         this.load();
     }
 
-    initialize() {
+    async initialize() {
         this.unit.plugin.emitter.on(
             'toggle-integrated-element',
             this.onToggleElement
         );
-        this.scheduleActivationIfNeeded();
+        await this.scheduleActivationIfNeeded();
     }
 
-    private scheduleActivationIfNeeded(): void {
+    private async scheduleActivationIfNeeded() {
         if (this.unit.context.adapter === InteractifyAdapters.PickerMode) {
-            queueMicrotask(async () => await this.activate());
+            await this.activate();
             return;
         }
 
@@ -35,7 +35,7 @@ export default class InteractifyUnitStateManager extends Component {
 
         switch (settings.$.units.interactivity.markdown.activationMode) {
             case ActivationMode.Immediate:
-                queueMicrotask(async () => await this.activate());
+                await this.activate(true);
                 break;
             case ActivationMode.Lazy:
                 this.setupIntersectionObserver();
