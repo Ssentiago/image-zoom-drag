@@ -1,12 +1,7 @@
-import EventEmitter2 from 'eventemitter2';
-
-interface ISettingsManager {
-    eventBus: EventEmitter2;
-    saveSettings(): Promise<void>;
-}
+import Settings from '../settings';
 
 export function createSettingsProxy(
-    settingsManager: ISettingsManager,
+    settingsManager: Settings,
     obj: any,
     path: any[] = [],
     autoSave?: boolean
