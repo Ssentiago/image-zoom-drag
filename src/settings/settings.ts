@@ -25,6 +25,10 @@ export default class SettingsManager {
         this.migration = new SettingsMigration(this);
     }
 
+    get $() {
+        return this.data;
+    }
+
     async loadSettings(): Promise<void> {
         const userSettings =
             (await this.plugin.loadData()) ?? defaultSettings();
