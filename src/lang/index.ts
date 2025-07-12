@@ -13,6 +13,6 @@ async function initT() {
             : ((await import('./t/prod')).t as unknown as LocaleSchema);
 }
 
-initT();
+const tPromise = initT();
 
-export { t, tf };
+export { t, tf, tPromise };
