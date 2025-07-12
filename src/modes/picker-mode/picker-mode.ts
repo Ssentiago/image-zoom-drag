@@ -255,9 +255,7 @@ export default class PickerMode extends Component {
             return;
         }
 
-        await this.plugin.integratedMode.createDirectlyIntegratedElement(
-            interactive
-        );
+        this.plugin.emitter.emit('create-integrated-element', interactive);
 
         this.showTooltip(interactive);
     };
