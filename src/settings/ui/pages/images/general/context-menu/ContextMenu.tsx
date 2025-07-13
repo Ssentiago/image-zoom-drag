@@ -2,50 +2,50 @@ import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
 
 import { FC } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 const ContextMenu: FC = () => {
     const { plugin } = useSettingsContext();
 
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name='Context menu'
-                setHeading
+                heading
             />
-            <ReactObsidianSetting
+            <OSetting
                 name='Show context menu for diagrams'
                 desc='Toggle whether to show context menu for diagrams (svg and img generated from the codeblock)'
-                toggles={[
-                    (toggle) => {
-                        toggle.setValue(
-                            plugin.settings.$.units.contextMenu.showForDiagrams
-                        );
-                        toggle.onChange(async (value) => {
-                            plugin.settings.$.units.contextMenu.showForDiagrams =
-                                value;
-                            await plugin.settings.save();
-                        });
-                    },
-                ]}
-            />
-            <ReactObsidianSetting
+            >
+                <input
+                    type={'checkbox'}
+                    defaultChecked={
+                        plugin.settings.$.units.contextMenu.showForDiagrams
+                    }
+                    onChange={async (e) => {
+                        plugin.settings.$.units.contextMenu.showForDiagrams =
+                            e.target.checked;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
+
+            <OSetting
                 name='Show context menu for other images'
                 desc='Toggle whether to show context menu for other images elements (i.e. local or external)'
-                toggles={[
-                    (toggle) => {
-                        toggle.setValue(
-                            plugin.settings.$.units.contextMenu
-                                .showForOtherImages
-                        );
-                        toggle.onChange(async (value) => {
-                            plugin.settings.$.units.contextMenu.showForOtherImages =
-                                value;
-                            await plugin.settings.save();
-                        });
-                    },
-                ]}
-            />
+            >
+                <input
+                    type={'checkbox'}
+                    defaultChecked={
+                        plugin.settings.$.units.contextMenu.showForOtherImages
+                    }
+                    onChange={async (e) => {
+                        plugin.settings.$.units.contextMenu.showForOtherImages =
+                            e.target.checked;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
         </>
     );
 };

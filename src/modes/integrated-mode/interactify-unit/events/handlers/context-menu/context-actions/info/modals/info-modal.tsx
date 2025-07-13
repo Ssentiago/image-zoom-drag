@@ -1,79 +1,76 @@
 import { FC } from 'react';
 
-import {
-    ReactObsidianModal,
-    ReactObsidianSetting,
-} from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
 
 import { UnitInfoProps } from './types/interfaces';
 
 const InfoModal: FC<UnitInfoProps> = ({ info, onClose }) => {
     return (
-        <ReactObsidianModal
+        <OModal
             title='Image properties'
             onClose={onClose}
             width='500px'
             maxHeight='80vh'
         >
             {/* General Info */}
-            <ReactObsidianSetting
+            <OSetting
                 name='General Information'
-                setHeading={true}
+                heading={true}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Name'
                 desc={info.name}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Selector'
                 desc={info.selector}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Status'
                 desc={info.enabled ? 'Enabled' : 'Disabled'}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Element type'
                 desc={info.elementType}
             />
 
             {/* Dimensions */}
-            <ReactObsidianSetting
+            <OSetting
                 name='Dimensions'
-                setHeading={true}
+                heading={true}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Width'
                 desc={`${info.dimensions.width}px`}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Height'
                 desc={`${info.dimensions.height}px`}
             />
 
             {/* Source Location */}
-            <ReactObsidianSetting
+            <OSetting
                 name='Source Location'
-                setHeading={true}
+                heading={true}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Start line'
                 desc={info.sourceLocation.lineStart.toString()}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='End line'
                 desc={info.sourceLocation.lineEnd.toString()}
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name='Lines count'
                 desc={info.sourceLocation.linesCount.toString()}
             />
@@ -81,13 +78,13 @@ const InfoModal: FC<UnitInfoProps> = ({ info, onClose }) => {
             {/* Panels */}
             {info.panels.length > 0 && (
                 <>
-                    <ReactObsidianSetting
+                    <OSetting
                         name='Panels'
-                        setHeading={true}
+                        heading={true}
                     />
 
                     {info.panels.map((panel, index) => (
-                        <ReactObsidianSetting
+                        <OSetting
                             key={`${index}-${panel.name}`}
                             name={panel.name}
                             desc={panel.enabled ? '✓ Enabled' : '✗ Disabled'}
@@ -95,7 +92,7 @@ const InfoModal: FC<UnitInfoProps> = ({ info, onClose }) => {
                     ))}
                 </>
             )}
-        </ReactObsidianModal>
+        </OModal>
     );
 };
 

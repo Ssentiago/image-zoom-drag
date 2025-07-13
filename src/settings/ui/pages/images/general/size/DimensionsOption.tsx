@@ -2,8 +2,7 @@ import { t, tf } from '@/lang';
 
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
-import { setTooltip, TextComponent } from 'obsidian';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import { DimensionType } from '../../../../../types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
@@ -63,13 +62,18 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
     border,
 }) => {
     const { plugin } = useSettingsContext();
-    const hasValidationErrorsRef = useRef(false);
 
     const [heightUnit, setHeightUnit] = useState(initialOptions.height.type);
     const [widthUnit, setWidthUnit] = useState(initialOptions.width.type);
+    const [heightValue, setHeightValue] = useState(
+        initialOptions.height.value.toString()
+    );
+    const [widthValue, setWidthValue] = useState(
+        initialOptions.width.value.toString()
+    );
 
-    const heightValueRef = useRef(initialOptions.height.value);
-    const widthValueRef = useRef(initialOptions.width.value);
+    const [heightError, setHeightError] = useState('');
+    const [widthError, setWidthError] = useState('');
 
     const inputsRef = useRef<HTMLDivElement>(null);
 
@@ -91,80 +95,55 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
         }
     }, [type]);
 
+    const validateHeight = (value: string, unit: DimensionType) => {
+        if (!isDimensionInValidRange(value, unit)) {
+            setHeightError(getErrorMessage('height', unit));
+            return false;
+        }
+        setHeightError('');
+        return true;
+    };
+
+    const validateWidth = (value: string, unit: DimensionType) => {
+        if (!isDimensionInValidRange(value, unit)) {
+            setWidthError(getErrorMessage('width', unit));
+            return false;
+        }
+        setWidthError('');
+        return true;
+    };
+
     const validateDimensionInput = useCallback(
         (
-            inputEl: HTMLInputElement,
+            value: string,
             field: 'width' | 'height',
             unit: DimensionType
         ): void => {
-            const value = inputEl.value;
-            const isValid = isDimensionInValidRange(value, unit);
-
-            if (!isValid) {
-                inputEl.addClass('invalid');
-                setTooltip(inputEl, getErrorMessage(field, unit));
-                hasValidationErrorsRef.current = true;
-            } else {
-                inputEl.removeClass('invalid');
-                setTooltip(inputEl, '');
-                hasValidationErrorsRef.current = false;
-            }
+            field === 'height'
+                ? validateHeight(value, unit)
+                : validateWidth(value, unit);
         },
         []
     );
 
-    const validateAllFields = (
-        widthInput: HTMLInputElement,
-        heightInput: HTMLInputElement
-    ) => {
-        const widthValid = isDimensionInValidRange(widthInput.value, widthUnit);
-        const heightValid = isDimensionInValidRange(
-            heightInput.value,
-            heightUnit
-        );
-        return widthValid && heightValid;
-    };
-
     useEffect(() => {
-        const widthInput = inputsRef.current?.querySelector(
-            '#input-width'
-        ) as HTMLInputElement | null;
-        const heightInput = inputsRef.current?.querySelector(
-            '#input-height'
-        ) as HTMLInputElement | null;
-
-        if (widthInput?.value) {
-            validateDimensionInput(widthInput, 'width', widthUnit);
-        }
-
-        if (heightInput?.value) {
-            validateDimensionInput(heightInput, 'height', heightUnit);
-        }
+        validateDimensionInput(widthValue, 'width', widthUnit);
+        validateDimensionInput(heightValue, 'height', heightUnit);
     }, [widthUnit, heightUnit]);
 
     const handleSave = async () => {
-        if (!inputsRef.current) {
-            return;
-        }
+        const isHeightValid = validateHeight(heightValue, heightUnit);
+        const isWidthValid = validateWidth(widthValue, widthUnit);
 
-        const widthInput = inputsRef.current.querySelector(
-            '#input-width'
-        ) as HTMLInputElement;
-        const heightInput = inputsRef.current.querySelector(
-            '#input-height'
-        ) as HTMLInputElement;
-
-        const isValid = validateAllFields(widthInput, heightInput);
-
-        if (!isValid) {
+        if (!isHeightValid || !isWidthValid) {
             plugin.showNotice(
                 t.settings.pages.images.general.size.validation.fixErrors
             );
             return;
         }
 
-        const inputWidth = parseInt(widthInput.value, 10);
-        const inputHeight = parseInt(heightInput.value, 10);
+        const inputWidth = parseInt(widthValue, 10);
+        const inputHeight = parseInt(heightValue, 10);
 
         if (
             inputWidth === initialOptions.width.value &&
@@ -197,125 +176,85 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
 
     const onKeyDown = async (e: React.KeyboardEvent) => {
         if (e.code === 'Enter') {
-            if (!inputsRef.current) {
-                return;
-            }
-
-            const isAnyFocused =
-                !!inputsRef.current.querySelector('input:focus');
-            if (isAnyFocused) {
-                e.preventDefault();
-                await handleSave();
-            }
+            e.preventDefault();
+            await handleSave();
         }
     };
 
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name={getName()}
-                multiDesc={(multiDesc) => {
-                    multiDesc.addDescriptions(getDesc());
-                    return multiDesc;
-                }}
                 noBorder={true}
             />
 
-            <div
-                onKeyDown={onKeyDown}
-                ref={inputsRef}
-            >
-                <ReactObsidianSetting
-                    texts={[
-                        (inputHeight): TextComponent => {
-                            const parent = inputHeight.inputEl
-                                .parentElement as HTMLElement;
-                            inputHeight.inputEl.id = 'input-height';
-                            const label = document.createElement('label');
-                            label.textContent =
-                                t.settings.pages.images.general.size.labels.height;
-                            parent.insertBefore(label, inputHeight.inputEl);
-                            inputHeight.setValue(
-                                heightValueRef.current.toString()
-                            );
-                            inputHeight.setPlaceholder(
-                                t.settings.pages.images.general.size
-                                    .placeholders.height
-                            );
-                            inputHeight.onChange((value) => {
-                                const replaced = value.replace(/\D/, '');
-                                inputHeight.setValue(replaced);
-                                heightValueRef.current = parseInt(replaced, 10);
-
-                                validateDimensionInput(
-                                    inputHeight.inputEl,
-                                    'height',
-                                    heightUnit
-                                );
-                            });
-                            return inputHeight;
-                        },
-                        (inputWidth): TextComponent => {
-                            const wrapper = inputWidth.inputEl
-                                .parentElement as HTMLElement;
-                            inputWidth.inputEl.id = 'input-width';
-                            const label = document.createElement('label');
-                            label.textContent =
-                                t.settings.pages.images.general.size.labels.width;
-                            wrapper.insertBefore(label, inputWidth.inputEl);
-
-                            inputWidth.setValue(
-                                widthValueRef.current.toString()
-                            );
-                            inputWidth.setPlaceholder(
-                                t.settings.pages.images.general.size
-                                    .placeholders.width
-                            );
-                            inputWidth.onChange((value) => {
-                                const replaced = value.replace(/\D/, '');
-                                inputWidth.setValue(replaced);
-                                widthValueRef.current = parseInt(replaced, 10);
-
-                                validateDimensionInput(
-                                    inputWidth.inputEl,
-                                    'width',
-                                    widthUnit
-                                );
-                            });
-                            return inputWidth;
-                        },
-                    ]}
-                    dropdowns={[
-                        (dropdown) => {
-                            dropdown.addOptions({ px: 'px', '%': '%' });
-                            dropdown.setValue(heightUnit);
-                            dropdown.onChange((value) => {
-                                setHeightUnit(value as DimensionType);
-                            });
-                            return dropdown;
-                        },
-                        (dropdown) => {
-                            dropdown.addOptions({ px: 'px', '%': '%' });
-                            dropdown.setValue(widthUnit);
-                            dropdown.onChange((value) => {
-                                setWidthUnit(value as DimensionType);
-                            });
-                            return dropdown;
-                        },
-                    ]}
-                    buttons={[
-                        (button) => {
-                            button.setIcon('save');
-                            button.setTooltip(
-                                t.settings.pages.images.general.size
-                                    .saveButtonTooltip
-                            );
-                            button.onClick(handleSave);
-                            return button;
-                        },
-                    ]}
+            <OSetting>
+                <label htmlFor={'height-input'}>Height</label>
+                <input
+                    id={'height-input'}
+                    type='text'
+                    value={heightValue}
+                    onKeyDown={onKeyDown}
+                    aria-label={
+                        heightError || heightUnit === 'px'
+                            ? '100-1000px'
+                            : '10-100%'
+                    }
+                    className={heightError ? 'invalid' : ''}
+                    onChange={(e) => {
+                        const value = e.target.value.replace(/\D/, '');
+                        e.target.value = value;
+                        setHeightValue(value);
+                        validateHeight(value, heightUnit);
+                    }}
                 />
-            </div>
+                <select
+                    value={heightUnit}
+                    onChange={(e) => {
+                        const unit = e.target.value as DimensionType;
+                        setHeightUnit(unit);
+                        validateHeight(heightValue, unit);
+                    }}
+                >
+                    <option value='px'>px</option>
+                    <option value='%'>%</option>
+                </select>
+
+                <label htmlFor={'width-input'}>Width</label>
+                <input
+                    id={'width-input'}
+                    type='text'
+                    value={widthValue}
+                    className={widthError ? 'invalid' : ''}
+                    aria-label={
+                        widthError || widthUnit === 'px'
+                            ? '100-1000px'
+                            : '10-100%'
+                    }
+                    onChange={(e) => {
+                        const value = e.target.value.replace(/\D/, '');
+                        e.target.value = value;
+                        setWidthValue(value);
+                        validateWidth(value, widthUnit);
+                    }}
+                />
+                <select
+                    value={widthUnit}
+                    onChange={(e) => {
+                        const unit = e.target.value as DimensionType;
+                        setWidthUnit(unit);
+                        validateWidth(widthValue, unit);
+                    }}
+                >
+                    <option value='px'>px</option>
+                    <option value='%'>%</option>
+                </select>
+
+                <button
+                    onClick={handleSave}
+                    data-icon={'save'}
+                />
+            </OSetting>
         </>
     );
 };

@@ -1,8 +1,8 @@
 import { t, tf } from '@/lang';
 
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import { DebugLevel } from '../../../types/interfaces';
 import { useSettingsContext } from '../../core/SettingsContext';
@@ -30,167 +30,142 @@ const Debug: FC = () => {
         URL.revokeObjectURL(url);
     }, [plugin.logger]);
 
+    const copyLogs = useCallback(async () => {
+        const logString = plugin.logger.exportLogs();
+        if (logString.trim() === '') {
+            plugin.showNotice(
+                t.settings.pages.debug.copyLogs.notice.logsNotFound
+            );
+            return;
+        }
+        await navigator.clipboard.writeText(logString);
+        plugin.showNotice(t.settings.pages.debug.copyLogs.notice.successfully);
+    }, []);
+
     const storageMessage = tf(t.settings.pages.debug.clearLogsStorage.desc, {
         storage: plugin.logger.getStorageUsage(),
         entries: plugin.logger.getAllLogs().length.toString(),
     });
 
+    const handleLinkButtonClick = useCallback(async () => {
+        const systemInfo = JSON.stringify(
+            plugin.logger.getShortSystemInfo(),
+            null,
+            2
+        );
+        const issueBody = encodeURIComponent(
+            `## Issue Description\n` +
+                `[Describe your issue here]\n\n` +
+                `## Steps to Reproduce\n` +
+                `1. [First step]\n` +
+                `2. [Second step]\n\n` +
+                `## System info\n` +
+                `${systemInfo}\n\n`
+        );
+        const githubUrl =
+            `https://github.com/Ssentiago/interactify/issues/new?` +
+            `title=${encodeURIComponent('[Bug Report] ')}&` +
+            `labels=bug&` +
+            `body=${issueBody}`;
+        window.open(githubUrl, '_blank');
+    }, []);
+
+    const clearLogs = useCallback(async () => {
+        plugin.logger.clearAllLogs();
+        setReload((prev) => !prev);
+        plugin.showNotice(
+            t.settings.pages.debug.clearLogsStorage.notice.successfully
+        );
+    }, []);
+
     return (
         <>
-            <ReactObsidianSetting
-                name={`${t.settings.pages.debug.reportIssue.name}`}
-                multiDesc={(multidesc) => {
-                    multidesc.addDescriptions(
-                        t.settings.pages.debug.reportIssue.desc
-                    );
+            <OSetting
+                name={t.settings.pages.debug.reportIssue.name}
+                desc={t.settings.pages.debug.reportIssue.desc}
+            >
+                <button
+                    aria-label={
+                        t.settings.pages.debug.reportIssue.linkButtonTooltip
+                    }
+                    onClick={handleLinkButtonClick}
+                    data-icon={'bug'}
+                />
+            </OSetting>
 
-                    return multidesc;
-                }}
-                buttons={[
-                    (button) => {
-                        button.setIcon('bug');
-                        button.setTooltip(
-                            t.settings.pages.debug.reportIssue.linkButtonTooltip
-                        );
-                        button.onClick(async () => {
-                            const systemInfo = JSON.stringify(
-                                plugin.logger.getShortSystemInfo(),
-                                null,
-                                2
-                            );
-                            const issueBody = encodeURIComponent(
-                                `## Issue Description\n` +
-                                    `[Describe your issue here]\n\n` +
-                                    `## Steps to Reproduce\n` +
-                                    `1. [First step]\n` +
-                                    `2. [Second step]\n\n` +
-                                    `## System info\n` +
-                                    `${systemInfo}\n\n`
-                            );
-                            const githubUrl =
-                                `https://github.com/Ssentiago/interactify/issues/new?` +
-                                `title=${encodeURIComponent('[Bug Report] ')}&` +
-                                `labels=bug&` +
-                                `body=${issueBody}`;
-                            window.open(githubUrl, '_blank');
-                        });
-                        return button;
-                    },
-                ]}
-            />
-
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.debug.enableLogging.name}
                 desc={t.settings.pages.debug.enableLogging.desc}
-                toggles={[
-                    (toggle) => {
-                        toggle.setValue(plugin.settings.$.debug.enabled);
-                        toggle.onChange(async (value) => {
-                            plugin.settings.$.debug.enabled = value;
-                            await plugin.settings.save();
-                        });
-                        return toggle;
-                    },
-                ]}
-            />
+            >
+                <input
+                    type='checkbox'
+                    defaultChecked={plugin.settings.$.debug.enabled}
+                    onChange={async (e) => {
+                        plugin.settings.$.debug.enabled =
+                            e.currentTarget.checked;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
 
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.debug.logLevel.name}
                 desc={t.settings.pages.debug.logLevel.desc}
-                dropdowns={[
-                    (dropdown) => {
-                        dropdown.addOptions({
-                            none: 'None',
-                            error: 'Error',
-                            warn: 'Warning',
-                            info: 'Info',
-                            debug: 'Debug',
-                        });
-                        dropdown.setValue(plugin.settings.$.debug.level);
-                        dropdown.onChange(async (value) => {
-                            plugin.settings.$.debug.level = value as DebugLevel;
-                            await plugin.settings.save();
-                        });
+            >
+                <select
+                    value={plugin.settings.$.debug.level}
+                    onChange={async (e) => {
+                        plugin.settings.$.debug.level = e.target
+                            .value as DebugLevel;
+                        await plugin.settings.save();
+                    }}
+                >
+                    <option value='none'>None</option>
+                    <option value='error'>Error</option>
+                    <option value='warn'>Warning</option>
+                    <option value='info'>Info</option>
+                    <option value='debug'>Debug</option>
+                </select>
+            </OSetting>
 
-                        return dropdown;
-                    },
-                ]}
-            />
-
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.debug.aboutExportedLogs.name}
-                multiDesc={(multiDesc) => {
-                    multiDesc.addDescriptions(
-                        t.settings.pages.debug.aboutExportedLogs.desc
-                    );
-                    return multiDesc;
-                }}
+                desc={t.settings.pages.debug.aboutExportedLogs.desc}
             />
 
-            <ReactObsidianSetting
-                name={t.settings.pages.debug.exportLogs.name}
-                buttons={[
-                    (button) => {
-                        button.setIcon('download');
-                        button.setTooltip(
-                            t.settings.pages.debug.exportLogs
-                                .exportButtonTooltip
-                        );
-                        button.onClick(downloadLogs);
-                        return button;
-                    },
-                ]}
-            />
-            <ReactObsidianSetting
-                name={t.settings.pages.debug.copyLogs.name}
-                buttons={[
-                    (button) => {
-                        button.setIcon('clipboard');
-                        button.setTooltip(
-                            t.settings.pages.debug.copyLogs.copyButtonTooltip
-                        );
-                        button.onClick(async () => {
-                            const logString = plugin.logger.exportLogs();
-                            if (logString.trim() === '') {
-                                plugin.showNotice(
-                                    t.settings.pages.debug.copyLogs.notice
-                                        .logsNotFound
-                                );
-                                return;
-                            }
-                            await navigator.clipboard.writeText(logString);
-                            plugin.showNotice(
-                                t.settings.pages.debug.copyLogs.notice
-                                    .successfully
-                            );
-                        });
-                        return button;
-                    },
-                ]}
-            />
+            <OSetting name={t.settings.pages.debug.exportLogs.name}>
+                <button
+                    aria-label={
+                        t.settings.pages.debug.exportLogs.exportButtonTooltip
+                    }
+                    onClick={downloadLogs}
+                    data-icon={'download'}
+                />
+            </OSetting>
 
-            <ReactObsidianSetting
+            <OSetting name={t.settings.pages.debug.copyLogs.name}>
+                <button
+                    aria-label={
+                        t.settings.pages.debug.copyLogs.copyButtonTooltip
+                    }
+                    onClick={copyLogs}
+                    data-icon={'clipboard'}
+                />
+            </OSetting>
+
+            <OSetting
                 name={t.settings.pages.debug.clearLogsStorage.name}
                 desc={storageMessage}
-                buttons={[
-                    (button) => {
-                        button.setIcon('trash');
-                        button.setTooltip(
-                            t.settings.pages.debug.clearLogsStorage
-                                .clearButtonTooltip
-                        );
-                        button.onClick(async () => {
-                            plugin.logger.clearAllLogs();
-                            setReload((prev) => !prev);
-                            plugin.showNotice(
-                                t.settings.pages.debug.clearLogsStorage.notice
-                                    .successfully
-                            );
-                        });
-                        return button;
-                    },
-                ]}
-            />
+            >
+                <button
+                    aria-label={
+                        t.settings.pages.debug.clearLogsStorage
+                            .clearButtonTooltip
+                    }
+                    onClick={clearLogs}
+                    data-icon={'trash'}
+                />
+            </OSetting>
         </>
     );
 };

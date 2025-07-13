@@ -1,7 +1,5 @@
 import { t, tf } from '@/lang';
 
-import { useMemo } from 'react';
-
 import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../../context/HistoryContext';
 import { useUnitsManagerContext } from '../../context/UnitsManagerContext';
@@ -9,7 +7,7 @@ import { useUnitsValidation } from '../../hooks/useUnitsValidation';
 
 export const useImageConfigOperations = () => {
     const { plugin } = useSettingsContext();
-    const { validateBoth, processBothValidation } = useUnitsValidation();
+    const { validateBoth, processValidationOnSave } = useUnitsValidation();
     const { units, saveUnits } = useUnitsManagerContext();
     const { updateUndoStack } = useUnitsHistoryContext();
 
@@ -64,11 +62,7 @@ export const useImageConfigOperations = () => {
             editingSelectorInput.value,
             oldUnit
         );
-        const validated = processBothValidation(
-            editingNameInput,
-            editingSelectorInput,
-            validationResult
-        );
+        const validated = processValidationOnSave(validationResult);
 
         if (validated) {
             const oldName = oldUnit.name;
@@ -119,7 +113,7 @@ export const useImageConfigOperations = () => {
                 )
             );
         }
-        return validated;
+        return validationResult;
     };
 
     return {

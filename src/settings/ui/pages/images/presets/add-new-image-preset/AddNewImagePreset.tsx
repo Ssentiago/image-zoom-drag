@@ -1,17 +1,9 @@
 import { t, tf } from '@/lang';
 
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 
-import {
-    MultiDescComponent,
-    ReactObsidianSetting,
-} from '@obsidian-devkit/native-react-components';
-import {
-    ButtonComponent,
-    ExtraButtonComponent,
-    Platform,
-    TextComponent,
-} from 'obsidian';
+import { OSetting } from '@obsidian-devkit/native-react-components';
+import { Platform } from 'obsidian';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import { useUnitsHistoryContext } from '../context/HistoryContext';
@@ -26,42 +18,23 @@ const AddNewImagePreset: FC = () => {
         validateSelector,
         validateBoth,
         validateName,
-        processSelectorValidation,
-        processNameValidation,
-        processBothValidation,
+        processValidationOnSave,
     } = useUnitsValidation();
+
+    const [name, setName] = useState('');
+    const [selector, setSelector] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [selectorError, setSelectorError] = useState('');
 
     const { units, saveUnits } = useUnitsManagerContext();
 
     const { updateUndoStack } = useUnitsHistoryContext();
-    const addingUnitWrapperRef = useRef<HTMLInputElement>(null);
 
     const handleAddUnit = async (): Promise<void> => {
-        if (addingUnitWrapperRef.current === null) {
-            return;
-        }
-        const nameInput = addingUnitWrapperRef.current.querySelector(
-            '#unit-name'
-        ) as HTMLInputElement | null;
+        debugger;
+        const validationResult = validateBoth(name, selector);
 
-        const selectorInput = addingUnitWrapperRef.current.querySelector(
-            '#unit-selector'
-        ) as HTMLInputElement | null;
-
-        if (!nameInput || !selectorInput) {
-            return;
-        }
-
-        const validationResult = validateBoth(
-            nameInput.value,
-            selectorInput.value
-        );
-
-        const validated = processBothValidation(
-            nameInput,
-            selectorInput,
-            validationResult
-        );
+        const validated = processValidationOnSave(validationResult);
         if (!validated) {
             return;
         }
@@ -69,8 +42,8 @@ const AddNewImagePreset: FC = () => {
         const oldUnits = [...units];
 
         const newUnit = {
-            name: nameInput.value,
-            selector: selectorInput.value,
+            name: name,
+            selector: selector,
             on: true,
             panels: {
                 move: {
@@ -103,113 +76,90 @@ const AddNewImagePreset: FC = () => {
             t.settings.pages.images.presets.addNewImagePreset.notice
                 .newConfigAdded
         );
-        nameInput.value = '';
-        selectorInput.value = '';
+        setName('');
+        setSelector('');
     };
 
     const onKeyDown = async (e: React.KeyboardEvent) => {
         if (e.code === 'Enter') {
-            if (addingUnitWrapperRef.current === null) {
-                return;
-            }
-
-            const isAnyInputsFocused =
-                !!addingUnitWrapperRef.current.querySelector('input:focus');
-            if (isAnyInputsFocused) {
-                e.preventDefault();
-                await handleAddUnit();
-            }
+            e.preventDefault();
+            await handleAddUnit();
         }
     };
 
     return (
-        <div
-            onKeyDown={onKeyDown}
-            ref={addingUnitWrapperRef}
-        >
-            <ReactObsidianSetting
+        <>
+            <OSetting
                 name={t.settings.pages.images.presets.addNewImagePreset.header}
-                setHeading
+                heading
                 noBorder
-                multiDesc={(multiDesc: MultiDescComponent) => {
-                    multiDesc.addDescriptions(
-                        t.settings.pages.images.presets.addNewImagePreset.desc
-                    );
-                    return multiDesc;
-                }}
+                desc={t.settings.pages.images.presets.addNewImagePreset.desc}
             />
-            <ReactObsidianSetting
-                texts={[
-                    (name): TextComponent => {
-                        name.inputEl.id = 'unit-name';
-                        name.setPlaceholder(
+
+            <OSetting>
+                <input
+                    id={'unit-name'}
+                    type={'text'}
+                    className={nameError.trim() ? 'invalid' : ''}
+                    placeholder={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .placeholders.name
+                    }
+                    aria-label={nameError}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setName(value);
+                        const validationResult = validateName(value);
+                        setNameError(validateName(name).tooltip);
+                    }}
+                    onKeyDown={onKeyDown}
+                />
+
+                <input
+                    id={'unit-selector'}
+                    type={'text'}
+                    className={selectorError.trim() ? 'invalid' : ''}
+                    aria-label={selectorError}
+                    placeholder={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .placeholders.selector
+                    }
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setSelector(value);
+                        const validationResult = validateSelector(value);
+                        setSelectorError(validationResult.tooltip);
+                    }}
+                    onKeyDown={onKeyDown}
+                />
+
+                <button
+                    aria-label={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .tooltips.saveButton
+                    }
+                    onClick={handleAddUnit}
+                    data-icon={'save'}
+                />
+
+                {Platform.isDesktopApp && (
+                    <button
+                        aria-label={
                             t.settings.pages.images.presets.addNewImagePreset
-                                .placeholders.name
-                        );
-                        name.onChange((text) => {
-                            name.setValue(text);
-                            const validationResult = validateName(
-                                name.getValue()
-                            );
-                            processNameValidation(
-                                name.inputEl,
-                                validationResult
-                            );
-                        });
-                        return name;
-                    },
-                    (selector): TextComponent => {
-                        selector.inputEl.id = 'unit-selector';
-                        selector.setPlaceholder(
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .placeholders.selector
-                        );
-                        selector.onChange((text) => {
-                            selector.setValue(text);
-                            const validationResult = validateSelector(
-                                selector.getValue()
-                            );
-                            processSelectorValidation(
-                                selector.inputEl,
-                                validationResult
-                            );
-                        });
-                        return selector;
-                    },
-                ]}
-                buttons={[
-                    (button): ButtonComponent => {
-                        button.setIcon('save');
-                        button.setTooltip(
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .tooltips.saveButton
-                        );
-                        button.onClick(async () => {
-                            await handleAddUnit();
-                        });
-                        return button;
-                    },
-                ]}
-                extraButtons={[
-                    Platform.isDesktopApp &&
-                        ((extra): ExtraButtonComponent => {
-                            extra.setIcon('info');
-                            extra.setTooltip(
-                                t.settings.pages.images.presets
-                                    .addNewImagePreset.tooltips.infoButton
-                            );
-                            extra.onClick(() => {
-                                setGuideOpen(true);
-                            });
-                            return extra;
-                        }),
-                ]}
-            />
+                                .tooltips.infoButton
+                        }
+                        onClick={() => {
+                            setGuideOpen(true);
+                        }}
+                        data-icon={'info'}
+                    />
+                )}
+            </OSetting>
 
             {guideOpen && (
                 <UserGuideModal onClose={() => setGuideOpen(false)} />
             )}
-        </div>
+        </>
     );
 };
 

@@ -2,8 +2,7 @@ import { t } from '@/lang';
 
 import React, { FC } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
-import { ToggleComponent } from 'obsidian';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
@@ -11,50 +10,45 @@ const Folding: FC = (): React.ReactElement => {
     const { plugin } = useSettingsContext();
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.images.general.fold.header}
-                setHeading={true}
+                heading
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.images.general.fold.foldByDefault.name}
-                toggles={[
-                    (toggle): ToggleComponent => {
-                        toggle
-                            .setValue(
-                                plugin.settings.$.units.folding.foldByDefault
-                            )
-                            .onChange(async (value: boolean) => {
-                                plugin.settings.$.units.folding.foldByDefault =
-                                    value;
-                                await plugin.settings.save();
-                            });
-                        return toggle;
-                    },
-                ]}
-            />
+            >
+                <input
+                    type='checkbox'
+                    defaultChecked={
+                        plugin.settings.$.units.folding.foldByDefault
+                    }
+                    onChange={async (e) => {
+                        plugin.settings.$.units.folding.foldByDefault =
+                            e.target.checked;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
 
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.general.fold.autoFoldOnFocusChange
                         .name
                 }
-                toggles={[
-                    (toggle): ToggleComponent => {
-                        toggle
-                            .setValue(
-                                plugin.settings.$.units.folding
-                                    .autoFoldOnFocusChange
-                            )
-                            .onChange(async (value: boolean) => {
-                                plugin.settings.$.units.folding.autoFoldOnFocusChange =
-                                    value;
-                                await plugin.settings.save();
-                            });
-                        return toggle;
-                    },
-                ]}
-            />
+            >
+                <input
+                    type='checkbox'
+                    defaultChecked={
+                        plugin.settings.$.units.folding.autoFoldOnFocusChange
+                    }
+                    onChange={async (e) => {
+                        plugin.settings.$.units.folding.autoFoldOnFocusChange =
+                            e.target.checked;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
         </>
     );
 };

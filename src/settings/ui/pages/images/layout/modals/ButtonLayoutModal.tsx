@@ -1,12 +1,8 @@
 import { t } from '@/lang';
-import presets from '@/settings/ui/pages/images/presets/Presets';
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import {
-    ReactObsidianModal,
-    ReactObsidianSetting,
-} from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
 
@@ -14,11 +10,6 @@ interface ButtonManagementModalProps {
     onClose: () => void;
     title: string;
 }
-
-const UI_PRIORITY = {
-    TOGGLE: 1,
-    BUTTON: 2,
-} as const;
 
 const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
     onClose,
@@ -217,87 +208,90 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
     };
 
     return (
-        <ReactObsidianModal
+        <OModal
             title={title}
             onClose={onClose}
         >
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.layout.buttonsLayout.modal.preset
                         .name
                 }
-                buttons={[
-                    (btn) => {
-                        btn.setButtonText(
-                            t.settings.pages.images.layout.buttonsLayout.modal
-                                .preset.buttons.minimal
-                        ).onClick(() => applyPreset('minimal'));
-                        plugin.settings.$.panels.local.preset === 'minimal' &&
-                            btn.setCta();
-                    },
-                    (btn) => {
-                        btn.setButtonText(
-                            t.settings.pages.images.layout.buttonsLayout.modal
-                                .preset.buttons.full
-                        ).onClick(() => applyPreset('full'));
-                        plugin.settings.$.panels.local.preset === 'full' &&
-                            btn.setCta();
-                    },
-                    (btn) => {
-                        btn.setButtonText(
-                            t.settings.pages.images.layout.buttonsLayout.modal
-                                .preset.buttons.presentation
-                        ).onClick(() => applyPreset('presentation'));
-                        plugin.settings.$.panels.local.preset ===
-                            'presentation' && btn.setCta();
-                    },
-                ]}
-            />
+            >
+                <button
+                    className={
+                        plugin.settings.$.panels.local.preset === 'minimal'
+                            ? 'button-active'
+                            : ''
+                    }
+                    onClick={() => applyPreset('minimal')}
+                >
+                    {
+                        t.settings.pages.images.layout.buttonsLayout.modal
+                            .preset.buttons.minimal
+                    }
+                </button>
+
+                <button
+                    className={
+                        plugin.settings.$.panels.local.preset === 'full'
+                            ? 'button-active'
+                            : ''
+                    }
+                    onClick={() => applyPreset('full')}
+                >
+                    {
+                        t.settings.pages.images.layout.buttonsLayout.modal
+                            .preset.buttons.full
+                    }
+                </button>
+
+                <button
+                    className={
+                        plugin.settings.$.panels.local.preset === 'presentation'
+                            ? 'button-active'
+                            : ''
+                    }
+                    onClick={() => applyPreset('presentation')}
+                >
+                    {
+                        t.settings.pages.images.layout.buttonsLayout.modal
+                            .preset.buttons.presentation
+                    }
+                </button>
+            </OSetting>
 
             {Object.entries(buttonData).map(([panel, panelData]) => (
                 <React.Fragment key={panel}>
-                    <ReactObsidianSetting
+                    <OSetting
                         name={panelNames[panel as keyof typeof panelNames]}
-                        setHeading
+                        heading
                     />
                     {panelData.map(
                         ({ tooltip, icon, getValue, setValue }, index) => (
-                            <ReactObsidianSetting
+                            <OSetting
                                 key={tooltip}
                                 name={tooltip}
                                 noBorder={index !== panelData.length - 1}
-                                buttons={[
-                                    {
-                                        priority: UI_PRIORITY.BUTTON,
-                                        callback: (button) => {
-                                            button.setIcon(icon);
-                                            button.setTooltip(tooltip);
-                                            return button;
-                                        },
-                                    },
-                                ]}
-                                toggles={[
-                                    {
-                                        priority: UI_PRIORITY.TOGGLE,
-                                        callback: (toggle) => {
-                                            toggle
-                                                .setValue(getValue())
-                                                .onChange(
-                                                    async (value: boolean) => {
-                                                        setValue(value);
-                                                        await plugin.settings.save();
-                                                    }
-                                                );
-                                            return toggle;
-                                        },
-                                    },
-                                ]}
-                            />
+                            >
+                                <button
+                                    aria-label={tooltip}
+                                    data-icon={icon}
+                                />
+                                <input
+                                    type={'checkbox'}
+                                    defaultChecked={getValue()}
+                                    onChange={async (e) => {
+                                        setValue(e.target.value);
+                                        await plugin.settings.save();
+                                    }}
+                                />
+                            </OSetting>
                         )
                     )}
                 </React.Fragment>
             ))}
-        </ReactObsidianModal>
+        </OModal>
     );
 };
 
