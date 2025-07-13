@@ -21,7 +21,7 @@
         "locale:flat": "locale-tools flat"
     },
     "dependencies": {
-        "@obsidian-devkit/native-react-components": "1.1.22",
+        "@obsidian-devkit/native-react-components": "^1.1.32",
         "eventemitter2": "^6.4.9",
         "lucide-react": "^0.525.0",
         "preact": "^10.26.9",
