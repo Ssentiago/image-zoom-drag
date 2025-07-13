@@ -4,7 +4,7 @@
     "": {
       "name": "interactify",
       "dependencies": {
-        "@obsidian-devkit/native-react-components": "1.1.9",
+        "@obsidian-devkit/native-react-components": "1.1.22",
         "eventemitter2": "^6.4.9",
         "lucide-react": "^0.525.0",
         "preact": "^10.26.9",
@@ -265,7 +265,7 @@
 
     "@obsidian-devkit/locale-tools": ["@obsidian-devkit/locale-tools@1.0.31", "", { "bin": { "locale-tools": "dist/index.js" } }, "sha512-xSqlrFk5xEwPM9wr60HIObIIDrTaTYo/oamuWcY1jDmpk9nLAeaKq9ieBUTIsl/bGnkVHohoa6Isr0uMsBhsGw=="],
 
-    "@obsidian-devkit/native-react-components": ["@obsidian-devkit/native-react-components@1.1.9", "", {}, "sha512-24mIbcOF7aCzTjPl/SMwb166cxe6SYH7J10DjxffpQQsZh655YBxeedAUE1vfHadj+Z2kmXM7ryDCPEAfjLS2w=="],
+    "@obsidian-devkit/native-react-components": ["@obsidian-devkit/native-react-components@1.1.22", "", {}, "sha512-vx839oODMtyjbsprs5g3Ap+02OT4G+WqAl8p4BBu6yjC14ZMJL8aMnZTM4LK/mhDGNtKaE/nZ5jppBxVEFVnqg=="],
 
     "@parcel/watcher": ["@parcel/watcher@2.5.1", "", { "dependencies": { "detect-libc": "^1.0.3", "is-glob": "^4.0.3", "micromatch": "^4.0.5", "node-addon-api": "^7.0.0" }, "optionalDependencies": { "@parcel/watcher-android-arm64": "2.5.1", "@parcel/watcher-darwin-arm64": "2.5.1", "@parcel/watcher-darwin-x64": "2.5.1", "@parcel/watcher-freebsd-x64": "2.5.1", "@parcel/watcher-linux-arm-glibc": "2.5.1", "@parcel/watcher-linux-arm-musl": "2.5.1", "@parcel/watcher-linux-arm64-glibc": "2.5.1", "@parcel/watcher-linux-arm64-musl": "2.5.1", "@parcel/watcher-linux-x64-glibc": "2.5.1", "@parcel/watcher-linux-x64-musl": "2.5.1", "@parcel/watcher-win32-arm64": "2.5.1", "@parcel/watcher-win32-ia32": "2.5.1", "@parcel/watcher-win32-x64": "2.5.1" } }, "sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg=="],
 
