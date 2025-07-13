@@ -67,7 +67,8 @@
         "2. Reproduce the issue with logging enabled.",
         "3. Export logs using the button below.",
         "4. Click `Report an issue` and fill out the form.",
-        "5. Attach the exported log file.\n6. Submit the issue."
+        "5. Attach the exported log file.",
+        "6. Submit the issue."
     ],
     "settings.pages.debug.reportIssue.linkButtonTooltip": "Report an issue",
     "settings.pages.debug.reportIssue.name": "Report an issue",
