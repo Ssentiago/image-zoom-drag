@@ -1,63 +1,57 @@
-import { Component, moment, requestUrl } from 'obsidian';
+import { Component, Menu, moment, requestUrl } from 'obsidian';
 
 import { ContextMenu } from '../context-menu';
+import ImageConverter from './utils/image-converter';
 
 export class Export extends Component {
+    imageConverter: ImageConverter;
     constructor(private readonly contextMenu: ContextMenu) {
         super();
+
+        this.imageConverter = new ImageConverter();
     }
 
-    async export() {
-        const element = this.contextMenu.events.unit.context.element;
-
-        if (element instanceof SVGElement) {
-            this.exportSVG(element);
-        } else {
-            await this.exportIMG(element);
+    async exportAsPNG(img: HTMLImageElement | SVGElement) {
+        try {
+            const blob = await this.imageConverter.imgToBlob(img, 'png');
+            this.downloadFile(blob, 'png');
+        } catch (error) {
+            this.contextMenu.events.unit.plugin.logger.error(
+                'Error exporting as PNG:',
+                error
+            );
+            this.contextMenu.events.unit.plugin.showNotice(
+                'Failed to export image as PNG. Please try again.'
+            );
         }
     }
 
-    private exportSVG(svg: SVGElement): void {
-        const svgData = new XMLSerializer().serializeToString(svg);
-        const preface = '<?xml version="1.0" standalone="no"?>\r\n';
-        const svgBlob = new Blob([preface, svgData], {
-            type: 'image/svg+xml;charset=utf-8',
-        });
-        this.downloadFile(svgBlob, 'svg');
+    async exportAsJPG(img: HTMLImageElement | SVGElement) {
+        try {
+            const blob = await this.imageConverter.imgToBlob(img, 'jpg');
+            this.downloadFile(blob, 'jpg');
+        } catch (error) {
+            this.contextMenu.events.unit.plugin.logger.error(
+                'Error exporting as JPG:',
+                error
+            );
+            this.contextMenu.events.unit.plugin.showNotice(
+                'Failed to export image as JPG. Please try again.'
+            );
+        }
     }
 
-    private async exportIMG(img: HTMLImageElement): Promise<void> {
-        const fetchImg = async (): Promise<Blob> => {
-            const response = await requestUrl(img.src);
-            return new Blob([response.arrayBuffer], { type: 'image/png' });
-        };
-
-        const drawLocalImage = async (): Promise<Blob> => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d')!;
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
-            ctx.drawImage(img, 0, 0);
-            return new Promise((resolve) => {
-                canvas.toBlob((blob) => resolve(blob!), 'image/png');
-            });
-        };
-
+    async exportAsSVG(svg: SVGElement) {
         try {
-            let blob: Blob;
-            try {
-                blob = await fetchImg();
-            } catch {
-                blob = await drawLocalImage();
-            }
-
-            this.downloadFile(blob, '.png');
-        } catch (error: any) {
-            this.contextMenu.events.unit.plugin.showNotice(
-                'Error exporting image'
-            );
+            const blob = await this.imageConverter.imgToBlob(svg, 'svg');
+            this.downloadFile(blob, 'svg');
+        } catch (error) {
             this.contextMenu.events.unit.plugin.logger.error(
-                `Error exporting image: ${error.message}`
+                'Error exporting as SVG:',
+                error
+            );
+            this.contextMenu.events.unit.plugin.showNotice(
+                'Failed to export SVG. Please try again.'
             );
         }
     }

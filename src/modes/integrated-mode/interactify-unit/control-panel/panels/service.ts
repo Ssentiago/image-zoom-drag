@@ -24,7 +24,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
 
     get enabled(): boolean {
         return (
-            this.unit.plugin.settings.data.panels.local.panels.service.on &&
+            this.unit.plugin.settings.$.panels.local.panels.service.on &&
             this.unit.context.options.panels.service.on
         );
     }
@@ -35,8 +35,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
 
     get cssStyles() {
         return {
-            ...this.unit.plugin.settings.data.panels.local.panels.service
-                .position,
+            ...this.unit.plugin.settings.$.panels.local.panels.service.position,
             gridTemplateColumns: 'repeat(auto-fit, minmax(24px, 1fr))',
             gridAutoFlow: 'column',
         };
@@ -48,7 +47,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
         const container = this.unit.context.container;
 
         const serviceButtons =
-            this.unit.plugin.settings.data.panels.local.panels.service.buttons;
+            this.unit.plugin.settings.$.panels.local.panels.service.buttons;
 
         if (serviceButtons.hide) {
             buttons.push({
@@ -170,9 +169,9 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
         const settings = this.unit.plugin.settings;
         this.panel.toggleClass(
             'hidden',
-            settings.data.panels.global.triggering.mode !==
+            settings.$.panels.global.triggering.mode !==
                 PanelsTriggering.ALWAYS &&
-                !settings.data.panels.global.triggering.ignoreService
+                !settings.$.panels.global.triggering.ignoreService
         );
         super.setupPanelContents();
     }
@@ -223,8 +222,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
     protected get supportedTriggers(): number {
         const base = super.supportedTriggers & ~TriggerType.SERVICE_HIDING;
         const shouldIgnoreExternalTriggers =
-            this.unit.plugin.settings.data.panels.global.triggering
-                .ignoreService;
+            this.unit.plugin.settings.$.panels.global.triggering.ignoreService;
 
         if (!shouldIgnoreExternalTriggers) {
             return base;

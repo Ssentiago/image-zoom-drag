@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import { FC } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
 import DimensionsOption from './DimensionsOption';
@@ -12,23 +12,19 @@ const Size: FC = () => {
     const { plugin } = useSettingsContext();
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.images.general.size.header}
-                multiDesc={(multidesc) => {
-                    multidesc.addDesc(
-                        t.settings.pages.images.general.size.desc
-                    );
-                    return multidesc;
-                }}
-                setHeading={true}
+                desc={t.settings.pages.images.general.size.desc}
+                heading={true}
             />
+
             <DimensionsOption
                 type={ComponentType.Expanded}
-                initialOptions={plugin.settings.data.units.size.expanded}
+                initialOptions={plugin.settings.$.units.size.expanded}
             />
             <DimensionsOption
                 type={ComponentType.Folded}
-                initialOptions={plugin.settings.data.units.size.folded}
+                initialOptions={plugin.settings.$.units.size.folded}
                 border
             />
         </>

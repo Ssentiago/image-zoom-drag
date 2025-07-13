@@ -1,130 +1,110 @@
-import Logger from '@/logger/logger';
+import LeafIndex from '@/core/services/leaf-index/leaf-index';
+import { tPromise } from '@/lang';
 import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import PickerMode from '@/modes/picker-mode/picker-mode';
-import SettingsManager from '@/settings/settings-manager';
+import PopupMode from '@/modes/popup-mode/popup-mode';
+import Settings from '@/settings/settings';
 import { SettingsTab } from '@/settings/settings-tab';
 
 import EventEmitter2 from 'eventemitter2';
 import { Notice, Plugin } from 'obsidian';
 
-import PluginStateChecker from './plugin-state-checker';
-import State from './state';
+import State from '../modes/integrated-mode/state';
+import Logger from './services/logger/logger';
 
 export default class InteractifyPlugin extends Plugin {
-    state!: State;
-    settings!: SettingsManager;
-    pluginStateChecker!: PluginStateChecker;
+    noticeEl?: HTMLElement;
+
+    settings!: Settings;
     logger!: Logger;
-    eventBus!: EventEmitter2;
+    emitter!: EventEmitter2;
+    leafIndex!: LeafIndex;
+
     pickerMode!: PickerMode;
     integratedMode!: IntegratedMode;
+    popupMode!: PopupMode;
 
-    /**
-     * Initializes the plugin when it is loaded.
-     *
-     * This function is called automatically when the plugin is loaded by Obsidian.
-     * It initializes the plugin by calling `initializePlugin`.
-     *
-     * @returns A promise that resolves when the plugin has been fully initialized.
-     */
     async onload(): Promise<void> {
         if (process.env.NODE_ENV === 'development') {
             (window as any).plugin = this;
         }
-        await this.initializePlugin();
+
+        await this.initialize();
+
         this.logger.info('Plugin loaded successfully');
     }
 
     async onunload(): Promise<void> {
-        this.logger.debug('Plugin unloading...');
-        await this.state.clear();
-        this.eventBus.removeAllListeners();
+        super.onunload();
+
+        this.emitter.removeAllListeners();
         this.logger.info('Plugin unloaded successfully');
     }
 
-    /**
-     * Initializes the plugin.
-     *
-     * This function initializes the plugin's core components, event system, and utilities.
-     * It is called when the plugin is loading.
-     *
-     * @returns A promise that resolves when the plugin has been successfully initialized.
-     */
-    async initializePlugin(): Promise<void> {
+    private async initialize(): Promise<void> {
         await this.initializeCore();
-        await this.initializeUtils();
+        await this.initializeServices();
         await this.initializeEventSystem();
         await this.initializeUI();
-
-        this.logger.info('Plugin initialized successfully.');
     }
-    /**
-     * Initializes the plugin's core components.
-     *
-     * This function initializes the plugin's settings manager and adds a settings tab to the Obsidian settings panel.
-     *
-     * @returns A promise that resolves when the plugin's core components have been successfully initialized.
-     */
-    async initializeCore(): Promise<void> {
-        this.settings = new SettingsManager(this);
-        await this.settings.loadSettings();
 
-        this.logger = new Logger(this);
-        await this.logger.init();
-
-        this.state = new State(this);
+    private async initializeCore(): Promise<void> {
+        this.settings = new Settings(this);
+        await this.settings.load();
 
         this.addSettingTab(new SettingsTab(this.app, this));
 
-        this.logger.debug('Core initialized');
+        await tPromise;
     }
-    /**
-     * Asynchronously initializes the event system for handling events in the plugin.
-     * This function sets up the EventPublisher and EventObserver instances, and registers event handlers for 'layout-change' and 'active-leaf-change' events.
-     *
-     * @returns A promise that resolves once the event system has been successfully initialized.
-     */
-    async initializeEventSystem(): Promise<void> {
-        this.eventBus = new EventEmitter2({
+
+    private async initializeEventSystem(): Promise<void> {
+        this.emitter = new EventEmitter2({
             wildcard: true,
             delimiter: '.',
         });
-
-        this.logger.debug('Event system initialized');
     }
 
-    async initializeUI(): Promise<void> {
+    /**
+     * Initialize plugin UI components
+     *
+     * Integrated mode: responsible for image processing inside the Obsidian DOM (Markdown View
+     * Popup mode: renders images inside the external React DOM (Modal Window)
+     * Picker mode: it gives the user an ability to switch the image to Popup mode or Integrated. Delegates initialization
+     */
+    private async initializeUI(): Promise<void> {
         this.integratedMode = new IntegratedMode(this);
         this.pickerMode = new PickerMode(this);
+        this.popupMode = new PopupMode(this);
+        this.addChild(this.popupMode);
+        this.popupMode.initialize();
 
         this.pickerMode.initialize();
         this.integratedMode.initialize();
 
         this.addChild(this.pickerMode);
-        this.logger.debug('UI initialized');
+        this.addChild(this.integratedMode);
     }
-    /**
-     * Initializes the plugin's utility classes.
-     *
-     * This function initializes the PluginStateChecker, which is responsible for
-     * checking if the plugin is being opened for the first time
-     *
-     * @returns A promise that resolves when the plugin's utilities have been
-     *          successfully initialized.
-     */
-    async initializeUtils(): Promise<void> {
-        this.pluginStateChecker = new PluginStateChecker(this);
-        this.logger.debug('Utils initialized');
+
+    private async initializeServices(): Promise<void> {
+        this.leafIndex = new LeafIndex(this);
+        this.addChild(this.leafIndex);
+
+        this.logger = new Logger(this);
+        await this.logger.init();
     }
 
     /**
-     * Displays a notice with the provided message for a specified duration.
+     * An alias for `new Notice` element creating.
      *
-     * @param message - The message to display in the notice.
-     * @param duration - The duration in milliseconds for which the notice should be displayed. Defaults to undefined.
+     * Saves the message object, deletes the old one on a call to avoid message spam
+     *
+     * @param message - The notice message to be displayed
+     * @param duration - The duration for which the notice should be displayed. If undefined, that message will be displayed until the user interacts with it explicitly
      * @returns void
      */
     showNotice(message: string, duration?: number): void {
-        new Notice(message, duration);
+        this.noticeEl?.remove();
+        const notice = new Notice(message, duration);
+        this.noticeEl = notice.containerEl;
     }
 }

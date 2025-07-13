@@ -21,7 +21,7 @@ export class Focus extends Component implements Handler {
 
     private readonly focusIn = (): void => {
         if (
-            this.events.unit.plugin.settings.data.units.folding
+            this.events.unit.plugin.settings.$.units.folding
                 .autoFoldOnFocusChange
         ) {
             this.events.unit.controlPanel.fold.unfold();
@@ -31,7 +31,7 @@ export class Focus extends Component implements Handler {
 
     private readonly focusOut = (): void => {
         if (
-            this.events.unit.plugin.settings.data.units.folding
+            this.events.unit.plugin.settings.$.units.folding
                 .autoFoldOnFocusChange
         ) {
             this.events.unit.controlPanel.fold.fold();

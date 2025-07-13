@@ -1,20 +1,17 @@
 import { t } from '@/lang';
+import { UserGuideModalProps } from '@/settings/ui/pages/images/presets/add-new-image-preset/modals/types/interfaces';
 
 import React from 'react';
 
-import {
-    ReactObsidianModal,
-    ReactObsidianSetting,
-} from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
 
 import { useUserGuideVideo } from './hooks/useUserGuideVideo';
-import { UserGuideModalProps } from './typing/interfaces';
 
 const UserGuideModal: React.FC<UserGuideModalProps> = ({ onClose }) => {
     const { isLoading, videoUrl } = useUserGuideVideo();
 
     return (
-        <ReactObsidianModal
+        <OModal
             title={
                 t.settings.pages.images.presets.addNewImagePreset.userGuideModal
                     .header
@@ -22,70 +19,59 @@ const UserGuideModal: React.FC<UserGuideModalProps> = ({ onClose }) => {
             onClose={() => onClose()}
         >
             <>
-                <ReactObsidianSetting
+                <OSetting
                     name={
                         t.settings.pages.images.presets.addNewImagePreset
                             .userGuideModal.howItWorks.name
                     }
-                    multiDesc={(multiDesc) => {
-                        multiDesc.addDescriptions(
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .userGuideModal.howItWorks.desc
-                        );
-                        return multiDesc;
-                    }}
+                    desc={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .userGuideModal.howItWorks.desc
+                    }
                 />
 
-                <ReactObsidianSetting
+                <OSetting
                     name={
                         t.settings.pages.images.presets.addNewImagePreset
                             .userGuideModal.workingModes.name
                     }
-                    multiDesc={(m) =>
-                        m.addDescriptions(
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .userGuideModal.workingModes.desc
-                        )
+                    desc={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .userGuideModal.workingModes.desc
                     }
                 />
-                <ReactObsidianSetting
+                <OSetting
                     name={
                         t.settings.pages.images.presets.addNewImagePreset
                             .userGuideModal.howItWorks.name
                     }
-                    multiDesc={(multiDesc) => {
-                        multiDesc.addDescriptions(
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .userGuideModal.howItWorks.desc
-                        );
-                        return multiDesc;
-                    }}
+                    desc={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .userGuideModal.howItWorks.desc
+                    }
                 />
 
-                <ReactObsidianSetting
+                <OSetting
                     name={
                         t.settings.pages.images.presets.addNewImagePreset
                             .userGuideModal.customSelectors.name
                     }
-                    setHeading={true}
+                    heading={true}
                     desc={
                         t.settings.pages.images.presets.addNewImagePreset
                             .userGuideModal.customSelectors.desc
                     }
                 />
 
-                <ReactObsidianSetting
+                <OSetting
                     name={
                         t.settings.pages.images.presets.addNewImagePreset
                             .userGuideModal.findingSelectors.name
                     }
-                    multiDesc={(multiDesc) => {
-                        multiDesc.addDescriptions(
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .userGuideModal.findingSelectors.desc
-                        );
-                        return multiDesc;
-                    }}
+                    desc={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .userGuideModal.findingSelectors.desc
+                    }
                 />
 
                 {isLoading && (
@@ -113,7 +99,7 @@ const UserGuideModal: React.FC<UserGuideModalProps> = ({ onClose }) => {
                     </p>
                 )}
             </>
-        </ReactObsidianModal>
+        </OModal>
     );
 };
 export default UserGuideModal;

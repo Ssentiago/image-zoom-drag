@@ -85,7 +85,7 @@ const Locale: LocaleSchema  = {
                 on: "Deactivate interactive mode"
             },
             onExit: "Picker mode disabled",
-            onStart: "Picker mode enabled\nClick on image to toggle interactive mode\nPress Esc to exit"
+            onStart: "Picker mode enabled\nClick on image to toggle interactive mode\nAlt + click on image to open in in Popup viewer & editor\nPress Esc to exit"
         }
     },
     settings: {
@@ -214,17 +214,13 @@ const Locale: LocaleSchema  = {
                         desc: "Note: You need to reopen all the open Markdown views with images in them to apply these settings.",
                         expanded: {
                             desc: [
-                                "Set the container dimensions for expanded state.",
-                                "px: 100-1000, %: 10-100",
-                                "Click Save button or press Enter to apply changes."
+                                "Set the container dimensions for expanded state."
                             ],
                             name: "Expanded image container size"
                         },
                         folded: {
                             desc: [
-                                "Set the container dimensions for folded state.",
-                                "px: 100-1000, %: 10-100",
-                                "Click Save button or press Enter to apply changes."
+                                "Set the container dimensions for folded state."
                             ],
                             name: "Folded image container size"
                         },
@@ -427,11 +423,11 @@ const Locale: LocaleSchema  = {
                     },
                     unitsValidation: {
                         bothInvalid: "Config name and selector are both invalid",
-                        fillOutField: "Fill out preset {field} field!",
+                        fillOutField: "Fill out preset {{field}} field!",
                         invalidSelectorPrefix: "Invalid CSS selector: {{err}}",
                         nameAlreadyExists: "Config with that name already exists",
                         nothingToSave: "Nothing to save",
-                        oneInvalid: "Config {field} is invalid",
+                        oneInvalid: "Config {{field}} is invalid",
                         selectorAlreadyExists: "Config with that selector already exists"
                     }
                 }

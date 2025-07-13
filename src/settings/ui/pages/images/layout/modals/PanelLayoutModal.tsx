@@ -2,10 +2,7 @@ import { t } from '@/lang';
 
 import React from 'react';
 
-import {
-    ReactObsidianModal,
-    ReactObsidianSetting,
-} from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
 
 import PanelLayout from '../panel-layout/PanelLayout';
 
@@ -16,11 +13,11 @@ interface LayoutModalProps {
 
 const PanelLayoutModal: React.FC<LayoutModalProps> = ({ onClose, title }) => {
     return (
-        <ReactObsidianModal
+        <OModal
             onClose={onClose}
             title={title}
         >
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.layout.controlsLayout.modal
                         .panelConfig.name
@@ -29,38 +26,32 @@ const PanelLayoutModal: React.FC<LayoutModalProps> = ({ onClose, title }) => {
                     t.settings.pages.images.layout.controlsLayout.modal
                         .panelConfig.desc
                 }
-                setHeading={true}
+                heading={true}
                 noBorder={true}
             />
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.layout.controlsLayout.modal
                         .availablePanels.name
                 }
-                multiDesc={(multiDesc) => {
-                    multiDesc.addDescriptions(
-                        t.settings.pages.images.layout.controlsLayout.modal
-                            .availablePanels.desc
-                    );
-                    return multiDesc;
-                }}
+                desc={
+                    t.settings.pages.images.layout.controlsLayout.modal
+                        .availablePanels.desc
+                }
                 noBorder={true}
             />
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.layout.controlsLayout.modal.howTo
                         .name
                 }
-                multiDesc={(multiDesc) => {
-                    multiDesc.addDescriptions(
-                        t.settings.pages.images.layout.controlsLayout.modal
-                            .howTo.desc
-                    );
-                    return multiDesc;
-                }}
+                desc={
+                    t.settings.pages.images.layout.controlsLayout.modal.howTo
+                        .desc
+                }
             />
             <PanelLayout />
-        </ReactObsidianModal>
+        </OModal>
     );
 };
 

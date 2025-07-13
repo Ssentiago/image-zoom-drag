@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { usePaginationProps } from './types/interfaces';
 
 export const usePagination = ({

@@ -1,12 +1,7 @@
-import EventEmitter2 from 'eventemitter2';
-
-interface ISettingsManager {
-    eventBus: EventEmitter2;
-    saveSettings(): Promise<void>;
-}
+import Settings from '../settings';
 
 export function createSettingsProxy(
-    settingsManager: ISettingsManager,
+    settingsManager: Settings,
     obj: any,
     path: any[] = [],
     autoSave?: boolean
@@ -26,7 +21,7 @@ export function createSettingsProxy(
             const oldValue = target[prop];
             target[prop] = value;
             const fullPath = [...path, prop].join('.');
-            settingsManager.eventBus?.emit(`settings.${fullPath}`, {
+            settingsManager.emitter?.emit(`settings.${fullPath}`, {
                 eventName: `settings.${fullPath}`,
                 oldValue,
                 newValue: value,
@@ -42,7 +37,7 @@ export function createSettingsProxy(
 
             if (existed) {
                 const fullPath = [...path, prop].join('.');
-                settingsManager.eventBus?.emit(`settings.${fullPath}`, {
+                settingsManager.emitter?.emit(`settings.${fullPath}`, {
                     eventName: `settings.${fullPath}`,
                     operation: 'delete',
                     oldValue,

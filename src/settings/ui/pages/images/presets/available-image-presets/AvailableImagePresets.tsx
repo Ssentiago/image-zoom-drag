@@ -2,7 +2,7 @@ import { t, tf } from '@/lang';
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 import { ArrowLeft, ArrowRight, RotateCcw, RotateCw } from 'lucide-react';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
@@ -31,7 +31,7 @@ const AvailableImagePresets: FC = () => {
     );
 
     const [unitsPerPage, setUnitsPerPage] = useState(
-        plugin.settings.data.units.settingsPagination.perPage
+        plugin.settings.$.units.settingsPagination.perPage
     );
     const { units } = useUnitsManagerContext();
     const [modeState, setModeState] = useState<ModeState>({
@@ -57,18 +57,16 @@ const AvailableImagePresets: FC = () => {
 
     useEffect(() => {
         const handler = async () => {
-            setUnitsPerPage(
-                plugin.settings.data.units.settingsPagination.perPage
-            );
+            setUnitsPerPage(plugin.settings.$.units.settingsPagination.perPage);
         };
 
-        plugin.settings.eventBus.on(
-            plugin.settings.events.units.settingsPagination.perPage.$path,
+        plugin.settings.emitter.on(
+            plugin.settings.$$.units.settingsPagination.perPage.$path,
             handler
         );
         return (): void => {
-            plugin.settings.eventBus.off(
-                plugin.settings.events.units.settingsPagination.perPage.$path,
+            plugin.settings.emitter.off(
+                plugin.settings.$$.units.settingsPagination.perPage.$path,
                 handler
             );
         };
@@ -104,35 +102,31 @@ const AvailableImagePresets: FC = () => {
 
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.presets.availableImageConfigs.header
                 }
-                setHeading
+                heading
             />
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.presets.availableImageConfigs
                         .perPageSlider.name
                 }
-                setDisabled={modeState.mode === 'edit'}
-                sliders={[
-                    (slider) => {
-                        slider.setValue(
-                            plugin.settings.data.units.settingsPagination
-                                .perPage
-                        );
-                        slider.setLimits(1, 50, 1);
-                        slider.setDynamicTooltip();
-                        slider.onChange(async (value) => {
-                            plugin.settings.data.units.settingsPagination.perPage =
-                                value;
-                            await plugin.settings.saveSettings();
-                        });
-                        return slider;
-                    },
-                ]}
-            />
+                disabled={modeState.mode === 'edit'}
+            >
+                <input
+                    type={'range'}
+                    min={1}
+                    max={50}
+                    step={1}
+                    onChange={async (e) => {
+                        plugin.settings.$.units.settingsPagination.perPage =
+                            parseInt(e.target.value, 10);
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
             <ButtonContainer>
                 <UndoButton
                     onClick={undo}

@@ -1,3 +1,4 @@
+import { BaseUnitContext } from '@/core/services/types/interfaces';
 import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
 import { HTMLElementWithCMView } from '@/modes/integrated-mode/adapters/types/interfaces';
 
@@ -21,15 +22,13 @@ export interface PreviewContextData {
     context: MarkdownPostProcessorContext;
 }
 
-export interface UnitContext {
+export interface UnitContext extends BaseUnitContext {
     adapter: InteractifyAdapters;
-    sourceData: SourceData;
     size: UnitSize;
     originalParent: HTMLElement;
     container: HTMLElement;
     content: HTMLElement;
     options: ImageConfig;
-    element: HTMLImageElement | SVGElement;
     livePreviewWidget?: HTMLElementWithCMView;
 }
 

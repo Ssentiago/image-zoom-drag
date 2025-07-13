@@ -14,8 +14,8 @@ const ResetSettings: FC = () => {
 
     const resetAction = useCallback(async () => {
         setCurrentPath(location);
-        await plugin.settings.resetSettings();
-        plugin.settings.eventBus.emit('settings-reset', {
+        await plugin.settings.reset();
+        plugin.settings.emitter.emit('settings-reset', {
             eventName: 'settings-reset',
             oldValue: undefined,
             newValue: undefined,

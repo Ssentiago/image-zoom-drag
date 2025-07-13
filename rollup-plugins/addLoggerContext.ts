@@ -1,6 +1,5 @@
-import { match } from 'node:assert';
 import path from 'node:path';
-import ts, { transform, TransformationContext } from 'typescript';
+import ts, { TransformationContext } from 'typescript';
 
 function findFunctionName(currentNode: ts.Node, source: ts.SourceFile): string {
     let parent = currentNode.parent;

@@ -37,7 +37,8 @@ function createMinifyKeysMapping(options: { enLocalePath: string }) {
     }
 
     const enLocaleKeys = Object.keys(
-        JSON.parse(readFileSync(enLocalePathResolved, { encoding: 'utf-8' }))
+        JSON.parse(readFileSync(enLocalePathResolved, { encoding: 'utf-8' })) ||
+            {}
     ).sort();
 
     // We generate unique keys: a, b, c, ..., z, aa, ab, ac, ..., zz, aaa, ...
@@ -108,11 +109,12 @@ function singlePassTransformer(context: any) {
                     );
 
                     if (matchedData?.[1]) {
-                        const object = JSON.parse(
-                            readFileSync(join(localesPath, importPath), {
-                                encoding: 'utf-8',
-                            })
-                        );
+                        const object =
+                            (JSON.parse(
+                                readFileSync(join(localesPath, importPath), {
+                                    encoding: 'utf-8',
+                                })
+                            ) as Record<string, any>) || {};
 
                         const newObject: Record<string, any> = {};
                         for (const key of KEYS_MAPPING.keys()) {
@@ -173,7 +175,7 @@ export default function replaceDevLocaleSystemWithProd(options: {
     createMinifyKeysMapping(options);
 
     return {
-        name: 'repaceDevLocaleSystemWithProd',
+        name: 'replaceDevLocaleSystemWithProd',
 
         transform(code: string, id: string) {
             if (!id.match(/(ts|tsx)$/)) return;
@@ -213,7 +215,7 @@ export default function replaceDevLocaleSystemWithProd(options: {
                         path.resolve(process.cwd(), options.enLocalePath),
                         { encoding: 'utf-8' }
                     )
-                )
+                ) || {}
             ).sort();
 
             const totalUsages = usageCounts.reduce(

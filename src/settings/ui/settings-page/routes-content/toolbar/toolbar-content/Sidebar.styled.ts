@@ -2,8 +2,13 @@ import styled from 'styled-components';
 
 export const SidebarButton = styled.button`
     z-index: 101;
-`;
+    transition: all 0.2s ease;
 
+    &:hover {
+        transform: scale(1.05);
+        background-color: var(--background-modifier-hover);
+    }
+`;
 export const Overlay = styled.div`
     position: absolute;
     top: 0;
@@ -19,6 +24,7 @@ interface SectionProps {
 }
 
 export const Section = styled.div<SectionProps>`
+    display: flex;
     padding: 5px 10px;
     border-bottom: 1px solid var(--background-modifier-border);
     margin-left: ${(props) => (props.$nested ? '20px' : '0')};
@@ -40,6 +46,13 @@ export const Section = styled.div<SectionProps>`
             props.$active
                 ? 'var(--interactive-accent-hover)'
                 : 'var(--background-modifier-hover)'};
+    }
+
+    svg {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
     }
 `;
 export const SectionHeader = styled.div`

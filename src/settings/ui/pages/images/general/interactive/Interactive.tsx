@@ -2,8 +2,7 @@ import { t } from '@/lang';
 
 import { FC, useCallback, useMemo, useState } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
-import { DropdownComponent } from 'obsidian';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import { ActivationMode } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';
@@ -11,14 +10,11 @@ import { useSettingsContext } from '../../../../core/SettingsContext';
 const Interactive: FC = () => {
     const { plugin } = useSettingsContext();
     const [isIMOptionEnabled, setIsIMOptionEnabled] = useState(
-        plugin.settings.data.units.interactivity.markdown.autoDetect
+        plugin.settings.$.units.interactivity.markdown.autoDetect
     );
     const [activationMode, setActivationMode] = useState(
-        plugin.settings.data.units.interactivity.markdown.activationMode
+        plugin.settings.$.units.interactivity.markdown.activationMode
     );
-
-    const [activationModeTooltip, setActivationModeTooltip] =
-        useState<string>('');
 
     const activationModeTooltips: Record<ActivationMode, string> = useMemo(
         () => ({
@@ -31,12 +27,13 @@ const Interactive: FC = () => {
         []
     );
 
-    const updateActivationModeTooltip = useCallback(
-        (dropdown: DropdownComponent) => {
-            const selectedValue = dropdown.selectEl.options[
-                dropdown.selectEl.options.selectedIndex
-            ].value as ActivationMode;
+    const [activationModeTooltip, setActivationModeTooltip] = useState<string>(
+        activationModeTooltips[activationMode]
+    );
 
+    const updateActivationModeTooltip = useCallback(
+        (selectElement: HTMLSelectElement) => {
+            const selectedValue = selectElement.value as ActivationMode;
             setActivationModeTooltip(activationModeTooltips[selectedValue]);
         },
         []
@@ -44,67 +41,58 @@ const Interactive: FC = () => {
 
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.images.general.interactive.header}
-                setHeading
+                heading
             />
 
-            <ReactObsidianSetting
+            <OSetting
                 name={
                     t.settings.pages.images.general.interactive.pickerMode.name
                 }
-                multiDesc={(m) => {
-                    m.addDescriptions(
-                        t.settings.pages.images.general.interactive.pickerMode
-                            .desc
-                    );
-                    return m;
-                }}
-                toggles={[
-                    (toggle) => {
-                        toggle.setValue(
-                            plugin.settings.data.units.interactivity.picker
-                                .enabled
-                        );
-                        toggle.onChange(async (value) => {
-                            plugin.settings.data.units.interactivity.picker.enabled =
-                                value;
-                            await plugin.settings.saveSettings();
-                        });
-                        return toggle;
-                    },
-                ]}
-            />
-            <ReactObsidianSetting
+                desc={
+                    t.settings.pages.images.general.interactive.pickerMode.desc
+                }
+            >
+                <input
+                    type={'checkbox'}
+                    defaultChecked={
+                        plugin.settings.$.units.interactivity.picker.enabled
+                    }
+                    onChange={async (e) => {
+                        plugin.settings.$.units.interactivity.picker.enabled =
+                            e.target.checked;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
+
+            <OSetting
                 name={
                     t.settings.pages.images.general.interactive.autoDetect.name
                 }
-                multiDesc={(m) => {
-                    m.addDescriptions(
-                        t.settings.pages.images.general.interactive.autoDetect
-                            .desc
-                    );
-                    return m;
-                }}
-                toggles={[
-                    (toggle) => {
-                        toggle.setValue(
-                            plugin.settings.data.units.interactivity.markdown
-                                .autoDetect
-                        );
-                        toggle.onChange(async (value) => {
-                            setIsIMOptionEnabled(value);
-                            plugin.settings.data.units.interactivity.markdown.autoDetect =
-                                value;
-                            await plugin.settings.saveSettings();
-                        });
-                        return toggle;
-                    },
-                ]}
-            />
+                desc={
+                    t.settings.pages.images.general.interactive.autoDetect.desc
+                }
+            >
+                <input
+                    type={'checkbox'}
+                    defaultChecked={
+                        plugin.settings.$.units.interactivity.markdown
+                            .autoDetect
+                    }
+                    onChange={async (e) => {
+                        const value = e.target.checked;
+                        setIsIMOptionEnabled(value);
+                        plugin.settings.$.units.interactivity.markdown.autoDetect =
+                            value;
+                        await plugin.settings.save();
+                    }}
+                />
+            </OSetting>
 
             {isIMOptionEnabled && (
-                <ReactObsidianSetting
+                <OSetting
                     name={
                         t.settings.pages.images.general.interactive
                             .activationMode.name
@@ -113,41 +101,39 @@ const Interactive: FC = () => {
                         t.settings.pages.images.general.interactive
                             .activationMode.desc
                     }
-                    buttons={[
-                        (button) => {
-                            button.setIcon('message-circle-question');
-                            button.setTooltip(activationModeTooltip);
-                            return button;
-                        },
-                    ]}
-                    dropdowns={[
-                        (dropdown) => {
-                            dropdown.addOptions({
-                                immediate:
-                                    t.settings.pages.images.general.interactive
-                                        .activationMode.dropdown.immediate,
-                                lazy: t.settings.pages.images.general
-                                    .interactive.activationMode.dropdown.lazy,
-                            });
-                            dropdown.setValue(
-                                plugin.settings.data.units.interactivity
-                                    .markdown.activationMode
-                            );
-                            updateActivationModeTooltip(dropdown);
-                            dropdown.onChange(async (value) => {
-                                const mode = value as ActivationMode;
-
-                                setActivationMode(mode);
-                                plugin.settings.data.units.interactivity.markdown.activationMode =
-                                    mode;
-                                await plugin.settings.saveSettings();
-                                updateActivationModeTooltip(dropdown);
-                            });
-
-                            return dropdown;
-                        },
-                    ]}
-                />
+                >
+                    <select
+                        value={
+                            plugin.settings.$.units.interactivity.markdown
+                                .activationMode
+                        }
+                        onChange={async (e) => {
+                            const mode = e.target.value as ActivationMode;
+                            setActivationMode(mode);
+                            plugin.settings.$.units.interactivity.markdown.activationMode =
+                                mode;
+                            await plugin.settings.save();
+                            updateActivationModeTooltip(e.target);
+                        }}
+                    >
+                        <option value='immediate'>
+                            {
+                                t.settings.pages.images.general.interactive
+                                    .activationMode.dropdown.immediate
+                            }
+                        </option>
+                        <option value='lazy'>
+                            {
+                                t.settings.pages.images.general.interactive
+                                    .activationMode.dropdown.lazy
+                            }
+                        </option>
+                    </select>
+                    <button
+                        aria-label={activationModeTooltip}
+                        data-icon={'message-circle-question'}
+                    />
+                </OSetting>
             )}
         </>
     );

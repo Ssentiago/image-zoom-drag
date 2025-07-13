@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import { FC } from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import { useSettingsContext } from '../../core/SettingsContext';
 import { FooterContent, Info, Slogan } from './About.styled';
@@ -12,24 +12,20 @@ const About: FC = () => {
 
     return (
         <>
-            <ReactObsidianSetting
-                name={t.settings.pages.about.githubPage.name}
-                buttons={[
-                    (button) => {
-                        button.setIcon('github');
-                        button.setTooltip(
-                            t.settings.pages.about.githubPage.linkButtonTooltip
+            <OSetting name={t.settings.pages.about.githubPage.name}>
+                <button
+                    aria-label={
+                        t.settings.pages.about.githubPage.linkButtonTooltip
+                    }
+                    onClick={() => {
+                        window.open(
+                            'https://github.com/Ssentiago/interactify/',
+                            '_blank'
                         );
-                        button.onClick(() => {
-                            window.open(
-                                'https://github.com/Ssentiago/interactify/',
-                                '_blank'
-                            );
-                        });
-                        return button;
-                    },
-                ]}
-            />
+                    }}
+                    data-icon={'github'}
+                />
+            </OSetting>
 
             <FooterContent>
                 <Slogan>Make Obsidian images and diagrams Interactify!</Slogan>

@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import React from 'react';
 
-import { ReactObsidianSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-devkit/native-react-components';
 
 import ButtonLayoutModal from './modals/ButtonLayoutModal';
 import PanelLayoutModal from './modals/PanelLayoutModal';
@@ -13,39 +13,36 @@ const Layout: React.FC = () => {
 
     return (
         <>
-            <ReactObsidianSetting
+            <OSetting
                 name={t.settings.pages.images.layout.controlsLayout.name}
                 desc={t.settings.pages.images.layout.controlsLayout.desc}
-                buttons={[
-                    (button) => {
-                        button.setIcon('layout');
-                        button.setTooltip(
-                            t.settings.pages.images.layout.controlsLayout
-                                .tooltip
-                        );
-                        button.onClick(() => {
-                            setLayoutModalOpen(true);
-                        });
-                        return button;
-                    },
-                ]}
-            />
-            <ReactObsidianSetting
+            >
+                <button
+                    aria-label={
+                        t.settings.pages.images.layout.controlsLayout.tooltip
+                    }
+                    onClick={() => {
+                        setLayoutModalOpen(true);
+                    }}
+                    data-icon={'layout'}
+                />
+            </OSetting>
+
+            <OSetting
                 name={t.settings.pages.images.layout.buttonsLayout.name}
                 desc={t.settings.pages.images.layout.buttonsLayout.desc}
-                buttons={[
-                    (button) => {
-                        button.setIcon('panels-top-left');
-                        button.setTooltip(
-                            t.settings.pages.images.layout.buttonsLayout.tooltip
-                        );
-                        button.onClick(() => {
-                            setButtonModalOpen(true);
-                        });
-                        return button;
-                    },
-                ]}
-            />
+            >
+                <button
+                    aria-label={
+                        t.settings.pages.images.layout.buttonsLayout.tooltip
+                    }
+                    onClick={() => {
+                        setButtonModalOpen(true);
+                    }}
+                    data-icon={'panels-top-left'}
+                />
+            </OSetting>
+
             {layoutModalOpen && (
                 <PanelLayoutModal
                     onClose={() => setLayoutModalOpen(false)}

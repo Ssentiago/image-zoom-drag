@@ -17,10 +17,10 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     display(): void {
-        this.plugin.settings.eventBus.on(
+        this.plugin.settings.emitter.on(
             '**',
             (payload: SettingsEventPayload) => {
-                this.plugin.eventBus.emit(payload.eventName, payload);
+                this.plugin.emitter.emit(payload.eventName, payload);
             }
         );
 
@@ -33,13 +33,8 @@ export class SettingsTab extends PluginSettingTab {
         );
     }
 
-    /**
-     * Hides the settings tab.
-     *
-     * This method unmounts the React root component and clears the container element.
-     */
     hide(): void {
-        this.plugin.settings.eventBus.removeAllListeners();
+        this.plugin.settings.emitter.removeAllListeners();
 
         this.root?.unmount();
         this.containerEl.empty();

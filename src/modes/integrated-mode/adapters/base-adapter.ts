@@ -24,16 +24,11 @@ export default abstract class BaseAdapter {
 
     abstract initialize: (...args: any[]) => Promise<void>;
 
-    abstract getSource(...args: any[]): any;
-
-    matchInteractiveElement(element: Element):
-        | {
-              element: HTMLImageElement | SVGElement;
-              options: ImageConfig;
-          }
-        | undefined {
+    matchInteractiveElement(
+        element: Element
+    ): Partial<UnitContext> | undefined {
         const interactive = element as HTMLImageElement | SVGElement;
-        const units = this.integratedMode.plugin.settings.data.units.configs;
+        const units = this.integratedMode.plugin.settings.$.units.configs;
 
         const specific = units.filter(
             (u) =>
@@ -71,11 +66,11 @@ export default abstract class BaseAdapter {
             return false;
         }
 
-        let status = false;
+        let status = true;
 
         if (
             context.adapter === InteractifyAdapters.LivePreview &&
-            !(context.element as HTMLElementWithCMView).cmView
+            (context.element as HTMLElementWithCMView).cmView
         ) {
             status = false;
         } else if (
@@ -96,51 +91,6 @@ export default abstract class BaseAdapter {
         return status;
     }
 
-    isThisSvgIcon(element: Element): boolean {
-        // Fast verification - not svg at all
-        if (!(element instanceof SVGElement)) {
-            return false;
-        }
-
-        const svg = element;
-
-        // Checking the button
-        if (svg.closest('button') || svg.closest('.edit-block-button')) {
-            return true;
-        }
-
-        // Class check
-        if (svg.classList.contains('svg-icon')) {
-            return true;
-        }
-
-        // SVG sizes
-        const rect = svg.getBoundingClientRect();
-        if (
-            rect.width > 0 &&
-            rect.width <= 32 &&
-            rect.height > 0 &&
-            rect.height <= 32
-        ) {
-            return true;
-        }
-
-        // The dimensions of the parent
-        const parent = svg.parentElement;
-        if (parent) {
-            const pRect = parent.getBoundingClientRect();
-            if (
-                pRect.width > 0 &&
-                pRect.width <= 32 &&
-                pRect.height > 0 &&
-                pRect.height <= 32
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
     protected getElSize(context: Partial<UnitContext>): UnitSize {
         const el = context.element;
 
@@ -152,8 +102,8 @@ export default abstract class BaseAdapter {
         };
     }
 
-    protected createUnit(context: UnitContext): void {
-        const unit = InteractifyUnitFactory.createUnit(
+    protected async createUnit(context: UnitContext) {
+        const unit = await InteractifyUnitFactory.createUnit(
             this.integratedMode.plugin,
             context,
             this.fileStat
@@ -162,7 +112,7 @@ export default abstract class BaseAdapter {
     }
 
     protected emitCreated(unit: InteractifyUnit): void {
-        this.integratedMode.plugin.eventBus.emit('unit.created', unit);
+        this.integratedMode.plugin.emitter.emit('unit.created', unit);
     }
 
     finalizeContext(ctx: Partial<UnitContext>): UnitContext {
@@ -202,17 +152,31 @@ export default abstract class BaseAdapter {
         );
         container.setAttribute(
             'data-folded',
-            this.integratedMode.plugin.settings.data.units.folding.foldByDefault.toString()
+            this.integratedMode.plugin.settings.$.units.folding.foldByDefault.toString()
         );
         container.setAttribute('tabindex', '0');
 
         return { container, content, originalParent };
     }
 
-    async baseUnitProcessing(
+    protected findElementWithLivePreviewWidget(el: Element | undefined) {
+        if (el === undefined) {
+            return undefined;
+        }
+        let current = el as HTMLElement | null | undefined;
+
+        while (current && current !== document.body) {
+            if ((current as HTMLElementWithCMView)?.cmView) {
+                return current as HTMLElementWithCMView;
+            }
+            current = current?.parentElement;
+        }
+        return undefined;
+    }
+
+    async unitProcessing(
         adapter: InteractifyAdapters,
-        context: Partial<UnitContext>,
-        callbackBeforeUnitCreating: (context: Partial<UnitContext>) => void
+        context: Partial<UnitContext>
     ) {
         context.adapter = adapter;
 
@@ -232,6 +196,15 @@ export default abstract class BaseAdapter {
             return;
         }
 
+        if (context.mode === 'live-preview') {
+            const livePreviewWidget = this.findElementWithLivePreviewWidget(
+                context.element
+            );
+            if (livePreviewWidget) {
+                context.livePreviewWidget = livePreviewWidget;
+            }
+        }
+
         const size = this.getElSize(context);
 
         const { container, content, originalParent } =
@@ -242,11 +215,9 @@ export default abstract class BaseAdapter {
         context.originalParent = originalParent!;
         context.size = size;
 
-        callbackBeforeUnitCreating(context);
-
         const fContext = this.finalizeContext(context);
 
-        this.createUnit(fContext);
+        await this.createUnit(fContext);
         this.integratedMode.plugin.logger.debug(
             `Adapter ${adapter} was processed successfully.`
         );

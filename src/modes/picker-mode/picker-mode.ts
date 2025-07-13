@@ -1,15 +1,14 @@
 import InteractifyPlugin from '@/core/interactify-plugin';
 import { t } from '@/lang';
-import DirectElementAdapter from '@/modes/integrated-mode/adapters/direct-element-adapters/direct-element-adapter';
 import {
     InteractiveInitialization,
     InteractiveMode,
 } from '@/modes/integrated-mode/interactify-unit/types/constants';
 import { SettingsEventPayload } from '@/settings/types/interfaces';
+import isThisSvgIcon from '@/utils/isThisSvgIcon';
 
 import { Component } from 'obsidian';
 
-// TODO поменять логику чтоб просто передавать управление в адаптер - Popup / Integrated
 export default class PickerMode extends Component {
     private isActive: boolean = false;
     private tooltip: HTMLDivElement | null = null;
@@ -26,7 +25,7 @@ export default class PickerMode extends Component {
         this.setupEvents();
         this.setupCommands();
 
-        this.plugin.settings.data.units.interactivity.picker.enabled &&
+        this.plugin.settings.$.units.interactivity.picker.enabled &&
             this.createRibbon();
     }
 
@@ -42,8 +41,8 @@ export default class PickerMode extends Component {
     };
 
     private setupEvents(): void {
-        const events = this.plugin.settings.events;
-        this.plugin.eventBus.on(
+        const events = this.plugin.settings.$$;
+        this.plugin.emitter.on(
             events.units.interactivity.picker.enabled.$path,
             this.pickerModeToggleHandler
         );
@@ -55,13 +54,12 @@ export default class PickerMode extends Component {
             name: 'Toggle picker mode',
             checkCallback: (checking) => {
                 if (checking) {
-                    return this.plugin.settings.data.units.interactivity.picker
+                    return this.plugin.settings.$.units.interactivity.picker
                         .enabled;
                 }
 
                 if (
-                    !this.plugin.settings.data.units.interactivity.picker
-                        .enabled
+                    !this.plugin.settings.$.units.interactivity.picker.enabled
                 ) {
                     this.plugin.showNotice(
                         t.commands.pickerMode.notice.disabled
@@ -139,7 +137,7 @@ export default class PickerMode extends Component {
         this.currentElement = null;
     }
 
-    activate() {
+    private activate() {
         this.isActive = true;
         document.body.addClass('picker-mode');
         this.createTooltip();
@@ -151,6 +149,10 @@ export default class PickerMode extends Component {
         document.addEventListener('mousedown', this.onMouseDown, true);
 
         document.querySelectorAll('svg, img').forEach((el) => {
+            if (isThisSvgIcon(el)) {
+                return;
+            }
+
             const rect = el.getBoundingClientRect();
             if (rect.width >= 64 && rect.height >= 64) {
                 el.addClass('interactive-candidate');
@@ -160,7 +162,7 @@ export default class PickerMode extends Component {
         this.plugin.showNotice(t.pickerMode.tooltip.onStart, 10000);
     }
 
-    deactivate() {
+    private deactivate() {
         if (!this.isActive) return;
 
         this.isActive = false;
@@ -170,6 +172,7 @@ export default class PickerMode extends Component {
         document.removeEventListener('mouseover', this.onMouseOver);
         document.removeEventListener('mouseout', this.onMouseOut);
         document.removeEventListener('mousedown', this.onMouseDown, true);
+        document.removeEventListener('keydown', this.onKeyDown);
 
         document.querySelectorAll('svg, img').forEach((el) => {
             el.removeClass('interactive-candidate');
@@ -246,19 +249,27 @@ export default class PickerMode extends Component {
 
         const interactive = element as HTMLImageElement | SVGElement;
 
+        if (event.altKey) {
+            if (element instanceof SVGElement) {
+                this.plugin.showNotice('SVG support coming soon! Stay tuned!');
+                return;
+            }
+            await this.plugin.popupMode.showPopup(interactive);
+            this.deactivate();
+            return;
+        }
+
         const wasAlreadyInitialized =
             interactive.dataset.interactiveInitializationStatus ===
             InteractiveInitialization.Initialized;
 
         if (wasAlreadyInitialized) {
-            this.plugin.eventBus.emit('toggle-element', { element });
+            this.plugin.emitter.emit('toggle-integrated-element', { element });
             this.showTooltip(interactive);
             return;
         }
 
-        await this.plugin.integratedMode.createDirectlyIntegratedElement(
-            interactive
-        );
+        this.plugin.emitter.emit('create-integrated-element', interactive);
 
         this.showTooltip(interactive);
     };
@@ -266,9 +277,8 @@ export default class PickerMode extends Component {
     onunload() {
         this.deactivate();
         super.onunload();
-        this.plugin.eventBus.on(
-            this.plugin.settings.events.units.interactivity.picker.enabled
-                .$path,
+        this.plugin.emitter.off(
+            this.plugin.settings.$$.units.interactivity.picker.enabled.$path,
             this.pickerModeToggleHandler
         );
     }
