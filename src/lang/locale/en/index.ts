@@ -423,11 +423,11 @@ const Locale: LocaleSchema  = {
                     },
                     unitsValidation: {
                         bothInvalid: "Config name and selector are both invalid",
-                        fillOutField: "Fill out preset {field} field!",
+                        fillOutField: "Fill out preset {{field}} field!",
                         invalidSelectorPrefix: "Invalid CSS selector: {{err}}",
                         nameAlreadyExists: "Config with that name already exists",
                         nothingToSave: "Nothing to save",
-                        oneInvalid: "Config {field} is invalid",
+                        oneInvalid: "Config {{field}} is invalid",
                         selectorAlreadyExists: "Config with that selector already exists"
                     }
                 }
