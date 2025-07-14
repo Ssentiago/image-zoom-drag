@@ -9,7 +9,6 @@ import { SettingsTab } from '@/settings/settings-tab';
 import EventEmitter2 from 'eventemitter2';
 import { Notice, Plugin } from 'obsidian';
 
-import State from '../modes/integrated-mode/state';
 import Logger from './services/logger/logger';
 
 export default class InteractifyPlugin extends Plugin {
@@ -50,6 +49,8 @@ export default class InteractifyPlugin extends Plugin {
 
     private async initializeCore(): Promise<void> {
         this.settings = new Settings(this);
+        this.addChild(this.settings);
+
         await this.settings.load();
 
         this.addSettingTab(new SettingsTab(this.app, this));

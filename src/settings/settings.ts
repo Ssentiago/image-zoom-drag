@@ -1,7 +1,7 @@
 import { defaultSettings } from '@/settings/default-settings';
 
 import EventEmitter2 from 'eventemitter2';
-import { normalizePath } from 'obsidian';
+import { Component, normalizePath } from 'obsidian';
 
 import InteractifyPlugin from '../core/interactify-plugin';
 import { createEventsWrapper } from './proxy/events-wrapper';
@@ -10,19 +10,27 @@ import { EventsWrapper } from './proxy/types/definitions';
 import { SettingsMigration } from './settings-migration';
 import { DefaultSettings } from './types/interfaces';
 
-export default class Settings {
-    readonly emitter: EventEmitter2;
+export default class Settings extends Component {
+    dirty = false;
     private data!: DefaultSettings;
-    private readonly migration: SettingsMigration;
 
+    readonly emitter: EventEmitter2;
     $$!: EventsWrapper<DefaultSettings>;
 
+    private readonly migration: SettingsMigration;
+
+    private savePromise?: Promise<void> | undefined;
+    private saveTimeout?: NodeJS.Timeout | undefined;
+    private saveResolve?: (() => void) | undefined;
+
     constructor(public readonly plugin: InteractifyPlugin) {
+        super();
         this.emitter = new EventEmitter2({
             wildcard: true,
             delimiter: '.',
         });
         this.migration = new SettingsMigration(this);
+        this.setupEvents();
     }
 
     get $() {
@@ -56,7 +64,10 @@ export default class Settings {
                 userSettings?.version !== this.migration.CURRENT_VERSION;
         }
 
+        // reactive settings: `$.units.*** = ...` -> `emit('settings.units.***', (payload))`
         this.data = createSettingsProxy(this, { ...settings }, []);
+
+        // to get typed settings event paths: `$$.units.$path` -> `settings.units`
         this.$$ = createEventsWrapper(settings);
 
         if (needsSave) {
@@ -65,7 +76,31 @@ export default class Settings {
     }
 
     async save(): Promise<void> {
-        await this.plugin.saveData(this.$);
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+        }
+
+        this.savePromise ??= new Promise((resolve) => {
+            this.saveResolve = resolve;
+        });
+
+        this.saveTimeout = setTimeout(async () => {
+            try {
+                await this.plugin.saveData(this.$);
+                this.dirty = false;
+            } catch (err: any) {
+                this.plugin.logger.error(
+                    `Settings save failed: ${err.message}`
+                );
+            } finally {
+                this.savePromise = undefined;
+                this.saveResolve?.();
+                this.saveResolve = undefined;
+                this.saveTimeout = undefined;
+            }
+        }, 500);
+
+        return this.savePromise;
     }
 
     async reset(): Promise<void> {
@@ -80,5 +115,28 @@ export default class Settings {
             await this.plugin.app.vault.adapter.exists(configPath);
         existsPath && (await this.plugin.app.vault.adapter.remove(configPath));
         await this.load();
+    }
+
+    setupEvents() {
+        this.emitter.on('**', () => (this.dirty = true));
+    }
+
+    async onunload() {
+        super.onunload();
+        this.emitter.removeAllListeners();
+
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+            this.saveTimeout = undefined;
+        }
+
+        if (this.dirty && this.savePromise) {
+            await this.savePromise;
+        } else if (this.dirty) {
+            await this.plugin.saveData(this.$);
+            this.dirty = false;
+        }
+
+        this.savePromise = undefined;
     }
 }
