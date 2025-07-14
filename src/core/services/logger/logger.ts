@@ -257,6 +257,11 @@ export default class Logger {
             }
 
             localStorage.setItem(this.storageKey, JSON.stringify(logs));
+
+            this.plugin.emitter.emit('logs-changed', {
+                storage: this.getStorageUsage(),
+                entries: this.getAllLogs().length,
+            });
         } catch (error) {
             console.error('Logger: Ошибка записи в localStorage:', error);
             this.isStorageAvailable = false;
@@ -415,5 +420,9 @@ export default class Logger {
      */
     clearAllLogs(): void {
         localStorage.removeItem(this.storageKey);
+        this.plugin.emitter.emit('logs-changed', {
+            storage: this.getStorageUsage(),
+            entries: this.getAllLogs().length,
+        });
     }
 }

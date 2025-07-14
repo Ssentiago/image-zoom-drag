@@ -1,6 +1,6 @@
 import { t, tf } from '@/lang';
 
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 
 import { OSetting } from '@obsidian-devkit/native-react-components';
 
@@ -17,7 +17,23 @@ import { useSettingsContext } from '../../core/SettingsContext';
  */
 const Debug: FC = () => {
     const { plugin } = useSettingsContext();
-    const [_, setReload] = useState(false);
+
+    const [storageData, setStorageData] = useState({
+        storage: plugin.logger.getStorageUsage(),
+        entries: plugin.logger.getAllLogs().length,
+    });
+
+    useEffect(() => {
+        const handler = (payload: { storage: string; entries: number }) => {
+            setStorageData(payload);
+        };
+
+        plugin.emitter.on('logs-changed', handler);
+
+        return () => {
+            plugin.emitter.off('logs-changed', handler);
+        };
+    }, [plugin]);
 
     const downloadLogs = useCallback(() => {
         const logs = plugin.logger.exportLogs();
@@ -41,11 +57,6 @@ const Debug: FC = () => {
         await navigator.clipboard.writeText(logString);
         plugin.showNotice(t.settings.pages.debug.copyLogs.notice.successfully);
     }, []);
-
-    const storageMessage = tf(t.settings.pages.debug.clearLogsStorage.desc, {
-        storage: plugin.logger.getStorageUsage(),
-        entries: plugin.logger.getAllLogs().length.toString(),
-    });
 
     const handleLinkButtonClick = useCallback(async () => {
         const systemInfo = JSON.stringify(
@@ -72,7 +83,6 @@ const Debug: FC = () => {
 
     const clearLogs = useCallback(async () => {
         plugin.logger.clearAllLogs();
-        setReload((prev) => !prev);
         plugin.showNotice(
             t.settings.pages.debug.clearLogsStorage.notice.successfully
         );
@@ -155,7 +165,10 @@ const Debug: FC = () => {
 
             <OSetting
                 name={t.settings.pages.debug.clearLogsStorage.name}
-                desc={storageMessage}
+                desc={tf(t.settings.pages.debug.clearLogsStorage.desc, {
+                    storage: storageData.storage,
+                    entries: storageData.entries.toString(),
+                })}
             >
                 <button
                     aria-label={
