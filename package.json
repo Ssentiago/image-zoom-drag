@@ -23,11 +23,13 @@
     "dependencies": {
         "@obsidian-devkit/native-react-components": "^1.1.32",
         "eventemitter2": "^6.4.9",
+        "inquirer": "^12.7.0",
         "lucide-react": "^0.525.0",
         "preact": "^10.26.9",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "styled-components": "^6.1.19",
+        "ts-morph": "^26.0.0",
         "wouter": "^3.7.1"
     },
     "devDependencies": {
