@@ -1,4 +1,5 @@
-import { Component } from 'obsidian';
+import { Component, moment } from 'obsidian';
+import { Node } from 'ts-morph';
 
 import Events from '../events';
 import { Handler } from '../types/interfaces';
@@ -9,6 +10,8 @@ export class Touch extends Component implements Handler {
     private initialDistance!: number;
     private isDragging = false;
     private isPinching = false;
+
+    private tapTimeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor(private readonly events: Events) {
         super();
@@ -29,23 +32,6 @@ export class Touch extends Component implements Handler {
         });
     }
 
-    /**
-     * Handles the `touchstart` event on the given container element.
-     *
-     * If native touch event handling is enabled, this function does nothing.
-     *
-     * Otherwise, this function sets the active container to the given container,
-     * prevents the default behavior of the event, and stops the event from propagating.
-     *
-     * If there is only one touch point, this function sets the `isDragging` flag to
-     * true and records the starting position of the touch.
-     *
-     * If there are two touch points, this function sets the `isPinching` flag to
-     * true and records the initial distance between the two touch points.
-     *
-     * @param container - The container element that received the touch event.
-     * @param e - The `TouchEvent` object that represents the touch event.
-     */
     private readonly touchStart = (e: TouchEvent): void => {
         if (this.events.unit.nativeTouchEventsEnabled) {
             return;
@@ -66,6 +52,16 @@ export class Touch extends Component implements Handler {
         } else if (e.touches.length === 2) {
             this.isPinching = true;
             this.initialDistance = this.calculateDistance(e.touches);
+        }
+
+        if (this.tapTimeout) {
+            clearTimeout(this.tapTimeout);
+            this.tapTimeout = null;
+            this.events.unit.actions.resetZoomAndMove({ animated: true });
+        } else {
+            this.tapTimeout = setTimeout(() => {
+                this.tapTimeout = null;
+            }, 300);
         }
     };
 
