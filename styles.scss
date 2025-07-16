@@ -48,6 +48,7 @@
     position: relative !important;
     overflow: hidden !important;
     cursor: grab !important;
+    user-select: none !important;
 
     &[data-interactify-rendering-mode='preview'] {
         margin-bottom: 40px !important;
