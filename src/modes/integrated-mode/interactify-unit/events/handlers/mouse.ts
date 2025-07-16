@@ -35,6 +35,8 @@ export class Mouse extends Component implements Handler {
 
         this.registerDomEvent(container, 'mouseenter', this.mouseEnterOnUnit);
         this.registerDomEvent(container, 'mouseleave', this.mouseLeaveOutUnit);
+
+        this.registerDomEvent(container, 'dblclick', (e) => this.events.unit.actions.resetZoomAndMove({animated: true}))
     }
 
     get elements() {
@@ -121,7 +123,6 @@ export class Mouse extends Component implements Handler {
         content.setCssStyles({
             cursor: 'grabbing',
         });
-        event.preventDefault();
     };
 
     private readonly mouseMove = (event: MouseEvent): void => {
