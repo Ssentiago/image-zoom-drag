@@ -43,7 +43,6 @@ export default class InteractifyPlugin extends Plugin {
     private async initialize(): Promise<void> {
         await this.initializeCore();
         await this.initializeServices();
-        await this.initializeEventSystem();
         await this.initializeUI();
     }
 
@@ -56,13 +55,12 @@ export default class InteractifyPlugin extends Plugin {
         this.addSettingTab(new SettingsTab(this.app, this));
 
         await tPromise;
-    }
-
-    private async initializeEventSystem(): Promise<void> {
+        
         this.emitter = new EventEmitter2({
             wildcard: true,
             delimiter: '.',
-        });
+        })
+
     }
 
     /**
