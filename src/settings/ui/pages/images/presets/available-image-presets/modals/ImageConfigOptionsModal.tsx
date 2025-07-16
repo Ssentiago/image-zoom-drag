@@ -2,7 +2,7 @@ import { t, tf } from '@/lang';
 
 import { FC, useMemo } from 'react';
 
-import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-lib/native-react-components';
 
 import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useUnitsManagerContext } from '../../context/UnitsManagerContext';

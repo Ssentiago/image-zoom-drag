@@ -2,7 +2,7 @@ import { t, tf } from '@/lang';
 
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 
 import { DimensionType } from '../../../../../types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';

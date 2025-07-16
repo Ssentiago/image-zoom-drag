@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import React from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 
 import ButtonLayoutModal from './modals/ButtonLayoutModal';
 import PanelLayoutModal from './modals/PanelLayoutModal';

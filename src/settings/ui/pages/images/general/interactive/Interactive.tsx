@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import { FC, useCallback, useMemo, useState } from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 
 import { ActivationMode } from '../../../../../types/interfaces';
 import { useSettingsContext } from '../../../../core/SettingsContext';

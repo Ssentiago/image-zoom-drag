@@ -2,7 +2,7 @@ import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
 
 import { FC } from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 
 const ContextMenu: FC = () => {
     const { plugin } = useSettingsContext();
