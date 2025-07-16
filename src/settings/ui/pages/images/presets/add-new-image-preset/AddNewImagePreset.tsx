@@ -2,7 +2,7 @@ import { t, tf } from '@/lang';
 
 import { FC, useState } from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 import { Platform } from 'obsidian';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';

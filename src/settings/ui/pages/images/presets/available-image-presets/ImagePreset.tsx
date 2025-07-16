@@ -3,7 +3,7 @@ import { ImageConfigs } from '@/modes/integrated-mode/interactify-unit/types/con
 
 import React, { FC, useState } from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 
 import { useUnitsValidation } from '../hooks/useUnitsValidation';
 import { useImageConfigOperations } from './hooks/useImageConfigOperations';

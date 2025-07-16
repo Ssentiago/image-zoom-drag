@@ -3,7 +3,7 @@ import { UserGuideModalProps } from '@/settings/ui/pages/images/presets/add-new-
 
 import React from 'react';
 
-import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-lib/native-react-components';
 
 import { useUserGuideVideo } from './hooks/useUserGuideVideo';
 

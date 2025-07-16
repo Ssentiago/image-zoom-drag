@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-lib/native-react-components';
 
 import { UnitInfoProps } from './types/interfaces';
 

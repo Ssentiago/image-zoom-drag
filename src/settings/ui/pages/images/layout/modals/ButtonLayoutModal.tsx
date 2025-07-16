@@ -2,7 +2,7 @@ import { t } from '@/lang';
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import { OModal, OSetting } from '@obsidian-devkit/native-react-components';
+import { OModal, OSetting } from '@obsidian-lib/native-react-components';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
 

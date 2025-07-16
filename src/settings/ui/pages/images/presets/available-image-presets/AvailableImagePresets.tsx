@@ -2,7 +2,7 @@ import { t, tf } from '@/lang';
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { OSetting } from '@obsidian-devkit/native-react-components';
+import { OSetting } from '@obsidian-lib/native-react-components';
 import { ArrowLeft, ArrowRight, RotateCcw, RotateCw } from 'lucide-react';
 
 import { useSettingsContext } from '../../../../core/SettingsContext';
