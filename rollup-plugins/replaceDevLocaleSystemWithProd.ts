@@ -1,12 +1,18 @@
 import { readFileSync } from 'fs';
+import { from, toArray } from 'ix/iterable';
+import { filter, map, tap } from 'ix/iterable/operators';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { join } from 'path';
-import * as ts from 'typescript';
+import type { Plugin } from 'rollup';
+import { ImportDeclaration, Node, Project, SourceFile, ts } from 'ts-morph';
+
+import SyntaxKind = ts.SyntaxKind;
 
 const KEYS_MAPPING = new Map<string, string>();
 const KEYS_SCOPE = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$';
 const keyUsageCount = new Map<string, number>();
+const localesPath = path.resolve(process.cwd(), 'src/lang/locale/');
 
 function generateMinifiedKey(index: number): string {
     const base = KEYS_SCOPE.length;
@@ -72,200 +78,162 @@ function createMinifyKeysMapping(options: { enLocalePath: string }) {
         `Size reduction: ${((1 - minifiedLongest / originalLongest) * 100).toFixed(1)}% (longest), ${((1 - Number(avgMinified) / Number(avgOriginal)) * 100).toFixed(1)}% (average)`
     );
 }
-function singlePassTransformer(context: any) {
-    const localesPath = path.resolve(process.cwd(), 'src/lang/locale/');
 
-    return (sourceFile: any) => {
-        function visitor(node: ts.Node): ts.Node {
-            // Process t.key -> t('minified_key') immediately
-            if (ts.isPropertyAccessExpression(node)) {
-                const parent = node.parent;
-                if (!ts.isPropertyAccessExpression(parent)) {
-                    const fullPath = node.getText().replace(/\s+/g, '');
-                    if (fullPath.startsWith('t.')) {
-                        const path = fullPath.slice(2);
-                        const minifiedKey = KEYS_MAPPING.get(path) || path;
-                        keyUsageCount.set(
-                            path,
-                            (keyUsageCount.get(path) || 0) + 1
-                        );
-                        return ts.factory.createCallExpression(
-                            ts.factory.createIdentifier('t'),
-                            undefined,
-                            [ts.factory.createStringLiteral(minifiedKey)]
-                        );
-                    }
-                }
-            }
-
-            // Process imports
-            if (ts.isImportDeclaration(node)) {
-                const moduleSpecifier = node.moduleSpecifier;
-
-                if (ts.isStringLiteral(moduleSpecifier)) {
-                    const importPath = moduleSpecifier.text;
-                    const matchedData = importPath.match(
-                        /locale\/(.+?)\/flat\.json/
-                    );
-
-                    if (matchedData?.[1]) {
-                        const object =
-                            (JSON.parse(
-                                readFileSync(join(localesPath, importPath), {
-                                    encoding: 'utf-8',
-                                })
-                            ) as Record<string, any>) || {};
-
-                        const newObject: Record<string, any> = {};
-                        for (const key of KEYS_MAPPING.keys()) {
-                            const objVal = object[key];
-                            newObject[KEYS_MAPPING.get(key)!] = objVal;
-                        }
-
-                        const importName = node.importClause?.name?.text;
-                        if (importName) {
-                            return ts.factory.createVariableStatement(
-                                undefined,
-                                ts.factory.createVariableDeclarationList(
-                                    [
-                                        ts.factory.createVariableDeclaration(
-                                            importName,
-                                            undefined,
-                                            undefined,
-                                            createObjectFromModifiedObject(
-                                                newObject
-                                            )
-                                        ),
-                                    ],
-                                    ts.NodeFlags.Const
-                                )
-                            );
-                        }
-                    }
-                }
-            }
-
-            return ts.visitEachChild(node, visitor, context);
-        }
-        return ts.visitNode(sourceFile, visitor);
-    };
+function getTopmostPropertyAccess(node: Node): Node {
+    let current: Node | undefined = node;
+    while (
+        current?.getParent()?.getKind() === SyntaxKind.PropertyAccessExpression
+    ) {
+        current = current?.getParent();
+    }
+    return current!;
 }
 
-function createObjectFromModifiedObject(obj: Record<string, any>) {
-    const properties = Object.entries(obj).map(([key, value]) =>
-        ts.factory.createPropertyAssignment(
-            ts.factory.createStringLiteral(key),
-            Array.isArray(value)
-                ? ts.factory.createArrayLiteralExpression(
-                      value.map((v) =>
-                          ts.factory.createStringLiteral(String(v))
-                      )
-                  )
-                : ts.factory.createStringLiteral(String(value))
+function replaceTCallExpressions(source: SourceFile) {
+    const nodes = toArray(
+        from(source.getDescendants()).pipe(
+            filter(
+                (node) => node.getKind() === SyntaxKind.PropertyAccessExpression
+            ),
+            filter((node) => node === getTopmostPropertyAccess(node)),
+            map((node) => ({
+                fullPath: node.getText(false).replace(/\s+/g, ''),
+                node: node,
+            })),
+            filter((nodeData) => nodeData.fullPath.startsWith('t.')),
+            map((nodeData) => ({
+                node: nodeData.node,
+                path: nodeData.fullPath.slice(2),
+            })),
+            map((nodeData) => ({
+                ...nodeData,
+                minifiedKey: KEYS_MAPPING.get(nodeData.path),
+            })),
+            tap(({ path }) =>
+                keyUsageCount.set(path, (keyUsageCount.get(path) ?? 0) + 1)
+            )
         )
     );
 
-    return ts.factory.createObjectLiteralExpression(properties, true);
+    for (const nodeData of nodes) {
+        nodeData.node.replaceWithText(`t("${nodeData.minifiedKey}")`);
+    }
+}
+
+function createVariableStatement(importName: string, obj: Record<string, any>) {
+    const objectLiteral = createObjectLiteral(obj);
+    return `const ${importName} = ${objectLiteral};`;
+}
+
+function createObjectLiteral(obj: Record<string, any>): string {
+    const properties = Object.entries(obj).map(([key, value]) => {
+        const valueStr = Array.isArray(value)
+            ? `[${value.map((v) => JSON.stringify(String(v))).join(', ')}]` // <- используй JSON.stringify
+            : JSON.stringify(String(value));
+        return `${JSON.stringify(key)}: ${valueStr}`;
+    });
+
+    return `{\n  ${properties.join(',\n  ')}\n}`;
+}
+function createMinifiedLocale(importPath: string) {
+    const object =
+        (JSON.parse(
+            readFileSync(join(localesPath, importPath), {
+                encoding: 'utf-8',
+            })
+        ) as Record<string, any>) || {};
+
+    const newObject: Record<string, any> = {};
+    for (const key of KEYS_MAPPING.keys()) {
+        const objVal = object[key];
+        newObject[KEYS_MAPPING.get(key)!] = objVal;
+    }
+    return newObject;
+}
+
+function replaceImports(source: SourceFile) {
+    const nodes = toArray(
+        from(source.getDescendants()).pipe(
+            filter(
+                (node): node is ImportDeclaration =>
+                    node.getKind() === SyntaxKind.ImportDeclaration
+            ),
+            map((node) => ({
+                node,
+                moduleSpecifier: node.getModuleSpecifier(),
+                importName: node
+                    .getImportClause()
+                    ?.getDefaultImport()
+                    ?.getText(),
+            })),
+            filter(
+                ({ moduleSpecifier, importName }) =>
+                    moduleSpecifier.isKind(SyntaxKind.StringLiteral) &&
+                    !!importName
+            ),
+            map((nodeData) => ({
+                ...nodeData,
+                importPath: nodeData.moduleSpecifier.getLiteralValue(),
+            })),
+            map((nodeData) => ({
+                ...nodeData,
+                match: nodeData.importPath.match(/locale\/(.+?)\/flat\.json/),
+            })),
+            filter(({ match }) => match !== null),
+            map((nodeData) => ({
+                ...nodeData,
+                minifiedLocale: createMinifiedLocale(nodeData.importPath),
+            }))
+        )
+    );
+
+    for (const nodeData of nodes) {
+        const statement = createVariableStatement(
+            nodeData.importName!,
+            nodeData.minifiedLocale
+        );
+
+        nodeData.node.replaceWithText(statement);
+    }
+}
+
+function transformSourceFile(source: SourceFile) {
+    replaceTCallExpressions(source);
+    replaceImports(source);
 }
 
 export default function replaceDevLocaleSystemWithProd(options: {
     enLocalePath: string;
     verbose?: boolean;
-}) {
+}): Plugin {
     createMinifyKeysMapping(options);
+
+    const project = new Project({
+        useInMemoryFileSystem: true,
+    });
 
     return {
         name: 'replaceDevLocaleSystemWithProd',
-
         transform(code: string, id: string) {
-            if (!id.match(/(ts|tsx)$/)) return;
+            if (!id.match(/\.(ts|tsx)$/)) return null;
 
             if (process.env.NODE_ENV !== 'production') {
-                return;
+                return null; // skip in dev
             }
 
-            const sourceFile = ts.createSourceFile(
-                id,
-                code,
-                ts.ScriptTarget.Latest,
-                true
-            );
+            const sourceFile = project.createSourceFile(id, code, {
+                overwrite: true,
+            });
 
-            const result = ts.transform(sourceFile, [singlePassTransformer]);
-            const transformedCode = ts
-                .createPrinter()
-                .printFile(result.transformed[0]);
+            transformSourceFile(sourceFile);
+            const result = sourceFile.getFullText();
 
-            return { code: transformedCode, map: null };
-        },
-        buildEnd() {
-            if (process.env.NODE_ENV !== 'production' || !options.verbose) {
-                return;
-            }
+            project.removeSourceFile(sourceFile);
 
-            console.log('=== replaceDevLocaleSystemWithProd ===');
-            console.log('\n--- Key Usage Stats ---');
-            const usageCounts = Array.from(keyUsageCount.entries()).sort(
-                (a, b) => b[1] - a[1]
-            );
-
-            const enLocaleKeys = Object.keys(
-                JSON.parse(
-                    readFileSync(
-                        path.resolve(process.cwd(), options.enLocalePath),
-                        { encoding: 'utf-8' }
-                    )
-                ) || {}
-            ).sort();
-
-            const totalUsages = usageCounts.reduce(
-                (sum, [_, count]) => sum + count,
-                0
-            );
-
-            if (usageCounts.length > 0) {
-                console.log(`Total key usages: ${totalUsages}`);
-                console.log(
-                    `Most used: "${usageCounts[0][0]}" (${usageCounts[0][1]} times)`
-                );
-                console.log(
-                    `Least used: "${usageCounts[usageCounts.length - 1][0]}" (${usageCounts[usageCounts.length - 1][1]} times)`
-                );
-                console.log(
-                    `Average usages per key: ${(totalUsages / keyUsageCount.size).toFixed(1)}`
-                );
-            }
-
-            const unused = enLocaleKeys.filter(
-                (key) => !keyUsageCount.has(key)
-            );
-            if (unused.length > 0) {
-                console.log(
-                    `\n⚠️  Found ${unused.length} unused translation keys:`
-                );
-                unused.forEach((key) => console.log(`   - ${key}`));
-                console.log(
-                    `💡 Consider removing these keys to reduce bundle size further`
-                );
-            }
-
-            if (usageCounts.length > 0) {
-                const originalTotalChars = usageCounts.reduce(
-                    (sum, [key, count]) => sum + key.length * count,
-                    0
-                );
-                const minifiedTotalChars = usageCounts.reduce(
-                    (sum, [key, count]) => {
-                        const minKey = KEYS_MAPPING.get(key) || key;
-                        return sum + minKey.length * count;
-                    },
-                    0
-                );
-
-                console.log(
-                    `Total chars in code: ${originalTotalChars} → ${minifiedTotalChars} (${((1 - minifiedTotalChars / originalTotalChars) * 100).toFixed(1)}% reduction)`
-                );
-            }
+            return {
+                code: result,
+                map: null,
+            };
         },
     };
 }

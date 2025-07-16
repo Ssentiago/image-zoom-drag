@@ -1,150 +1,134 @@
+import { from, toArray } from 'ix/iterable';
+import { filter, map } from 'ix/iterable/operators';
 import path from 'node:path';
-import ts, { TransformationContext } from 'typescript';
+import {
+    CallExpression,
+    Node,
+    Project,
+    PropertyAccessExpression,
+    SourceFile,
+    SyntaxKind,
+} from 'ts-morph';
 
-function findFunctionName(currentNode: ts.Node, source: ts.SourceFile): string {
-    let parent = currentNode.parent;
+function findFunctionName(currentNode: Node): string {
+    const parent = currentNode.getFirstAncestor(
+        (node) =>
+            Node.isFunctionDeclaration(node) ||
+            Node.isMethodDeclaration(node) ||
+            Node.isFunctionExpression(node) ||
+            Node.isArrowFunction(node)
+    );
 
-    while (parent) {
-        if (
-            ts.isFunctionDeclaration(parent) ||
-            ts.isMethodDeclaration(parent)
-        ) {
-            // For FunctionDeclation or MethodDeclaration, we get a name
-            return parent.name?.getText(source) ?? 'anonymous';
-        } else if (
-            ts.isFunctionExpression(parent) ||
-            ts.isArrowFunction(parent)
-        ) {
-            // For Functionexpression or Arrowfunction, a name may not be
-            return 'anonymous';
-        } else if (
-            ts.isVariableDeclaration(parent) &&
-            parent.name &&
-            ts.isIdentifier(parent.name)
-        ) {
-            // If the function is assigned to the variable
-            return parent.name.getText(source);
-        }
-        parent = parent.parent;
+    if (!parent) return 'global';
+
+    if (
+        Node.isFunctionDeclaration(parent) ||
+        Node.isMethodDeclaration(parent)
+    ) {
+        return parent.getName() ?? 'anonymous';
     }
-    return 'global'; // If we have not found a function, we believe that this is a global context
+
+    if (Node.isFunctionExpression(parent) || Node.isArrowFunction(parent)) {
+        const varDecl = parent.getFirstAncestor(Node.isVariableDeclaration);
+        if (varDecl) {
+            return varDecl.getName();
+        }
+        return 'anonymous';
+    }
+
+    return 'global';
 }
 
-const createNewLoggerExpression = (
-    node: ts.CallExpression,
-    source: ts.SourceFile
-) => {
-    const logText = node.arguments[0];
+function extendNode(node: CallExpression) {
+    const logText = node.getArguments()[0];
 
     if (!logText) {
         return node;
     }
 
-    const originalContext = node.arguments[1];
+    const originalContext = node.getArguments()[1]?.getFullText() ?? '{}';
 
-    const fileName = source.fileName;
-
-    const functionName = findFunctionName(node, source);
-
-    const sourceFile = node.getSourceFile();
-    const lineAndChar = sourceFile.getLineAndCharacterOfPosition(
-        node.getStart()
+    const fileName = path.relative(
+        process.cwd(),
+        node.getSourceFile().getFilePath()
     );
 
-    const lineNumber = lineAndChar.line + 1;
-    const columnNumber = lineAndChar.character + 1;
+    const functionName = findFunctionName(node);
 
-    const contextObj = ts.factory.createObjectLiteralExpression([
-        ...(originalContext && ts.isObjectLiteralExpression(originalContext)
-            ? originalContext.properties
-            : []),
-        ts.factory.createPropertyAssignment(
-            'file',
-            ts.factory.createStringLiteral(
-                path.relative(process.cwd(), fileName)
+    const lineNumber = node.getStartLineNumber();
+    const columnNumber = node.getStartLinePos();
+    const newContext = `{ ...${originalContext}, functionName: ${JSON.stringify(functionName)}, lineNumber: ${lineNumber}, columnNumber: ${columnNumber}, fileName: ${JSON.stringify(fileName)} }`;
+
+    const args = node.getArguments();
+    if (args.length >= 2) {
+        args[1].replaceWithText(newContext);
+    } else {
+        const functionName = node.getExpression().getText();
+        const firstArg = logText.getFullText();
+        node.replaceWithText(`${functionName}(${firstArg}, ${newContext})`);
+    }
+
+    return node;
+}
+
+function extendLoggerCalls(source: SourceFile) {
+    const loggerMethods = new Set(['debug', 'warn', 'error', 'info']);
+    const loggerRegexp = new RegExp(
+        `.logger.(${Array.from(loggerMethods).join('|')})`
+    );
+    const nodes = toArray(
+        from(source.getDescendants()).pipe(
+            filter((node): node is CallExpression =>
+                node.isKind(SyntaxKind.CallExpression)
+            ),
+            map((node) => ({ node, expression: node.getExpression() })),
+            filter(
+                (
+                    nodeData
+                ): nodeData is {
+                    node: CallExpression;
+                    expression: PropertyAccessExpression;
+                } =>
+                    nodeData.expression.isKind(
+                        SyntaxKind.PropertyAccessExpression
+                    )
+            ),
+            map((nodeData) => ({
+                ...nodeData,
+                methodName: nodeData.expression.getName(),
+            })),
+            filter(({ methodName }) => loggerMethods.has(methodName)),
+            filter(
+                ({ expression }) => !!loggerRegexp.test(expression.getText())
             )
-        ),
-        ts.factory.createPropertyAssignment(
-            'lineNumber',
-            ts.factory.createNumericLiteral(lineNumber)
-        ),
-        ts.factory.createPropertyAssignment(
-            'columnNumber',
-            ts.factory.createNumericLiteral(columnNumber)
-        ),
-        ts.factory.createPropertyAssignment(
-            'functionName',
-            ts.factory.createStringLiteral(functionName)
-        ),
-    ]);
-
-    return ts.factory.createCallExpression(
-        node.expression,
-        node.typeArguments,
-        [logText, contextObj]
+        )
     );
-};
+
+    for (const node of nodes) {
+        extendNode(node.node);
+    }
+}
 
 export default function addLoggerContext() {
+    const project = new Project({
+        useInMemoryFileSystem: true,
+    });
     return {
         name: 'add-logger-context',
         transform(code: string, id: string) {
             if (!id.match(/(ts|tsx)$/)) return;
 
-            const source = ts.createSourceFile(
-                id,
-                code,
-                ts.ScriptTarget.Latest,
-                true
-            );
+            const sourceFile = project.createSourceFile(id, code, {
+                overwrite: true,
+            });
 
-            const result = ts.transform(source, [
-                (context: TransformationContext) => {
-                    return (source: ts.SourceFile) => {
-                        function visitor(node: ts.Node): ts.Node {
-                            if (
-                                ts.isCallExpression(node) &&
-                                ts.isPropertyAccessExpression(node.expression)
-                            ) {
-                                const callText = node.getText(source);
-                                const hasLogger =
-                                    /(?:\w+\.)*logger\.(?:debug|error|warn|info)\(/.test(
-                                        callText
-                                    );
+            extendLoggerCalls(sourceFile);
 
-                                if (hasLogger) {
-                                    const expr = node.expression;
-                                    if (
-                                        ts.isIdentifier(expr.name) &&
-                                        [
-                                            'debug',
-                                            'info',
-                                            'warn',
-                                            'error',
-                                            'trace',
-                                        ].includes(expr.name.text)
-                                    ) {
-                                        return createNewLoggerExpression(
-                                            node,
-                                            source
-                                        );
-                                    }
-                                }
-                            }
+            const result = sourceFile.getFullText();
 
-                            return ts.visitEachChild(node, visitor, context);
-                        }
+            project.removeSourceFile(sourceFile);
 
-                        return ts.visitNode(source, visitor) as ts.SourceFile;
-                    };
-                },
-            ]);
-
-            const transformedCode = ts
-                .createPrinter()
-                .printFile(result.transformed[0]);
-
-            return { code: transformedCode, map: null };
+            return { code: result, map: null };
         },
     };
 }
