@@ -11,17 +11,19 @@
     "scripts": {
         "dev": "NODE_ENV=development rollup -c rollup.config.ts --configPlugin esbuild -w",
         "build": "NODE_ENV=production rollup -c rollup.config.ts --configPlugin esbuild",
-        "start": "obsidian-cli start",
-        "release": "obsidian-cli release",
+        "start": "obsidian-dev-tools start",
+        "release": "obsidian-dev-tools release",
         "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
-        "locale:nest": "locale-tools nest",
-        "locale:template": "locale-tools template",
-        "locale:check-locale": "locale-tools check-locale",
-        "locale:check-locales": "locale-tools check-locales",
-        "locale:flat": "locale-tools flat"
+        "locale:nest": "i18n-tools nest",
+        "locale:template": "i18n-tools template",
+        "locale:check-locale": "i18n-tools check-locale",
+        "locale:check-locales": "i18n-tools check-locales",
+        "locale:flat": "i18n-tools flat",
+        "locale:key-stats": "i18n-tools keys-stats"
     },
     "dependencies": {
-        "@obsidian-devkit/native-react-components": "^1.1.32",
+        "@obsidian-lib/i18n-tools": "^0.0.7",
+        "@obsidian-lib/native-react-components": "^0.0.2",
         "eventemitter2": "^6.4.9",
         "inquirer": "^12.7.0",
         "lucide-react": "^0.525.0",
@@ -33,8 +35,7 @@
         "wouter": "^3.7.1"
     },
     "devDependencies": {
-        "@obsidian-devkit/cli": "^1.1.11",
-        "@obsidian-devkit/locale-tools": "^1.0.31",
+        "@obsidian-lib/dev-tools": "0.0.7",
         "@rollup/plugin-alias": "^5.1.1",
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-json": "^6.1.0",
