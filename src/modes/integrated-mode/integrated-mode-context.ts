@@ -81,4 +81,31 @@ export class IntegratedModeContext {
             this.leaf = undefined;
         }
     }
+
+    getAvailableSize(): { width: number; height: number } {
+        if (!this.active) {
+            return { width: 0, height: 0 };
+        }
+
+        const selector = this.inPreviewMode
+            ? '.markdown-preview-view'
+            : '.markdown-source-view';
+
+        const container = this.view!.contentEl.querySelector(selector);
+        if (!container) {
+            return { width: 0, height: 0 };
+        }
+
+        const sizer = container.querySelector(
+            '.markdown-preview-sizer, .cm-sizer'
+        );
+        const marginLeft = sizer
+            ? parseInt(window.getComputedStyle(sizer).marginLeft) || 0
+            : 0;
+
+        return {
+            width: container.clientWidth * 0.9 - marginLeft,
+            height: container.clientHeight * 0.9,
+        };
+    }
 }
