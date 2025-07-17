@@ -25,6 +25,7 @@ export interface PreviewContextData {
 export interface UnitContext extends BaseUnitContext {
     adapter: InteractifyAdapters;
     size: UnitSize;
+    layout: 'wide' | 'tall' | 'proportional';
     originalParent: HTMLElement;
     container: HTMLElement;
     content: HTMLElement;
