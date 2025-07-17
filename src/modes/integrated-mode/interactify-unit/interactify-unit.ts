@@ -64,9 +64,23 @@ export default class InteractifyUnit extends Component {
     }
 
     get realSize() {
-        const contentEl = this.plugin.integratedMode.context.view?.contentEl;
-        const innerHeight = contentEl?.innerHeight ?? 0;
-        const innerWidth = contentEl?.innerWidth ?? 0;
+        const normalizeOriginalSize = () => {
+            const originalSize = this.context.size;
+            const availableSize =
+                this.plugin.integratedMode.context.getAvailableSize();
+
+            const isZeroSize =
+                availableSize.width === 0 || availableSize.height === 0;
+
+            const width = isZeroSize
+                ? originalSize.width
+                : Math.min(originalSize.width, availableSize.width);
+            const height = isZeroSize
+                ? originalSize.height
+                : Math.min(originalSize.height, availableSize.height);
+
+            return { width, height };
+        };
 
         const settingsSizeData = this.plugin.settings.$.units.size;
         const isFolded = this.context.container.dataset.folded === 'true';
@@ -74,22 +88,16 @@ export default class InteractifyUnit extends Component {
             ? settingsSizeData.folded
             : settingsSizeData.expanded;
 
-        const heightValue = setting.height.value;
-        const widthValue = setting.width.value;
+        const normalizedOriginalSize = normalizeOriginalSize();
 
-        let heightInPx =
-            setting.height.type === '%'
-                ? (heightValue / 100) * this.context.size.height
-                : heightValue;
-        let widthInPx =
+        const widthInPx =
             setting.width.type === '%'
-                ? (widthValue / 100) * this.context.size.width
-                : widthValue;
-
-        if (innerWidth > 0 && innerHeight > 0) {
-            heightInPx = Math.min(heightInPx, innerHeight);
-            widthInPx = Math.min(widthInPx, innerWidth);
-        }
+                ? (setting.width.value / 100) * normalizedOriginalSize.width
+                : setting.width.value;
+        const heightInPx =
+            setting.height.type === '%'
+                ? (setting.height.value / 100) * normalizedOriginalSize.height
+                : setting.height.value;
 
         return {
             width: widthInPx,
