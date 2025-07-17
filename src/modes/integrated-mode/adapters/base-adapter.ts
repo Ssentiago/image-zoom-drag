@@ -91,6 +91,18 @@ export default abstract class BaseAdapter {
         return status;
     }
 
+    detectDiagramLayout(
+        width: number,
+        height: number
+    ): 'tall' | 'wide' | 'proportional' {
+        const ratio = width / height;
+
+        if (ratio > 1.5) return 'wide';
+        if (ratio < 0.67) return 'tall';
+
+        return 'proportional';
+    }
+
     protected getElSize(context: Partial<UnitContext>): UnitSize {
         const el = context.element;
 
@@ -206,6 +218,7 @@ export default abstract class BaseAdapter {
         }
 
         const size = this.getElSize(context);
+        const layout = this.detectDiagramLayout(size.width, size.height);
 
         const { container, content, originalParent } =
             await this.createInteractiveElementWrapper(context);
@@ -214,6 +227,7 @@ export default abstract class BaseAdapter {
         context.content = content!;
         context.originalParent = originalParent!;
         context.size = size;
+        context.layout = layout;
 
         const fContext = this.finalizeContext(context);
 
