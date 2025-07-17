@@ -5,6 +5,7 @@ import {
     InteractiveMode,
 } from '@/modes/integrated-mode/interactify-unit/types/constants';
 import { SettingsEventPayload } from '@/settings/types/interfaces';
+import { isInsideMarkdownDOM } from '@/utils/isInsideMarkdownDom';
 import isThisSvgIcon from '@/utils/isThisSvgIcon';
 
 import { Component } from 'obsidian';
@@ -104,6 +105,16 @@ export default class PickerMode extends Component {
             : element.querySelector('svg,img');
 
         if (!el) return;
+
+        const interactve = el as HTMLImageElement | SVGElement;
+
+        const canUseIntegratedMode = isInsideMarkdownDOM(interactve);
+
+        if (!canUseIntegratedMode) {
+            this.tooltip.textContent = `Alt+Click to open popup`;
+            this.tooltip.style.opacity = '1';
+            return;
+        }
 
         const initializationStatus = el.getAttribute(
             'data-interactive-initialization-status'
@@ -256,6 +267,12 @@ export default class PickerMode extends Component {
             }
             await this.plugin.popupMode.showPopup(interactive);
             this.deactivate();
+            return;
+        }
+
+        const canUseIntegratedMode = isInsideMarkdownDOM(interactive);
+
+        if (!canUseIntegratedMode) {
             return;
         }
 
