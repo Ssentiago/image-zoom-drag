@@ -1,9 +1,9 @@
 import { t } from '@/lang';
+import { Panels, PanelsConfig } from '@/settings/types/interfaces';
+import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { Panels, PanelsConfig } from '../../../../../types/interfaces';
-import { useSettingsContext } from '../../../../core/SettingsContext';
 import {
     UnitPreview,
     UnitSetup,

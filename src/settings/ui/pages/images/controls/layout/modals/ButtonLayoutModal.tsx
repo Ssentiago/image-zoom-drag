@@ -1,10 +1,9 @@
 import { t } from '@/lang';
+import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
 
 import React, { useEffect, useRef, useState } from 'react';
 
 import { OModal, OSetting } from '@obsidian-lib/native-react-components';
-
-import { useSettingsContext } from '../../../../core/SettingsContext';
 
 interface ButtonManagementModalProps {
     onClose: () => void;
@@ -282,7 +281,7 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
                                     type={'checkbox'}
                                     defaultChecked={getValue()}
                                     onChange={async (e) => {
-                                        setValue(e.target.value);
+                                        setValue(e.target.checked);
                                         await plugin.settings.save();
                                     }}
                                 />
