@@ -1,9 +1,10 @@
+import { DragItem, PanelPosition } from '@/settings/types/interfaces';
+import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
+
 import { useState } from 'react';
 
 import { Platform } from 'obsidian';
 
-import { DragItem, PanelPosition } from '../../../../../../types/interfaces';
-import { useSettingsContext } from '../../../../../core/SettingsContext';
 import { useDragDropProps } from './types/interfaces';
 
 const calculatePosition = (

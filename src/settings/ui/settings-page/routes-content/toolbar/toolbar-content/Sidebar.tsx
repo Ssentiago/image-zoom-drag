@@ -101,13 +101,6 @@ const Sidebar: FC = () => {
                                 >
                                     Controls
                                 </Section>
-                                <Section
-                                    $nested
-                                    $active={location === '/images/layout'}
-                                    onClick={() => navigate('/images/layout')}
-                                >
-                                    Layout
-                                </Section>
                             </CollapsibleSection>
 
                             <Section
