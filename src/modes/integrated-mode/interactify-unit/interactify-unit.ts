@@ -1,4 +1,4 @@
-import { Component } from 'obsidian';
+import { Component, debounce } from 'obsidian';
 
 import InteractifyPlugin from '../../../core/interactify-plugin';
 import { UnitActions } from './actions/unit-actions';
@@ -51,6 +51,7 @@ export default class InteractifyUnit extends Component {
         this.plugin.logger.debug(`Initialize unit with id ${this.id}`);
 
         this.load();
+        this.setupEvents();
 
         this.events.initialize();
         this.controlPanel.initialize();
@@ -139,6 +140,26 @@ export default class InteractifyUnit extends Component {
         super.onunload();
         this.plugin.logger.debug(
             `Called unload for interactive element with id ${this.id}`
+        );
+    }
+
+    private setupEvents() {
+        const debouncedApplyLayout = debounce(
+            this.applyLayout.bind(this),
+            300,
+            true
+        );
+
+        this.plugin.emitter.on(
+            this.plugin.settings.$$.units.size.$all,
+            debouncedApplyLayout
+        );
+
+        this.register(() =>
+            this.plugin.emitter.off(
+                this.plugin.settings.$$.units.size.$all,
+                debouncedApplyLayout
+            )
         );
     }
 }
