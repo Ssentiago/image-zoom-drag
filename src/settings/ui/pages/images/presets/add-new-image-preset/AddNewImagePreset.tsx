@@ -87,6 +87,85 @@ const AddNewImagePreset: FC = () => {
         }
     };
 
+    const renderGroup = () => {
+        const nameInput = () => (
+            <input
+                id={'unit-name'}
+                type={'text'}
+                className={nameError.trim() ? 'invalid' : ''}
+                placeholder={
+                    t.settings.pages.images.presets.addNewImagePreset
+                        .placeholders.name
+                }
+                value={name}
+                aria-label={nameError}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setName(value);
+                    const validationResult = validateName(value);
+                    setNameError(validateName(name).tooltip);
+                }}
+                onKeyDown={onKeyDown}
+            />
+        );
+
+        const selectorInput = () => (
+            <input
+                id={'unit-selector'}
+                type={'text'}
+                value={selector}
+                className={selectorError.trim() ? 'invalid' : ''}
+                aria-label={selectorError}
+                placeholder={
+                    t.settings.pages.images.presets.addNewImagePreset
+                        .placeholders.selector
+                }
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setSelector(value);
+                    const validationResult = validateSelector(value);
+                    setSelectorError(validationResult.tooltip);
+                }}
+                onKeyDown={onKeyDown}
+            />
+        );
+
+        const saveButton = () => (
+            <button
+                aria-label={
+                    t.settings.pages.images.presets.addNewImagePreset.tooltips
+                        .saveButton
+                }
+                onClick={handleAddUnit}
+                data-icon={'save'}
+            />
+        );
+
+        return Platform.isMobile ? (
+            <>
+                <OSetting noBorder>{nameInput()}</OSetting>
+                <OSetting noBorder>{selectorInput()}</OSetting>
+                <OSetting noBorder>{saveButton()}</OSetting>
+            </>
+        ) : (
+            <OSetting>
+                {nameInput()}
+                {selectorInput()}
+                {saveButton()}
+                <button
+                    aria-label={
+                        t.settings.pages.images.presets.addNewImagePreset
+                            .tooltips.infoButton
+                    }
+                    onClick={() => {
+                        setGuideOpen(true);
+                    }}
+                    data-icon={'info'}
+                />
+            </OSetting>
+        );
+    };
+
     return (
         <>
             <OSetting
@@ -96,65 +175,7 @@ const AddNewImagePreset: FC = () => {
                 desc={t.settings.pages.images.presets.addNewImagePreset.desc}
             />
 
-            <OSetting>
-                <input
-                    id={'unit-name'}
-                    type={'text'}
-                    className={nameError.trim() ? 'invalid' : ''}
-                    placeholder={
-                        t.settings.pages.images.presets.addNewImagePreset
-                            .placeholders.name
-                    }
-                    aria-label={nameError}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        setName(value);
-                        const validationResult = validateName(value);
-                        setNameError(validateName(name).tooltip);
-                    }}
-                    onKeyDown={onKeyDown}
-                />
-
-                <input
-                    id={'unit-selector'}
-                    type={'text'}
-                    className={selectorError.trim() ? 'invalid' : ''}
-                    aria-label={selectorError}
-                    placeholder={
-                        t.settings.pages.images.presets.addNewImagePreset
-                            .placeholders.selector
-                    }
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        setSelector(value);
-                        const validationResult = validateSelector(value);
-                        setSelectorError(validationResult.tooltip);
-                    }}
-                    onKeyDown={onKeyDown}
-                />
-
-                <button
-                    aria-label={
-                        t.settings.pages.images.presets.addNewImagePreset
-                            .tooltips.saveButton
-                    }
-                    onClick={handleAddUnit}
-                    data-icon={'save'}
-                />
-
-                {Platform.isDesktopApp && (
-                    <button
-                        aria-label={
-                            t.settings.pages.images.presets.addNewImagePreset
-                                .tooltips.infoButton
-                        }
-                        onClick={() => {
-                            setGuideOpen(true);
-                        }}
-                        data-icon={'info'}
-                    />
-                )}
-            </OSetting>
+            {renderGroup()}
 
             {guideOpen && (
                 <UserGuideModal onClose={() => setGuideOpen(false)} />
