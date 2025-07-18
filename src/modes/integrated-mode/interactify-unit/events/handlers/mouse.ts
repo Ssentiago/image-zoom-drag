@@ -157,6 +157,7 @@ export class Mouse extends Component implements Handler {
 
     private readonly mouseLeave = (event: MouseEvent): void => {
         this.mouseUp(event);
+        this.events.unit.controlPanel.hide(TriggerType.MOUSE);
 
         event.preventDefault();
         event.stopPropagation();
@@ -166,9 +167,5 @@ export class Mouse extends Component implements Handler {
         this.events.unit.controlPanel.show(TriggerType.MOUSE);
         event.preventDefault();
         event.stopPropagation();
-    };
-
-    private readonly mouseLeaveOutUnit = (e: MouseEvent): void => {
-        this.events.unit.controlPanel.hide(TriggerType.MOUSE);
     };
 }
