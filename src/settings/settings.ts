@@ -98,7 +98,7 @@ export default class Settings extends Component {
                 this.saveResolve = undefined;
                 this.saveTimeout = undefined;
             }
-        }, 500);
+        }, 50);
 
         return this.savePromise;
     }
