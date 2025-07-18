@@ -1,3 +1,4 @@
+import DOMWatcher from '@/core/services/dom-watcher/DOMWatcher';
 import LeafIndex from '@/core/services/leaf-index/leaf-index';
 import { tPromise } from '@/lang';
 import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
@@ -22,6 +23,7 @@ export default class InteractifyPlugin extends Plugin {
     pickerMode!: PickerMode;
     integratedMode!: IntegratedMode;
     popupMode!: PopupMode;
+    domWatcher!: DOMWatcher;
 
     async onload(): Promise<void> {
         if (process.env.NODE_ENV === 'development') {
@@ -55,12 +57,11 @@ export default class InteractifyPlugin extends Plugin {
         this.addSettingTab(new SettingsTab(this.app, this));
 
         await tPromise;
-        
+
         this.emitter = new EventEmitter2({
             wildcard: true,
             delimiter: '.',
-        })
-
+        });
     }
 
     /**
@@ -87,6 +88,9 @@ export default class InteractifyPlugin extends Plugin {
     private async initializeServices(): Promise<void> {
         this.leafIndex = new LeafIndex(this);
         this.addChild(this.leafIndex);
+
+        this.domWatcher = new DOMWatcher();
+        this.addChild(this.domWatcher);
 
         this.logger = new Logger(this);
         await this.logger.init();
