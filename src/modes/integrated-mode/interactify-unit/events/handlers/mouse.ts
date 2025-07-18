@@ -19,12 +19,8 @@ export class Mouse extends Component implements Handler {
         this.load();
         const { container } = this.events.unit.context;
 
-        this.registerDomEvent(container, 'wheel', this.wheel, {
-            passive: true,
-        });
-        this.registerDomEvent(container, 'wheel', this.wheelScroll, {
-            passive: true,
-        });
+        this.registerDomEvent(container, 'wheel', this.wheel);
+        this.registerDomEvent(container, 'wheel', this.wheelScroll);
 
         this.registerDomEvent(container, 'mousedown', this.mouseDown);
 
@@ -33,10 +29,7 @@ export class Mouse extends Component implements Handler {
         this.registerDomEvent(container, 'mouseup', this.mouseUp);
         this.registerDomEvent(container, 'mouseleave', this.mouseLeave);
 
-        this.registerDomEvent(container, 'mouseenter', this.mouseEnterOnUnit);
-        this.registerDomEvent(container, 'mouseleave', this.mouseLeaveOutUnit);
-
-        this.registerDomEvent(container, 'dblclick', (e) => this.events.unit.actions.resetZoomAndMove({animated: true}))
+        this.registerDomEvent(container, 'mouseenter', this.mouseEnter);
     }
 
     get elements() {
@@ -84,6 +77,9 @@ export class Mouse extends Component implements Handler {
         content.setCssStyles({
             transform: `translate(${this.events.unit.dx}px, ${this.events.unit.dy}px) scale(${this.events.unit.scale})`,
         });
+
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     private readonly wheelScroll = (event: WheelEvent): void => {
@@ -105,6 +101,9 @@ export class Mouse extends Component implements Handler {
         }
 
         this.events.unit.actions.moveElement(x, y, { animated: true });
+
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     private readonly mouseDown = (event: MouseEvent): void => {
@@ -123,6 +122,9 @@ export class Mouse extends Component implements Handler {
         content.setCssStyles({
             cursor: 'grabbing',
         });
+
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     private readonly mouseMove = (event: MouseEvent): void => {
@@ -138,6 +140,9 @@ export class Mouse extends Component implements Handler {
         content.setCssStyles({
             transform: `translate(${this.events.unit.dx}px, ${this.events.unit.dy}px) scale(${this.events.unit.scale})`,
         });
+
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     private readonly mouseUp = (event: MouseEvent): void => {
@@ -145,14 +150,22 @@ export class Mouse extends Component implements Handler {
 
         this.isDragging = false;
         content.setCssStyles({ cursor: 'grab' });
+
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     private readonly mouseLeave = (event: MouseEvent): void => {
         this.mouseUp(event);
+
+        event.preventDefault();
+        event.stopPropagation();
     };
 
-    private readonly mouseEnterOnUnit = (e: MouseEvent): void => {
+    private readonly mouseEnter = (event: MouseEvent): void => {
         this.events.unit.controlPanel.show(TriggerType.MOUSE);
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     private readonly mouseLeaveOutUnit = (e: MouseEvent): void => {
