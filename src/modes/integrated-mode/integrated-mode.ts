@@ -28,6 +28,7 @@ export default class IntegratedMode extends Component {
         this.setupFileMenu();
         this.setupInternalEventHandlers();
         this.setupObsidianEventHandlers();
+        this.setupDomSubscriptions();
     }
 
     async onunload() {
@@ -265,5 +266,23 @@ export default class IntegratedMode extends Component {
         });
         obs.observe(this.context.view?.contentEl!);
         this.state.setResizeObserver(leafID, obs);
+    }
+
+    private setupDomSubscriptions() {
+        this.plugin.domWatcher.subscribe(
+            (mutation) =>
+                mutation.type === 'attributes' &&
+                mutation.target instanceof Element &&
+                (mutation.target.hasClass('markdown-source-view') ||
+                    mutation.target.hasClass('markdown-preview-view')) &&
+                mutation.attributeName === 'class' &&
+                (!!mutation.oldValue?.contains('is-readable-line-width') ||
+                    mutation.target.hasClass('is-readable-line-width')) &&
+                this.context.active &&
+                this.context.leaf!.containerEl.contains(mutation.target),
+            (mutation) => {
+                this.plugin.emitter.emit('leaf-layout-changed');
+            }
+        );
     }
 }
