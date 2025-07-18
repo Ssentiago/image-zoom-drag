@@ -71,14 +71,14 @@ export class FoldPanel extends BasePanel<FoldButtons> {
 
     fold() {
         this.unit.context.container.setAttribute('data-folded', 'true');
-        this.unit.applyRealSize();
+        this.unit.applyLayout();
 
         this.controlPanel.hide(TriggerType.FOLD);
     }
 
     unfold() {
         this.unit.context.container.setAttribute('data-folded', 'false');
-        this.unit.applyRealSize();
+        this.unit.applyLayout();
 
         this.controlPanel.show(TriggerType.FOLD);
     }
