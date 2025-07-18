@@ -30,6 +30,8 @@ export class Mouse extends Component implements Handler {
         this.registerDomEvent(container, 'mouseleave', this.mouseLeave);
 
         this.registerDomEvent(container, 'mouseenter', this.mouseEnter);
+
+        this.registerDomEvent(container, 'dblclick', this.dblclick);
     }
 
     get elements() {
@@ -167,5 +169,11 @@ export class Mouse extends Component implements Handler {
         this.events.unit.controlPanel.show(TriggerType.MOUSE);
         event.preventDefault();
         event.stopPropagation();
+    };
+
+    private readonly dblclick = (event: MouseEvent) => {
+        this.events.unit.actions.resetZoomAndMove({ animated: true });
+        event.stopPropagation();
+        event.preventDefault();
     };
 }
