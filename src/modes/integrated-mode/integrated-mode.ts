@@ -25,6 +25,7 @@ export default class IntegratedMode extends Component {
         this.load();
 
         this.setupCommands();
+        this.setupFileMenu();
         this.setupInternalEventHandlers();
         this.setupObsidianEventHandlers();
     }
@@ -81,6 +82,40 @@ export default class IntegratedMode extends Component {
                 return true;
             },
         });
+    }
+
+    private setupFileMenu() {
+        this.registerEvent(
+            this.plugin.app.workspace.on('file-menu', (menu) => {
+                if (
+                    !(
+                        this.context.inPreviewMode ||
+                        this.context.inLivePreviewMode
+                    )
+                )
+                    return;
+
+                const isNativeEventsEnabled = this.state.data.get(
+                    this.context.leafID!
+                )?.nativeTouchEventsEnabled;
+                if (isNativeEventsEnabled === undefined) return;
+
+                menu.addItem((item) => {
+                    item.setIcon(
+                        isNativeEventsEnabled ? 'hand' : 'circle-slash-2'
+                    );
+                    item.setTitle(
+                        `Native touch: ${isNativeEventsEnabled ? 'ON' : 'OFF'}`
+                    );
+
+                    item.onClick(() => {
+                        const data = this.state.data.get(this.context.leafID!)!;
+                        data.nativeTouchEventsEnabled =
+                            !data.nativeTouchEventsEnabled;
+                    });
+                });
+            })
+        );
     }
 
     private setupInternalEventHandlers(): void {

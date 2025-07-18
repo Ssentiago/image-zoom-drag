@@ -12,7 +12,6 @@ export default class InteractifyUnit extends Component {
     dx = 0;
     dy = 0;
     scale = 1;
-    nativeTouchEventsEnabled = false;
     context!: UnitContext;
     fileStats!: FileStats;
     active = false;

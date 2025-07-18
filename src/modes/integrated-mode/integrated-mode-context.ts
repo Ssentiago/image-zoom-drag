@@ -48,6 +48,13 @@ export class IntegratedModeContext {
         return !viewState?.source && viewState?.mode === 'source';
     }
 
+    get nativeTouchEventsEnabled() {
+        const data = this.integratedMode.state.data.get(this.leafID!);
+        if (!data) return;
+
+        return data.nativeTouchEventsEnabled;
+    }
+
     /**
      * Initializes the view context with the currently active view.
      */
