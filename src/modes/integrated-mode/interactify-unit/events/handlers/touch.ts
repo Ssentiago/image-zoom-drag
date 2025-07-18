@@ -39,6 +39,7 @@ export class Touch extends Component implements Handler {
         ) {
             return;
         }
+
         const target = e.target as HTMLElement;
 
         // we got touch to a button panel - returning
@@ -52,19 +53,25 @@ export class Touch extends Component implements Handler {
             this.isDragging = true;
             this.startX = e.touches[0].clientX;
             this.startY = e.touches[0].clientY;
+
+            if (this.tapTimeout) {
+                clearTimeout(this.tapTimeout);
+                this.tapTimeout = null;
+                this.events.unit.actions.resetZoomAndMove({ animated: true });
+            } else {
+                this.tapTimeout = setTimeout(() => {
+                    this.tapTimeout = null;
+                }, 300);
+            }
         } else if (e.touches.length === 2) {
+            this.isDragging = false;
             this.isPinching = true;
             this.initialDistance = this.calculateDistance(e.touches);
-        }
 
-        if (this.tapTimeout) {
-            clearTimeout(this.tapTimeout);
-            this.tapTimeout = null;
-            this.events.unit.actions.resetZoomAndMove({ animated: true });
-        } else {
-            this.tapTimeout = setTimeout(() => {
+            if (this.tapTimeout) {
+                clearTimeout(this.tapTimeout);
                 this.tapTimeout = null;
-            }, 300);
+            }
         }
     };
 
@@ -123,6 +130,7 @@ export class Touch extends Component implements Handler {
         ) {
             return;
         }
+
         const container = this.events.unit.context.container;
 
         const target = e.target as HTMLElement;
@@ -137,6 +145,7 @@ export class Touch extends Component implements Handler {
 
         this.isDragging = false;
         this.isPinching = false;
+        this.initialDistance = 0;
     };
 
     /**
