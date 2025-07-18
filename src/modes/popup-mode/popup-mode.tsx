@@ -1,6 +1,6 @@
 import InteractifyPlugin from '@/core/interactify-plugin';
 import PopupRoot from '@/modes/popup-mode/ui/PopupRoot';
-import isThisSvgIcon from '@/utils/isThisSvgIcon';
+import { isThisSvgIcon } from '@/utils/dom-utils';
 
 import { Component, MarkdownRenderer, MarkdownView } from 'obsidian';
 import { createRoot, Root } from 'react-dom/client';

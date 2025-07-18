@@ -1,3 +1,10 @@
+export function isInsideMarkdownDOM(element: Element): boolean {
+    const leafContent = element.closest(
+        '.workspace-leaf-content'
+    ) as HTMLElement;
+    return leafContent?.dataset.type === 'markdown';
+}
+
 /**
  * Check if the given element is an "svg-icon", which is an SVG element used as an icon.
  * An SVG element is considered an icon if it is directly inside a button,
@@ -7,7 +14,7 @@
  * @param element - The element to check.
  * @returns True if the element is an svg-icon, false otherwise.
  */
-function isThisSvgIcon(element: Element): boolean {
+export function isThisSvgIcon(element: Element): boolean {
     // Fast verification - not svg at all
     if (!(element instanceof SVGElement)) {
         return false;
@@ -52,5 +59,3 @@ function isThisSvgIcon(element: Element): boolean {
 
     return false;
 }
-
-export default isThisSvgIcon;
