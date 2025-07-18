@@ -33,7 +33,10 @@ export class Touch extends Component implements Handler {
     }
 
     private readonly touchStart = (e: TouchEvent): void => {
-        if (this.events.unit.nativeTouchEventsEnabled) {
+        if (
+            this.events.unit.plugin.integratedMode.context
+                .nativeTouchEventsEnabled
+        ) {
             return;
         }
         const target = e.target as HTMLElement;
@@ -66,7 +69,10 @@ export class Touch extends Component implements Handler {
     };
 
     private readonly touchMove = (e: TouchEvent): void => {
-        if (this.events.unit.nativeTouchEventsEnabled) {
+        if (
+            this.events.unit.plugin.integratedMode.context
+                .nativeTouchEventsEnabled
+        ) {
             return;
         }
 
@@ -111,7 +117,10 @@ export class Touch extends Component implements Handler {
      * @param e - The `TouchEvent` object that represents the touch event.
      */
     private readonly touchEnd = (e: TouchEvent): void => {
-        if (this.events.unit.nativeTouchEventsEnabled) {
+        if (
+            this.events.unit.plugin.integratedMode.context
+                .nativeTouchEventsEnabled
+        ) {
             return;
         }
         const container = this.events.unit.context.container;

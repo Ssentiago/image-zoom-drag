@@ -3,6 +3,7 @@ import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactif
 export interface StateData {
     units: InteractifyUnit[];
     resizeObserver: ResizeObserver | undefined;
+    nativeTouchEventsEnabled: boolean;
 }
 
 export interface StateOrphanData {

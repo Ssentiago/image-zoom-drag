@@ -121,47 +121,6 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
                 title: t.image.controlPanel.service.fullscreen.on,
             });
         }
-
-        if (Platform.isMobileApp) {
-            buttons.push({
-                id: ServiceButtons.Touch,
-                icon: this.unit.nativeTouchEventsEnabled
-                    ? 'circle-slash-2'
-                    : 'hand',
-                action: (): void => {
-                    const btn = this.buttons.get(ServiceButtons.Touch)?.element;
-
-                    if (!btn) {
-                        return;
-                    }
-
-                    this.unit.nativeTouchEventsEnabled =
-                        !this.unit.nativeTouchEventsEnabled;
-
-                    const actualNativeTouchEventsEnabled =
-                        this.unit.nativeTouchEventsEnabled;
-
-                    updateButton(
-                        btn,
-                        this.unit.nativeTouchEventsEnabled
-                            ? 'circle-slash-2'
-                            : 'hand',
-                        actualNativeTouchEventsEnabled
-                            ? t.image.controlPanel.service.touch.on
-                            : t.image.controlPanel.service.touch.off
-                    );
-
-                    this.unit.plugin.showNotice(
-                        `Native touches are ${actualNativeTouchEventsEnabled ? 'enabled' : 'disabled'} now. 
-            You ${actualNativeTouchEventsEnabled ? 'cannot' : 'can'} move and pinch zoom image.`
-                    );
-                },
-                title: this.unit.nativeTouchEventsEnabled
-                    ? t.image.controlPanel.service.touch.on
-                    : t.image.controlPanel.service.touch.off,
-            });
-        }
-
         return buttons;
     }
 

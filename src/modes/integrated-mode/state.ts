@@ -26,6 +26,7 @@ export default class State {
             this.data.set(leafID, {
                 resizeObserver: undefined,
                 units: [],
+                nativeTouchEventsEnabled: true,
             });
             this.integratedMode.plugin.logger.debug(
                 `Initialized data for leaf width id: ${leafID}...`
