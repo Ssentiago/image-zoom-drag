@@ -172,6 +172,9 @@ export class Mouse extends Component implements Handler {
     };
 
     private readonly dblclick = (event: MouseEvent) => {
+        if ((event.target as Element).closest('.interactify-control-panel'))
+            return;
+
         this.events.unit.actions.resetZoomAndMove({ animated: true });
         event.stopPropagation();
         event.preventDefault();
