@@ -155,6 +155,14 @@ export default class InteractifyUnitStateManager extends Component {
                 this.unit.context.livePreviewWidget,
                 'click',
                 (e) => {
+                    if (!(e.target instanceof Element)) return;
+
+                    if (
+                        e.target.closest('.interactify-control-panel') ||
+                        !this.unit.context.container.contains(e.target)
+                    )
+                        return;
+
                     e.preventDefault();
                     e.stopPropagation();
                 },
