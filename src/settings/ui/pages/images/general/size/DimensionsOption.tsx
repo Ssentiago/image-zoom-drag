@@ -3,6 +3,7 @@ import { t, tf } from '@/lang';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 
 import { OSetting } from '@obsidian-lib/native-react-components';
+import { Platform } from 'obsidian';
 
 import { DimensionType } from '../../../../../types/definitions';
 import { useSettingsContext } from '../../../../core/SettingsContext';
@@ -181,6 +182,55 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
         }
     };
 
+    const renderInputGroup = (
+        labelText: string,
+        inputId: string,
+        value: string,
+        error: string,
+        unit: DimensionType,
+        setValue: (value: string) => void,
+        setUnit: (unit: DimensionType) => void,
+        validateFn: (value: string, unit: DimensionType) => void
+    ) => {
+        const content = (
+            <>
+                <label htmlFor={inputId}>{labelText}</label>
+                <input
+                    id={inputId}
+                    type='text'
+                    value={value}
+                    className={error.trim() ? 'invalid' : ''}
+                    aria-label={
+                        error || unit === 'px' ? '100-1000px' : '10-100%'
+                    }
+                    onChange={(e) => {
+                        const val = e.target.value.replace(/\D/, '');
+                        e.target.value = val;
+                        setValue(val);
+                        validateFn(val, unit);
+                    }}
+                />
+                <select
+                    value={unit}
+                    onChange={(e) => {
+                        const u = e.target.value as DimensionType;
+                        setUnit(u);
+                        validateFn(value, u);
+                    }}
+                >
+                    <option value='px'>px</option>
+                    <option value='%'>%</option>
+                </select>
+            </>
+        );
+
+        return Platform.isMobile ? (
+            <OSetting noBorder>{content}</OSetting>
+        ) : (
+            content
+        );
+    };
+
     return (
         <>
             <OSetting
@@ -188,73 +238,63 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                 noBorder={true}
             />
 
-            <OSetting>
-                <label htmlFor={'height-input'}>Height</label>
-                <input
-                    id={'height-input'}
-                    type='text'
-                    value={heightValue}
-                    onKeyDown={onKeyDown}
-                    aria-label={
-                        heightError || heightUnit === 'px'
-                            ? '100-1000px'
-                            : '10-100%'
-                    }
-                    className={heightError ? 'invalid' : ''}
-                    onChange={(e) => {
-                        const value = e.target.value.replace(/\D/, '');
-                        e.target.value = value;
-                        setHeightValue(value);
-                        validateHeight(value, heightUnit);
-                    }}
-                />
-                <select
-                    value={heightUnit}
-                    onChange={(e) => {
-                        const unit = e.target.value as DimensionType;
-                        setHeightUnit(unit);
-                        validateHeight(heightValue, unit);
-                    }}
-                >
-                    <option value='px'>px</option>
-                    <option value='%'>%</option>
-                </select>
-
-                <label htmlFor={'width-input'}>Width</label>
-                <input
-                    id={'width-input'}
-                    type='text'
-                    value={widthValue}
-                    className={widthError ? 'invalid' : ''}
-                    aria-label={
-                        widthError || widthUnit === 'px'
-                            ? '100-1000px'
-                            : '10-100%'
-                    }
-                    onChange={(e) => {
-                        const value = e.target.value.replace(/\D/, '');
-                        e.target.value = value;
-                        setWidthValue(value);
-                        validateWidth(value, widthUnit);
-                    }}
-                />
-                <select
-                    value={widthUnit}
-                    onChange={(e) => {
-                        const unit = e.target.value as DimensionType;
-                        setWidthUnit(unit);
-                        validateWidth(widthValue, unit);
-                    }}
-                >
-                    <option value='px'>px</option>
-                    <option value='%'>%</option>
-                </select>
-
-                <button
-                    onClick={handleSave}
-                    data-icon={'save'}
-                />
-            </OSetting>
+            {Platform.isMobile ? (
+                <>
+                    {renderInputGroup(
+                        'Height',
+                        'height-input',
+                        heightValue,
+                        heightError,
+                        heightUnit,
+                        setHeightValue,
+                        setHeightUnit,
+                        validateHeight
+                    )}
+                    {renderInputGroup(
+                        'Width',
+                        'width-input',
+                        widthValue,
+                        widthError,
+                        widthUnit,
+                        setWidthValue,
+                        setWidthUnit,
+                        validateWidth
+                    )}
+                    <OSetting>
+                        <button
+                            onClick={handleSave}
+                            data-icon={'save'}
+                        />
+                    </OSetting>
+                </>
+            ) : (
+                <OSetting>
+                    {renderInputGroup(
+                        'Height',
+                        'height-input',
+                        heightValue,
+                        heightError,
+                        heightUnit,
+                        setHeightValue,
+                        setHeightUnit,
+                        validateHeight
+                    )}
+                    {renderInputGroup(
+                        'Width',
+                        'width-input',
+                        widthValue,
+                        widthError,
+                        widthUnit,
+                        setWidthValue,
+                        setWidthUnit,
+                        validateWidth
+                    )}
+                    <button
+                        onClick={handleSave}
+                        data-icon={'save'}
+                    />
+                </OSetting>
+            )}
         </>
     );
 };
