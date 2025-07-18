@@ -168,5 +168,11 @@ export default class InteractifyUnit extends Component {
                 debouncedApplyLayout
             )
         );
+
+        this.plugin.emitter.on('leaf-layout-changed', debouncedApplyLayout);
+
+        this.register(() =>
+            this.plugin.emitter.off('leaf-layout-changed', debouncedApplyLayout)
+        );
     }
 }
