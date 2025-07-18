@@ -3,7 +3,7 @@ import {
     PreviewContextData,
     SourceData,
 } from '@/modes/integrated-mode/interactify-unit/types/interfaces';
-import isThisSvgIcon from '@/utils/isThisSvgIcon';
+import { isThisSvgIcon } from '@/utils/dom-utils';
 
 import { MarkdownPostProcessorContext, MarkdownView } from 'obsidian';
 

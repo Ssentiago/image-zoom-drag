@@ -5,8 +5,7 @@ import {
     InteractiveMode,
 } from '@/modes/integrated-mode/interactify-unit/types/constants';
 import { SettingsEventPayload } from '@/settings/types/interfaces';
-import { isInsideMarkdownDOM } from '@/utils/isInsideMarkdownDom';
-import isThisSvgIcon from '@/utils/isThisSvgIcon';
+import { isInsideMarkdownDOM, isThisSvgIcon } from '@/utils/dom-utils';
 
 import { Component } from 'obsidian';
 
