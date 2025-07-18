@@ -164,8 +164,6 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
 
     useEffect(() => {
         const handler = async (payload: any) => {
-            console.log(payload);
-            console.log(isApplyingPreset);
             if (isApplyingPreset.current) {
                 return;
             }
@@ -173,6 +171,7 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
             plugin.settings.$.panels.local.preset = 'none';
 
             await plugin.settings.save();
+
             setReload((prev) => !prev);
         };
 
@@ -203,7 +202,6 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
         await plugin.settings.save();
         isApplyingPreset.current = false;
         setReload((prev) => !prev);
-        console.log(plugin.settings.$.panels.local.preset);
     };
 
     return (
@@ -279,10 +277,9 @@ const ButtonLayoutModal: React.FC<ButtonManagementModalProps> = ({
                                 />
                                 <input
                                     type={'checkbox'}
-                                    defaultChecked={getValue()}
+                                    checked={getValue()}
                                     onChange={async (e) => {
                                         setValue(e.target.checked);
-                                        await plugin.settings.save();
                                     }}
                                 />
                             </OSetting>
