@@ -52,7 +52,8 @@ export const ImageConfigOptionsModal: FC<UnitOptionsProps> = ({
                     <input
                         type={'checkbox'}
                         defaultChecked={on}
-                        onChange={async (value) => {
+                        onChange={async (event) => {
+                            const value = event.target.checked;
                             const oldUnits = JSON.parse(JSON.stringify(units));
                             plugin.settings.$.units.configs[unitIndex].panels[
                                 panel
