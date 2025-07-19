@@ -1,1 +1,0 @@
-import 'obsidian-typings';
