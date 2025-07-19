@@ -8,6 +8,10 @@ export function createSettingsProxy(
 ) {
     return new Proxy(obj, {
         get(target, key) {
+            if (key === 'toJSON') {
+                return () => target;
+            }
+
             const value = target[key];
             if (typeof value === 'object' && value !== null) {
                 return createSettingsProxy(settingsManager, value, [
