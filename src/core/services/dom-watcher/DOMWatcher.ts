@@ -1,13 +1,14 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
-
 import { Component } from 'obsidian';
+
+type MutationCondition = (mutation: MutationRecord) => boolean;
+type MutationCallback = (mutation: MutationRecord) => void | Promise<void>;
 
 export default class DOMWatcher extends Component {
     observer: MutationObserver | null = null;
 
     private readonly subscribers = new Map<
-        (mutation: MutationRecord) => boolean,
-        (mutation: MutationRecord) => void
+        MutationCondition,
+        MutationCallback
     >();
 
     constructor() {
@@ -16,9 +17,9 @@ export default class DOMWatcher extends Component {
     }
 
     enable() {
-        this.observer = new MutationObserver((mutations) => {
+        this.observer = new MutationObserver(async (mutations) => {
             for (const mutation of mutations) {
-                this.processMutation(mutation);
+                await this.processMutation(mutation);
             }
         });
         this.observer.observe(document.body, {
@@ -29,10 +30,10 @@ export default class DOMWatcher extends Component {
         });
     }
 
-    private processMutation(mutation: MutationRecord) {
+    private async processMutation(mutation: MutationRecord) {
         for (const [condition, callback] of this.subscribers) {
             if (condition(mutation)) {
-                callback(mutation);
+                await callback(mutation);
             }
         }
     }
@@ -42,10 +43,7 @@ export default class DOMWatcher extends Component {
         this.subscribers.clear();
     }
 
-    subscribe(
-        condition: (mutation: MutationRecord) => boolean,
-        callback: (mutation: MutationRecord) => void
-    ) {
+    subscribe(condition: MutationCondition, callback: MutationCallback) {
         this.subscribers.set(condition, callback);
     }
 }
