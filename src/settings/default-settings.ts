@@ -7,7 +7,6 @@ import {
 
 export function defaultSettings(): DefaultSettings {
     return {
-        version: '5.3.0',
         units: {
             contextMenu: {
                 showForDiagrams: true,

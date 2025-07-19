@@ -1,4 +1,5 @@
 import { defaultSettings } from '@/settings/default-settings';
+import { deepMerge } from '@/utils/object-utils';
 
 import EventEmitter2 from 'eventemitter2';
 import { Component, normalizePath } from 'obsidian';
@@ -7,7 +8,6 @@ import InteractifyPlugin from '../core/interactify-plugin';
 import { createEventsWrapper } from './proxy/events-wrapper';
 import { createSettingsProxy } from './proxy/settings-proxy';
 import { EventsWrapper } from './proxy/types/definitions';
-import { SettingsMigration } from './settings-migration';
 import { DefaultSettings } from './types/interfaces';
 
 export default class Settings extends Component {
@@ -16,8 +16,6 @@ export default class Settings extends Component {
 
     readonly emitter: EventEmitter2;
     $$!: EventsWrapper<DefaultSettings>;
-
-    private readonly migration: SettingsMigration;
 
     private savePromise?: Promise<void> | undefined;
     private saveTimeout?: NodeJS.Timeout | undefined;
@@ -29,7 +27,6 @@ export default class Settings extends Component {
             wildcard: true,
             delimiter: '.',
         });
-        this.migration = new SettingsMigration(this);
         this.setupEvents();
     }
 
@@ -38,41 +35,14 @@ export default class Settings extends Component {
     }
 
     async load(): Promise<void> {
-        const userSettings =
-            (await this.plugin.loadData()) ?? defaultSettings();
-
-        const migrationResult = this.migration.migrate(userSettings);
-
-        let settings: DefaultSettings;
-        let needsSave = false;
-
-        if (!migrationResult.success) {
-            console.error(
-                `Interactify: Error loading settings: ${JSON.stringify(migrationResult.errors)}. Resetting to defaults...`
-            );
-            settings = defaultSettings();
-            needsSave = true;
-        } else if (!migrationResult.data) {
-            console.error(
-                'Migration succeeded but data is empty. Using defaults...'
-            );
-            settings = defaultSettings();
-            needsSave = true;
-        } else {
-            settings = migrationResult.data;
-            needsSave =
-                userSettings?.version !== this.migration.CURRENT_VERSION;
-        }
+        const userSettings = (await this.plugin.loadData()) ?? {};
+        const settings = deepMerge(defaultSettings(), userSettings);
 
         // reactive settings: `$.units.*** = ...` -> `emit('settings.units.***', (payload))`
         this.data = createSettingsProxy(this, { ...settings }, []);
 
         // to get typed settings event paths: `$$.units.$path` -> `settings.units`
         this.$$ = createEventsWrapper(settings);
-
-        if (needsSave) {
-            await this.save();
-        }
     }
 
     async save(): Promise<void> {

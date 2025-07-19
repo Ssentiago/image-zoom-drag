@@ -148,7 +148,6 @@ interface Debug {
 }
 
 export interface DefaultSettings {
-    version: string;
     panels: Panels;
     units: Units;
     debug: Debug;
