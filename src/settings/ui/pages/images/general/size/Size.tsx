@@ -14,7 +14,6 @@ const Size: FC = () => {
         <>
             <OSetting
                 name={t.settings.pages.images.general.size.header}
-                desc={t.settings.pages.images.general.size.desc}
                 heading={true}
             />
 

@@ -242,7 +242,7 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
             {Platform.isMobile ? (
                 <>
                     {renderInputGroup(
-                        'Height',
+                        t.settings.pages.images.general.size.labels.height,
                         'height-input',
                         heightValue,
                         heightError,
@@ -252,7 +252,7 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                         validateHeight
                     )}
                     {renderInputGroup(
-                        'Width',
+                        t.settings.pages.images.general.size.labels.width,
                         'width-input',
                         widthValue,
                         widthError,
@@ -263,6 +263,10 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                     )}
                     <OSetting>
                         <button
+                            aria-label={
+                                t.settings.pages.images.general.size
+                                    .saveButtonTooltip
+                            }
                             onClick={handleSave}
                             data-icon={'save'}
                         />
@@ -271,7 +275,7 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
             ) : (
                 <OSetting>
                     {renderInputGroup(
-                        'Height',
+                        t.settings.pages.images.general.size.labels.height,
                         'height-input',
                         heightValue,
                         heightError,
@@ -281,7 +285,7 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                         validateHeight
                     )}
                     {renderInputGroup(
-                        'Width',
+                        t.settings.pages.images.general.size.labels.width,
                         'width-input',
                         widthValue,
                         widthError,
@@ -291,6 +295,10 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                         validateWidth
                     )}
                     <button
+                        aria-label={
+                            t.settings.pages.images.general.size
+                                .saveButtonTooltip
+                        }
                         onClick={handleSave}
                         data-icon={'save'}
                     />
