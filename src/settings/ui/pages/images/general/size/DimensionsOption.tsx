@@ -209,6 +209,7 @@ const DimensionsOption: FC<DimensionsOptionProps> = ({
                         setValue(val);
                         validateFn(val, unit);
                     }}
+                    onKeyDown={onKeyDown}
                 />
                 <select
                     value={unit}
