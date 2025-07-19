@@ -115,7 +115,10 @@ export const useImageConfigOperations = () => {
                 )
             );
         }
-        return validationResult;
+        return {
+            validationResult,
+            validated,
+        };
     };
 
     return {

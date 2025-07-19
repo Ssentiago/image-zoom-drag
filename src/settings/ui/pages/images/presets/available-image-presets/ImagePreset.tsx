@@ -15,6 +15,9 @@ export const ImagePreset: FC<UnitItemProps> = ({
     modeState,
     setModeState,
 }) => {
+    const [name, setName] = useState(unit.name);
+    const [selector, setSelector] = useState(unit.selector);
+
     const [nameError, setNameError] = useState('');
     const [selectorError, setSelectorError] = useState('');
 
@@ -28,8 +31,16 @@ export const ImagePreset: FC<UnitItemProps> = ({
             e.preventDefault();
             const result = await handleSaveEditing(index);
             if (result) {
-                setNameError(result.nameResult.tooltip);
-                setSelectorError(result.selectorResult.tooltip);
+                const { validationResult, validated } = result;
+
+                setNameError(validationResult.nameResult.tooltip);
+                setSelectorError(validationResult.selectorResult.tooltip);
+                if (validated) {
+                    setModeState({
+                        index: -1,
+                        mode: 'none',
+                    });
+                }
             }
         }
     };
@@ -39,7 +50,7 @@ export const ImagePreset: FC<UnitItemProps> = ({
             <input
                 id={'editing-name-input'}
                 type={'text'}
-                defaultValue={unit.name}
+                value={name}
                 className={nameError.trim() ? 'invalid' : ''}
                 aria-label={nameError}
                 onChange={(e) => {
@@ -52,7 +63,7 @@ export const ImagePreset: FC<UnitItemProps> = ({
             <input
                 id='editing-selector-input'
                 type={'text'}
-                defaultValue={unit.selector}
+                value={selector}
                 className={selectorError.trim() ? '' : ''}
                 aria-label={selectorError}
                 onChange={(e) => {
@@ -84,8 +95,17 @@ export const ImagePreset: FC<UnitItemProps> = ({
                 onClick={async () => {
                     const result = await handleSaveEditing(index);
                     if (result) {
-                        setNameError(result.nameResult.tooltip);
-                        setSelectorError(result.selectorResult.tooltip);
+                        const { validationResult, validated } = result;
+                        setNameError(validationResult.nameResult.tooltip);
+                        setSelectorError(
+                            validationResult.selectorResult.tooltip
+                        );
+                        if (validated) {
+                            setModeState({
+                                index: -1,
+                                mode: 'none',
+                            });
+                        }
                     } else {
                         setModeState({
                             index: -1,
@@ -103,7 +123,7 @@ export const ImagePreset: FC<UnitItemProps> = ({
         >
             <input
                 type={'checkbox'}
-                defaultChecked={unit.on}
+                checked={unit.on}
                 aria-label={
                     unit.on
                         ? tf(
