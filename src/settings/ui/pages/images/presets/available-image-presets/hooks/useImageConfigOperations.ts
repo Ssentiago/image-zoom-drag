@@ -47,6 +47,8 @@ export const useImageConfigOperations = () => {
     };
 
     const handleSaveEditing = async (index: number) => {
+        const oldUnits = JSON.parse(JSON.stringify(units));
+
         const oldUnit = units[index];
 
         const editingNameInput: HTMLInputElement | null =
@@ -102,7 +104,7 @@ export const useImageConfigOperations = () => {
             }
 
             updateUndoStack(
-                units,
+                oldUnits,
                 tf(
                     t.settings.pages.images.presets.availableImageConfigs.item
                         .actions.edit,
