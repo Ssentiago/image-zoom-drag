@@ -13,6 +13,7 @@ export default class DOMWatcher extends Component {
 
     constructor() {
         super();
+        this.load();
         this.enable();
     }
 
@@ -39,6 +40,7 @@ export default class DOMWatcher extends Component {
     }
 
     onunload() {
+        super.onunload();
         this.observer?.disconnect();
         this.subscribers.clear();
     }
