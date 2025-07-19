@@ -158,7 +158,13 @@ export default class InteractifyUnitStateManager extends Component {
                 true
             );
         }
-        originalParent.replaceChild(container, element);
+        if (!originalParent.contains(element)) {
+            this.unit.plugin.logger.warn(
+                'Error with replace child. It seems that active leaf was changed?'
+            );
+        } else {
+            originalParent.replaceChild(container, element);
+        }
         container.appendChild(content);
         content.appendChild(element);
 
@@ -187,7 +193,13 @@ export default class InteractifyUnitStateManager extends Component {
             lPreviewWidget?.style?.removeProperty('width');
         }
 
-        originalParent.replaceChild(element, container);
+        if (!originalParent.contains(container)) {
+            this.unit.plugin.logger.warn(
+                'Error with replace child. It seems that active leaf was changed?'
+            );
+        } else {
+            originalParent.replaceChild(element, container);
+        }
         container.remove();
         content.remove();
 
