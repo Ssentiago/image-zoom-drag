@@ -46,10 +46,9 @@ export const PanelControl = styled.div`
     gap: 20px;
 `;
 
-export const PanelToggle = styled.label`
+export const PanelToggle = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    cursor: pointer;
     font-size: 0.9em;
 `;

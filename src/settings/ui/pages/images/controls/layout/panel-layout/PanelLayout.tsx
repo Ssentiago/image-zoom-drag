@@ -4,13 +4,15 @@ import { useSettingsContext } from '@/settings/ui/core/SettingsContext';
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
+import { OSetting } from '@obsidian-lib/native-react-components';
+
 import {
-    UnitPreview,
-    UnitSetup,
     FoldPanel,
     PanelControl,
     PanelPreview,
     PanelToggle,
+    UnitPreview,
+    UnitSetup,
 } from './PanelLayout.styled';
 import useDragDrop from './hooks/useDragDrop';
 
@@ -85,17 +87,20 @@ const PanelLayout: FC = () => {
                 )}
                 <FoldPanel>{panelNames.fold}</FoldPanel>
             </UnitPreview>
-            <PanelControl>
+            <PanelControl className={'control'}>
                 {Object.entries(panels).map(([name, config]) => (
                     <PanelToggle key={name}>
-                        <input
-                            type='checkbox'
-                            checked={config.on}
-                            onChange={() =>
-                                togglePanelState(name as keyof PanelsConfig)
-                            }
-                        />
-                        {panelNames[name as keyof typeof panelNames]}
+                        <OSetting
+                            name={panelNames[name as keyof typeof panelNames]}
+                        >
+                            <input
+                                type='checkbox'
+                                checked={config.on}
+                                onChange={() =>
+                                    togglePanelState(name as keyof PanelsConfig)
+                                }
+                            />
+                        </OSetting>
                     </PanelToggle>
                 ))}
             </PanelControl>
