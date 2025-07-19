@@ -103,15 +103,9 @@ export interface Panels {
     };
 }
 
-export enum ActivationMode {
-    Immediate = 'immediate',
-    Lazy = 'lazy',
-}
-
 export interface Interactivity {
     markdown: {
         autoDetect: boolean;
-        activationMode: ActivationMode;
     };
     picker: {
         enabled: boolean;

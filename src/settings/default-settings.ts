@@ -1,6 +1,5 @@
 import { ImageConfigs } from '@/modes/integrated-mode/interactify-unit/types/constants';
 import {
-    ActivationMode,
     DebugLevel,
     DefaultSettings,
     PanelsTriggering,
@@ -17,7 +16,6 @@ export function defaultSettings(): DefaultSettings {
             interactivity: {
                 markdown: {
                     autoDetect: true,
-                    activationMode: ActivationMode.Immediate,
                 },
                 picker: {
                     enabled: false,

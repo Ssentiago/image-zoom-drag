@@ -2,13 +2,10 @@ import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/cons
 
 import { Component } from 'obsidian';
 
-import { ActivationMode } from '../../../settings/types/interfaces';
 import InteractifyUnit from './interactify-unit';
 import { InteractiveMode } from './types/constants';
 
 export default class InteractifyUnitStateManager extends Component {
-    intersectionObserver: IntersectionObserver | null = null;
-
     constructor(private readonly unit: InteractifyUnit) {
         super();
         this.load();
@@ -32,15 +29,7 @@ export default class InteractifyUnitStateManager extends Component {
         if (!settings.$.units.interactivity.markdown.autoDetect) {
             return;
         }
-
-        switch (settings.$.units.interactivity.markdown.activationMode) {
-            case ActivationMode.Immediate:
-                await this.activate(true);
-                break;
-            case ActivationMode.Lazy:
-                this.setupIntersectionObserver();
-                break;
-        }
+        await this.activate(true);
     }
 
     onToggleElement = async (data: { element: Element }) => {
@@ -237,33 +226,12 @@ export default class InteractifyUnitStateManager extends Component {
         });
     }
 
-    private setupIntersectionObserver() {
-        this.intersectionObserver = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(async (entry) => {
-                    if (entry.intersectionRatio > 0.7) {
-                        this.intersectionObserver?.disconnect();
-                        this.intersectionObserver = null;
-
-                        await this.activate();
-                    }
-                });
-            },
-            {
-                root: null,
-                threshold: [0, 0.1, 0.5, 1.0],
-            }
-        );
-        this.intersectionObserver.observe(this.unit.context.element);
-    }
-
     onunload() {
         super.onunload();
         this.unit.plugin.emitter.off(
             'toggle-integrated-element',
             this.onToggleElement
         );
-        this.intersectionObserver?.disconnect();
 
         this.unit.context.element.removeAttribute(
             'data-interactive-initialization-status'
