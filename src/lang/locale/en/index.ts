@@ -10,13 +10,6 @@ import type { LocaleSchema } from '../../types/interfaces';
 
            
 const Locale: LocaleSchema  = {
-    adapters: {
-        pickerMode: {
-            notice: {
-                error: "This type of content is unsupported. Please check the plugin settings."
-            }
-        }
-    },
     commands: {
         pickerMode: {
             notice: {
@@ -27,7 +20,7 @@ const Locale: LocaleSchema  = {
             notice: {
                 hidden: "Control panels hidden",
                 noActiveImages: "No active images found",
-                noMd: "This command can only be used when a Markdown view is open.",
+                noMd: "This command can only be used when a markdown note is open.",
                 shown: "Control panels shown"
             }
         }
@@ -63,11 +56,7 @@ const Locale: LocaleSchema  = {
                     name: "Panel Visibility",
                     shown: "Hide panels"
                 },
-                name: "Service",
-                touch: {
-                    off: "Enable touch",
-                    on: "Disable touch"
-                }
+                name: "Service"
             },
             zoom: {
                 in: "Zoom in",
@@ -85,7 +74,7 @@ const Locale: LocaleSchema  = {
                 on: "Deactivate interactive mode"
             },
             onExit: "Picker mode disabled",
-            onStart: "Picker mode enabled\nClick on image to toggle interactive mode\nAlt + click on image to open in in Popup viewer & editor\nPress Esc to exit"
+            onStart: "Picker mode enabled\nClick on image to toggle interactive mode\nAlt + click on image to open in in Popup viewer\nPress Esc to exit"
         }
     },
     settings: {
@@ -155,7 +144,7 @@ const Locale: LocaleSchema  = {
                 controls: {
                     serviceIgnoring: {
                         desc: "Service panel will always be visible regardless of visibility mode",
-                        name: "Ignore panel visibility rule for service panel"
+                        name: "Ignore controls visibility rule for service panel"
                     },
                     visibility: {
                         desc: "Set when panels will be visible",
@@ -166,9 +155,9 @@ const Locale: LocaleSchema  = {
                         },
                         name: "Controls visibility",
                         tooltips: {
-                            always: "Controls are always visible when this option is selected.",
-                            focus: "Controls become visible when the image is focused (e.g., clicked). The service panel may remain hidden if the ignore option is enabled.",
-                            hover: "Controls become visible when hovering the mouse over the image. The service panel may remain hidden if the ignore option is enabled."
+                            always: "Controls stay visible when enabled (globally and per preset)",
+                            focus: "Controls appear when image is clicked",
+                            hover: "Controls appear on hover"
                         }
                     }
                 },
@@ -183,18 +172,6 @@ const Locale: LocaleSchema  = {
                         header: "Fold"
                     },
                     interactive: {
-                        activationMode: {
-                            desc: "Live Preview mode uses lazy loading by default",
-                            dropdown: {
-                                immediate: "Immediate",
-                                lazy: "Lazy"
-                            },
-                            name: "Activation mode for Obsidian Markdown View",
-                            tooltips: {
-                                immediate: "Images become interactive instantly when detected. Best for small notes.",
-                                lazy: "Images become interactive only when scrolled into view. Best for notes with many images."
-                            }
-                        },
                         autoDetect: {
                             desc: [
                                 "* This option is available only for Obsidian Markdown View",
@@ -212,7 +189,6 @@ const Locale: LocaleSchema  = {
                         }
                     },
                     size: {
-                        desc: "Note: You need to reopen all the open Markdown views with images in them to apply these settings.",
                         expanded: {
                             desc: [
                                 "Set the container dimensions for expanded state."
@@ -229,10 +205,6 @@ const Locale: LocaleSchema  = {
                         labels: {
                             height: "Height:",
                             width: "Width:"
-                        },
-                        placeholders: {
-                            height: "height",
-                            width: "width"
                         },
                         saveButtonTooltip: "Save changes",
                         validation: {
@@ -262,13 +234,13 @@ const Locale: LocaleSchema  = {
                         tooltip: "Open control buttons layout editor"
                     },
                     controlsLayout: {
-                        desc: "Adjust controls positions and visibility",
+                        desc: "Change where controls appear and when they show",
                         modal: {
                             availablePanels: {
                                 desc: [
-                                    "• Move Panel: By default located at bottom right - Contains 8 directional buttons for images movement",
-                                    "• Zoom Panel: By default located at center right - Features zoom in/out and reset controls",
-                                    "• Service Panel: By default located at upper right - Contains additional functionality buttons"
+                                    "• Move Panel: Arrow buttons to move the image around",
+                                    "• Zoom Panel: Zoom in, zoom out, and reset to original size",
+                                    "• Service Panel: Extra tools and options"
                                 ],
                                 name: "Available panels"
                             },
@@ -277,7 +249,7 @@ const Locale: LocaleSchema  = {
                                     "1. Use checkboxes below to toggle panel visibility on/off",
                                     "2. Click and drag any panel to reposition it on the image",
                                     "3. Panel positions are saved automatically",
-                                    "4. Reload the view to see your changes take effect"
+                                    "4. Close and reopen the note to see your changes to see your changes take effect"
                                 ],
                                 name: "How to customize panels"
                             },
@@ -295,7 +267,7 @@ const Locale: LocaleSchema  = {
                     addNewImagePreset: {
                         desc: [
                             "Add new image preset to override default settings for specific images.",
-                            "Name: alphanumeric + hyphens only",
+                            "Name: any UTF-8 characters allowed",
                             "Selector: CSS selector for target images"
                         ],
                         header: "Add new image preset",
@@ -361,8 +333,8 @@ const Locale: LocaleSchema  = {
                                 },
                                 delete: "Delete unit\n`Name: {{name}}\nSelector: {{selector}}`",
                                 disable: "Disable {{name}} unit",
-                                edit: "Edit unit \"{{name}}\":\n{{changes}}",
-                                enable: "Enable {{name}} unit"
+                                edit: "Edit preset \"{{name}}\":\n{{changes}}",
+                                enable: "Enable {{name}} preset"
                             },
                             buttons: {
                                 cancel: "Cancel operation? All changes will be lost.",
@@ -378,9 +350,9 @@ const Locale: LocaleSchema  = {
                         },
                         optionsModal: {
                             desc: "These settings will only apply to this unit.",
-                            name: "{{name}} unit options",
+                            name: "{{name}} preset options",
                             panels: {
-                                action: "Turn {{state}} panel `{{panel}}` for unit `{{name}}`",
+                                action: "Turn {{state}} panel `{{panel}}` for preset `{{name}}`",
                                 header: "Panels",
                                 states: {
                                     off: "off",
@@ -400,7 +372,7 @@ const Locale: LocaleSchema  = {
                                     enabled: "Go to previous page"
                                 }
                             },
-                            page: "Page {{current}} of {{total}} (Total image presets: {{count}})"
+                            page: "{{current}}/{{total}} • {{count}}"
                         },
                         perPageSlider: {
                             name: "Image presets per page"
