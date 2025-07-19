@@ -68,6 +68,7 @@ function createMinifyKeysMapping(options: { enLocalePath: string }) {
         ) / KEYS_MAPPING.size
     ).toFixed(1);
 
+    console.log(`All keys count: ${enLocaleKeys.length}`);
     console.log(
         `Original keys: longest ${originalLongest}, avg ${avgOriginal}`
     );
