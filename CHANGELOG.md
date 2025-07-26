@@ -233,4 +233,3 @@ Just make the mermaid test code less in readme file. But the code is the same as
 
 # 4.0.33
 release to submitssion to obsidian officail for sharing a little plugin for zoom or drag mermaid diagrams in obsidian.
-
