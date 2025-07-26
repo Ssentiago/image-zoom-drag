@@ -115,4 +115,13 @@ export default class InteractifyPlugin extends Plugin {
         const notice = new Notice(message, duration);
         this.noticeEl = notice.containerEl;
     }
+
+    showInteractiveNotice(
+        message: string,
+        callback: () => void | Promise<void>,
+        duration?: number
+    ): void {
+        this.showNotice(message, duration);
+        this.noticeEl?.addEventListener('click', callback, { once: true });
+    }
 }
