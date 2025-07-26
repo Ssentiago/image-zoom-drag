@@ -168,6 +168,8 @@ export default class IntegratedMode extends Component {
         this.plugin.emitter.on(
             'leaf-index.image.added',
             async (imageData: BaseUnitContext) => {
+                if (this.plugin.help.isHelpOpen) return;
+
                 const view =
                     this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
 
