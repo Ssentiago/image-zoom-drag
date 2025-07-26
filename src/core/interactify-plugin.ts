@@ -1,5 +1,6 @@
 import DOMWatcher from '@/core/services/dom-watcher/DOMWatcher';
 import LeafIndex from '@/core/services/leaf-index/leaf-index';
+import UserState from '@/core/services/user-state/user-state';
 import { tPromise } from '@/lang';
 import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import PickerMode from '@/modes/picker-mode/picker-mode';
@@ -24,6 +25,7 @@ export default class InteractifyPlugin extends Plugin {
     integratedMode!: IntegratedMode;
     popupMode!: PopupMode;
     domWatcher!: DOMWatcher;
+    userState!: UserState;
 
     async onload(): Promise<void> {
         if (process.env.NODE_ENV === 'development') {
@@ -94,6 +96,9 @@ export default class InteractifyPlugin extends Plugin {
 
         this.logger = new Logger(this);
         await this.logger.init();
+
+        this.userState = new UserState(this);
+        await this.userState.initialize();
     }
 
     /**
