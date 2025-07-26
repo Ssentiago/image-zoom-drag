@@ -27,6 +27,14 @@ const About: FC = () => {
                 />
             </OSetting>
 
+            <OSetting name={'Help'}>
+                <button
+                    data-icon={'message-circle-question'}
+                    aria-label={'Open the help modal window'}
+                    onClick={() => plugin.help.showModal('full')}
+                />
+            </OSetting>
+
             <FooterContent>
                 <Slogan>Make Obsidian images and diagrams Interactify!</Slogan>
                 <Info>

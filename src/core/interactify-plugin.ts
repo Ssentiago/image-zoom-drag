@@ -11,6 +11,7 @@ import { SettingsTab } from '@/settings/settings-tab';
 import EventEmitter2 from 'eventemitter2';
 import { Notice, Plugin } from 'obsidian';
 
+import Help from './services/help/help';
 import Logger from './services/logger/logger';
 
 export default class InteractifyPlugin extends Plugin {
@@ -26,6 +27,7 @@ export default class InteractifyPlugin extends Plugin {
     popupMode!: PopupMode;
     domWatcher!: DOMWatcher;
     userState!: UserState;
+    help!: Help;
 
     async onload(): Promise<void> {
         if (process.env.NODE_ENV === 'development') {
@@ -99,6 +101,9 @@ export default class InteractifyPlugin extends Plugin {
 
         this.userState = new UserState(this);
         await this.userState.initialize();
+
+        this.help = new Help(this);
+        this.addChild(this.help);
     }
 
     /**
