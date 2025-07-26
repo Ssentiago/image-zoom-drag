@@ -48,4 +48,7 @@ export default class DOMWatcher extends Component {
     subscribe(condition: MutationCondition, callback: MutationCallback) {
         this.subscribers.set(condition, callback);
     }
+    unsubscribe(condition: MutationCondition) {
+        this.subscribers.delete(condition);
+    }
 }
