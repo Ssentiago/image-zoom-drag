@@ -154,6 +154,18 @@ export default class IntegratedMode extends Component {
         });
 
         this.plugin.emitter.on(
+            'create-integrated-element-outside-view',
+            async (ctx: BaseUnitContext) => {
+                const mdAdapter = new MdViewAdapter(this, {
+                    ctime: 0,
+                    size: 0,
+                    mtime: 0,
+                });
+                await mdAdapter.initialize(ctx);
+            }
+        );
+
+        this.plugin.emitter.on(
             'leaf-index.image.added',
             async (imageData: BaseUnitContext) => {
                 const view =
