@@ -24,3 +24,7 @@ export enum ZoomButtons {
     Out = 'out',
     Reset = 'reset',
 }
+
+export enum TipButtons {
+    Ribbon = 'ribbon',
+}

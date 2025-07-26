@@ -1,12 +1,14 @@
+import { FoldPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/fold';
+import { MovePanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/move';
+import { ServicePanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/service';
+import TipPanel from '@/modes/integrated-mode/interactify-unit/control-panel/panels/tip';
+import { ZoomPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/zoom';
+import { IControlPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/types/interfaces';
+import { TriggerType } from '@/modes/integrated-mode/interactify-unit/types/constants';
+
 import { Component } from 'obsidian';
 
 import InteractifyUnit from '../interactify-unit';
-import { TriggerType } from '../types/constants';
-import { FoldPanel } from './panels/fold';
-import { MovePanel } from './panels/move';
-import { ServicePanel } from './panels/service';
-import { ZoomPanel } from './panels/zoom';
-import { IControlPanel } from './types/interfaces';
 
 export class ControlPanel extends Component implements IControlPanel {
     private static readonly BUTTON_SIZE = 34; // size 30 px plus padding 4 px
@@ -17,6 +19,8 @@ export class ControlPanel extends Component implements IControlPanel {
     move!: MovePanel;
     zoom!: ZoomPanel;
     service!: ServicePanel;
+    tip!: TipPanel;
+
     controlPanel!: HTMLElement;
 
     constructor(public unit: InteractifyUnit) {
@@ -33,8 +37,9 @@ export class ControlPanel extends Component implements IControlPanel {
         this.zoom = new ZoomPanel(this);
         this.fold = new FoldPanel(this);
         this.service = new ServicePanel(this);
+        this.tip = new TipPanel(this);
 
-        [this.move, this.zoom, this.fold, this.service].forEach((panel) => {
+        this.panels.forEach((panel) => {
             this.addChild(panel);
             panel.initialize();
         });
@@ -53,7 +58,7 @@ export class ControlPanel extends Component implements IControlPanel {
     }
 
     private get panels() {
-        return [this.move, this.zoom, this.fold, this.service];
+        return [this.move, this.zoom, this.fold, this.service, this.tip];
     }
 
     show(triggerType: TriggerType = TriggerType.FORCE): void {
