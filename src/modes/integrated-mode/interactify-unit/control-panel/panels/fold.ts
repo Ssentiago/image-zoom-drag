@@ -10,8 +10,14 @@ import { ButtonsData } from './types/interfaces';
 export class FoldPanel extends BasePanel<FoldButtons> {
     buttons = new Map<FoldButtons, ButtonsData>();
 
+    title = {
+        folded: t.image.controlPanel.fold.fold.folded,
+        expanded: t.image.controlPanel.fold.fold.expanded,
+    };
+
     constructor(public readonly controlPanel: IControlPanel) {
         super(controlPanel);
+        this.setupSubscriptions();
     }
 
     get enabled(): boolean {
@@ -33,37 +39,21 @@ export class FoldPanel extends BasePanel<FoldButtons> {
     }
 
     getButtonsConfig() {
-        const isFolded = this.unit.context.container.dataset.folded === 'true';
-        const titleGetter = (state: 'folded' | 'expanded') =>
-            state === 'folded'
-                ? t.image.controlPanel.fold.fold.folded
-                : t.image.controlPanel.fold.fold.expanded;
+        this.unit.context.container.setAttribute(
+            'data-folded',
+            this.unit.plugin.settings.$.units.folding.foldByDefault.toString()
+        );
 
         return [
             {
-                icon: isFolded ? 'unfold-vertical' : 'fold-vertical',
+                icon: '',
                 action: (): void => {
                     const wasFolded =
-                        this.controlPanel.unit.context.container.dataset
-                            .folded === 'true';
+                        this.unit.context.container.dataset.folded === 'true';
 
                     wasFolded ? this.unfold() : this.fold();
-
-                    const isFolded =
-                        this.controlPanel.unit.context.container.dataset
-                            .folded === 'true';
-
-                    const button = this.buttons.get(FoldButtons.Fold);
-
-                    if (button) {
-                        updateButton(
-                            button.element,
-                            isFolded ? 'unfold-vertical' : 'fold-vertical',
-                            titleGetter(wasFolded ? 'expanded' : 'folded')
-                        );
-                    }
                 },
-                title: titleGetter(isFolded ? 'folded' : 'expanded'),
+                title: '',
                 id: FoldButtons.Fold,
             },
         ];
@@ -91,5 +81,31 @@ export class FoldPanel extends BasePanel<FoldButtons> {
             ~TriggerType.FOCUS &
             ~TriggerType.MOUSE
         );
+    }
+
+    setupSubscriptions() {
+        const foldCondition = (mutation: MutationRecord) =>
+            mutation.target === this.unit.context.container &&
+            mutation.type === 'attributes' &&
+            mutation.attributeName === 'data-folded';
+
+        this.register(() =>
+            this.unit.plugin.domWatcher.unsubscribe(foldCondition)
+        );
+
+        this.unit.plugin.domWatcher.subscribe(foldCondition, (mutation) => {
+            if (!(mutation.target instanceof HTMLElement)) return;
+            const isFolded = mutation.target.dataset.folded === 'true';
+
+            const button = this.buttons.get(FoldButtons.Fold);
+
+            if (button) {
+                updateButton(
+                    button.element,
+                    isFolded ? 'unfold-vertical' : 'fold-vertical',
+                    this.title[!isFolded ? 'expanded' : 'folded']
+                );
+            }
+        });
     }
 }
