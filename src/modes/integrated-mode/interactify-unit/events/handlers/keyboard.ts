@@ -1,3 +1,5 @@
+import { TriggerType } from '@/modes/integrated-mode/interactify-unit/types/constants';
+
 import { Component } from 'obsidian';
 
 import Events from '../events';
@@ -30,6 +32,20 @@ export class Keyboard extends Component implements Handler {
             Equal: () => actions.zoomElement(1.1, { animated: true }),
             Minus: () => actions.zoomElement(0.9, { animated: true }),
             Digit0: () => actions.resetZoomAndMove({ animated: true }),
+            Backquote: () => {
+                const { container } = this.events.unit.context;
+                const isFolded = container.dataset.folded === 'true';
+                container.setAttribute(
+                    'data-folded',
+                    isFolded ? 'false' : 'true'
+                );
+                this.events.unit.applyLayout();
+                if (!isFolded) {
+                    this.events.unit.controlPanel.hide(TriggerType.FOLD);
+                } else {
+                    this.events.unit.controlPanel.show(TriggerType.FOLD);
+                }
+            },
         };
 
         const ctrlAltKeys = {
