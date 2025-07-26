@@ -36,7 +36,7 @@
         "@babel/plugin-transform-runtime": "^7.28.0",
         "@babel/preset-typescript": "^7.27.1",
         "@emotion/babel-plugin": "^11.13.5",
-        "@obsidian-lib/dev-tools": "0.0.7",
+        "@obsidian-lib/dev-tools": "0.0.17",
         "@obsidian-lib/i18n-tools": "^0.0.13",
         "@rollup/plugin-alias": "^5.1.1",
         "@rollup/plugin-babel": "^6.0.4",
