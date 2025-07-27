@@ -173,10 +173,7 @@ const Locale: LocaleSchema  = {
                     },
                     interactive: {
                         autoDetect: {
-                            desc: [
-                                "* This option is available only for Obsidian Markdown View",
-                                "When enabled, the plugin will automatically scan and prepare all suitable images for potential interactivity."
-                            ],
+                            desc: "When enabled, the plugin will automatically scan and prepare all suitable images for potential interactivity.",
                             name: "Auto-detect images"
                         },
                         header: "Interactivity options",
@@ -331,25 +328,25 @@ const Locale: LocaleSchema  = {
                                     name: "name: \"{{old}}\" → \"{{new}}\"",
                                     selector: "selector: \"{{old}}\" → \"{{new}}\""
                                 },
-                                delete: "Delete unit\n`Name: {{name}}\nSelector: {{selector}}`",
-                                disable: "Disable {{name}} unit",
+                                delete: "Delete preset\n`Name: {{name}}\nSelector: {{selector}}`",
+                                disable: "Disable {{name}} preset",
                                 edit: "Edit preset \"{{name}}\":\n{{changes}}",
                                 enable: "Enable {{name}} preset"
                             },
                             buttons: {
                                 cancel: "Cancel operation? All changes will be lost.",
-                                delete: "Delete {{name}} unit",
-                                edit: "Edit {{name}} unit",
-                                options: "Options for {{name}} unit",
+                                delete: "Delete {{name}} preset",
+                                edit: "Edit {{name}} preset",
+                                options: "Options for {{name}} preset",
                                 save: "Save changes for {{name}}?"
                             },
                             toggle: {
-                                disable: "Disable {{name}} unit",
-                                enable: "Enable {{name}} unit"
+                                disable: "Disable {{name}} preset",
+                                enable: "Enable {{name}} preset"
                             }
                         },
                         optionsModal: {
-                            desc: "These settings will only apply to this unit.",
+                            desc: "These settings will only apply to this preset.",
                             name: "{{name}} preset options",
                             panels: {
                                 action: "Turn {{state}} panel `{{panel}}` for preset `{{name}}`",
@@ -395,13 +392,13 @@ const Locale: LocaleSchema  = {
                         }
                     },
                     unitsValidation: {
-                        bothInvalid: "Config name and selector are both invalid",
+                        bothInvalid: "Preset name and selector are both invalid",
                         fillOutField: "Fill out preset {{field}} field!",
                         invalidSelectorPrefix: "Invalid CSS selector: {{err}}",
-                        nameAlreadyExists: "Config with that name already exists",
+                        nameAlreadyExists: "Preset with that name already exists",
                         nothingToSave: "Nothing to save",
-                        oneInvalid: "Config {{field}} is invalid",
-                        selectorAlreadyExists: "Config with that selector already exists"
+                        oneInvalid: "Preset {{field}} is invalid",
+                        selectorAlreadyExists: "Preset with that selector already exists"
                     }
                 }
             }

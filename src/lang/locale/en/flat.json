@@ -82,10 +82,7 @@
     "settings.pages.images.general.fold.autoFoldOnFocusChange.name": "Automatically fold images on focus change",
     "settings.pages.images.general.fold.foldByDefault.name": "Fold images by default",
     "settings.pages.images.general.fold.header": "Fold",
-    "settings.pages.images.general.interactive.autoDetect.desc": [
-        "* This option is available only for Obsidian Markdown View",
-        "When enabled, the plugin will automatically scan and prepare all suitable images for potential interactivity."
-    ],
+    "settings.pages.images.general.interactive.autoDetect.desc": "When enabled, the plugin will automatically scan and prepare all suitable images for potential interactivity.",
     "settings.pages.images.general.interactive.autoDetect.name": "Auto-detect images",
     "settings.pages.images.general.interactive.header": "Interactivity options",
     "settings.pages.images.general.interactive.pickerMode.desc": [

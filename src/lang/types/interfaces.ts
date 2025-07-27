@@ -154,7 +154,7 @@ export interface LocaleSchema {
                     };
                     interactive: {
                         autoDetect: {
-                            desc: string[];
+                            desc: string;
                             name: string;
                         };
                         header: string;
