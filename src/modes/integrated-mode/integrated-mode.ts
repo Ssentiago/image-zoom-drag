@@ -21,7 +21,7 @@ export default class IntegratedMode extends Component {
         this.state = new State(this);
     }
 
-    initialize() {
+    initialize(): void {
         this.load();
 
         this.setupCommands();
@@ -31,7 +31,7 @@ export default class IntegratedMode extends Component {
         this.setupDomSubscriptions();
     }
 
-    async onunload() {
+    async onunload(): Promise<void> {
         await this.state.clear();
     }
 
@@ -85,7 +85,7 @@ export default class IntegratedMode extends Component {
         });
     }
 
-    private setupFileMenu() {
+    private setupFileMenu(): void {
         this.registerEvent(
             this.plugin.app.workspace.on('file-menu', (menu) => {
                 if (
@@ -261,7 +261,7 @@ export default class IntegratedMode extends Component {
         );
     }
 
-    private setupResizeObserver(leafID: LeafID) {
+    private setupResizeObserver(leafID: LeafID): void {
         if (this.state.hasResizeObserver(leafID)) {
             return;
         }
@@ -282,7 +282,7 @@ export default class IntegratedMode extends Component {
         this.state.setResizeObserver(leafID, obs);
     }
 
-    private setupDomSubscriptions() {
+    private setupDomSubscriptions(): void {
         this.plugin.domWatcher.subscribe(
             (mutation) =>
                 mutation.type === 'attributes' &&

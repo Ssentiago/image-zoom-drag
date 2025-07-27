@@ -114,7 +114,7 @@ export default abstract class BaseAdapter {
         };
     }
 
-    protected async createUnit(context: UnitContext) {
+    protected async createUnit(context: UnitContext): Promise<void> {
         const unit = await InteractifyUnitFactory.createUnit(
             this.integratedMode.plugin,
             context,
@@ -171,7 +171,9 @@ export default abstract class BaseAdapter {
         return { container, content, originalParent };
     }
 
-    protected findElementWithLivePreviewWidget(el: Element | undefined) {
+    protected findElementWithLivePreviewWidget(
+        el: Element | undefined
+    ): HTMLElementWithCMView | undefined {
         if (el === undefined) {
             return undefined;
         }
@@ -189,7 +191,7 @@ export default abstract class BaseAdapter {
     async unitProcessing(
         adapter: InteractifyAdapters,
         context: Partial<UnitContext>
-    ) {
+    ): Promise<void> {
         context.adapter = adapter;
 
         this.integratedMode.plugin.logger.debug(

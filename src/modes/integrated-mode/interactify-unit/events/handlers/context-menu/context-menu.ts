@@ -78,7 +78,7 @@ export class ContextMenu extends Component implements Handler {
         menu.showAtMouseEvent(event);
     }
 
-    createMenu(element: HTMLImageElement | SVGElement) {
+    createMenu(element: HTMLImageElement | SVGElement): Menu {
         const menu = new Menu();
 
         menu.addItem((item) => {
@@ -150,8 +150,8 @@ export class ContextMenu extends Component implements Handler {
             menu.addItem((item) => {
                 item.setIcon('maximize-2');
                 item.setTitle('Open this image in popup window');
-                item.onClick(() => {
-                    this.openInPopup.openPopupForImage(element);
+                item.onClick(async () => {
+                    await this.openInPopup.openPopupForImage(element);
                 });
             });
 

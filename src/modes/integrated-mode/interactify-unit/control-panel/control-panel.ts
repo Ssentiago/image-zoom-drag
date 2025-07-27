@@ -68,7 +68,7 @@ export class ControlPanel extends Component implements IControlPanel {
         this.panels.forEach((panel) => panel.show(triggerType));
     }
 
-    hide(triggerType: TriggerType = TriggerType.FORCE) {
+    hide(triggerType: TriggerType = TriggerType.FORCE): void {
         if (!this.canRender) {
             return;
         }
@@ -79,7 +79,7 @@ export class ControlPanel extends Component implements IControlPanel {
         return this.panels.some((panel) => panel.isVisible());
     }
 
-    onunload() {
+    onunload(): void {
         super.onunload();
         this.controlPanel?.remove();
     }

@@ -39,13 +39,13 @@ export default class Help extends Component {
         this.isHelpOpen = true;
     }
 
-    closeModal() {
+    private closeModal(): void {
         this.root?.unmount();
         this.rootDiv?.remove();
         this.isHelpOpen = false;
     }
 
-    onunload() {
+    onunload(): void {
         this.closeModal();
     }
 }

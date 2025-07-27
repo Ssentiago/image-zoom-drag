@@ -1,7 +1,5 @@
 import { t } from '@/lang';
 
-import { Platform } from 'obsidian';
-
 import { PanelsTriggering } from '../../../../../settings/types/interfaces';
 import { TriggerType } from '../../types/constants';
 import { updateButton } from '../helpers/helpers';
@@ -43,8 +41,6 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
 
     getButtonsConfig() {
         const buttons = [];
-
-        const container = this.unit.context.container;
 
         const serviceButtons =
             this.unit.plugin.settings.$.panels.local.panels.service.buttons;
@@ -124,7 +120,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
         return buttons;
     }
 
-    setupPanelContents() {
+    setupPanelContents(): void {
         const settings = this.unit.plugin.settings;
         this.panel.toggleClass(
             'hidden',

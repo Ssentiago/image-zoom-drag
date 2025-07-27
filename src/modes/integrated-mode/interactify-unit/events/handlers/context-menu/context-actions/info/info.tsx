@@ -13,7 +13,7 @@ export default class Info extends Component {
         super();
     }
 
-    showInfo() {
+    showInfo(): void {
         const info = this.info;
 
         this.modalDiv ??= document.createElement('div');
@@ -67,7 +67,7 @@ export default class Info extends Component {
         return info;
     }
 
-    onunload() {
+    onunload(): void {
         super.onunload();
         this.closeModal();
     }

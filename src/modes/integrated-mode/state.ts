@@ -73,7 +73,7 @@ export default class State {
         return this.data.get(leafID)?.resizeObserver;
     }
 
-    setResizeObserver(leafID: LeafID, observer: ResizeObserver) {
+    setResizeObserver(leafID: LeafID, observer: ResizeObserver): void {
         const data = this.data.get(leafID);
         if (data) {
             data.resizeObserver = observer;
@@ -102,7 +102,7 @@ export default class State {
         this.orphans.units.push(unit);
     }
 
-    async cleanOrphan() {
+    async cleanOrphan(): Promise<void> {
         for (const unit of this.orphans.units) {
             await unit.onDelete();
         }

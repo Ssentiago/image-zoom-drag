@@ -1,4 +1,5 @@
 import InteractifyPlugin from '@/core/interactify-plugin';
+import { ShortSystemInfo, SystemInfo } from '@/core/services/types/interfaces';
 
 import { moment, normalizePath, Platform } from 'obsidian';
 
@@ -16,7 +17,7 @@ export default class Logger {
     /**
      * Initializes the logger by writing system information if the debug setting is enabled.
      */
-    async init() {
+    async init(): Promise<void> {
         await this.ensureLogsDirExists();
         this.plugin.settings.$.debug.enabled && (await this.writeSystemInfo());
     }
@@ -46,7 +47,7 @@ export default class Logger {
         }
     }
 
-    async ensureLogsDirExists() {
+    async ensureLogsDirExists(): Promise<void> {
         const pluginDir = this.plugin.manifest.dir;
         if (pluginDir === undefined) {
             throw new Error(
@@ -107,7 +108,7 @@ export default class Logger {
         this.addLogEntry(systemInfo);
     }
 
-    getSystemInfo() {
+    getSystemInfo(): SystemInfo {
         return {
             timestamp: moment().toISOString(),
             session_start: true,
@@ -159,7 +160,7 @@ export default class Logger {
         };
     }
 
-    getShortSystemInfo() {
+    getShortSystemInfo(): ShortSystemInfo {
         return {
             timestamp: moment().toISOString(),
             obsidian: {
@@ -387,8 +388,6 @@ export default class Logger {
             const date = new Date(log.timestamp);
             const time = date.toLocaleTimeString();
             const ctx = log.context;
-            console.log(log);
-            console.log(ctx);
             const location = ctx?.file
                 ? `${ctx.file}:${ctx.lineNumber}${ctx.functionName ? ` (${ctx.functionName})` : ''}`
                 : 'unknown';

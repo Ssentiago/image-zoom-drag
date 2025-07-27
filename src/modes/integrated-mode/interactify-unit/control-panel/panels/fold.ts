@@ -38,7 +38,12 @@ export class FoldPanel extends BasePanel<FoldButtons> {
         return 'interactify-fold-panel';
     }
 
-    getButtonsConfig() {
+    getButtonsConfig(): {
+        icon: string;
+        action: () => void;
+        title: string;
+        id: FoldButtons;
+    }[] {
         this.unit.context.container.setAttribute(
             'data-folded',
             this.unit.plugin.settings.$.units.folding.foldByDefault.toString()
@@ -59,14 +64,14 @@ export class FoldPanel extends BasePanel<FoldButtons> {
         ];
     }
 
-    fold() {
+    fold(): void {
         this.unit.context.container.setAttribute('data-folded', 'true');
         this.unit.applyLayout();
 
         this.controlPanel.hide(TriggerType.FOLD);
     }
 
-    unfold() {
+    unfold(): void {
         this.unit.context.container.setAttribute('data-folded', 'false');
         this.unit.applyLayout();
 
@@ -83,7 +88,7 @@ export class FoldPanel extends BasePanel<FoldButtons> {
         );
     }
 
-    setupSubscriptions() {
+    setupSubscriptions(): void {
         const foldCondition = (mutation: MutationRecord) =>
             mutation.target === this.unit.context.container &&
             mutation.type === 'attributes' &&

@@ -4,7 +4,7 @@ export default class ImageConverter {
     async imgToBlob(
         img: HTMLImageElement | SVGElement,
         format: 'png' | 'jpg' | 'svg'
-    ) {
+    ): Promise<Blob> {
         let blob: Blob;
 
         if (img instanceof SVGElement) {

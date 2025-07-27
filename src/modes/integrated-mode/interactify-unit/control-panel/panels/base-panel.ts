@@ -96,7 +96,7 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
         title: string,
         id: string,
         gridArea?: string
-    ) {
+    ): HTMLButtonElement {
         const button = document.createElement('button');
         button.id = id;
 
@@ -182,7 +182,7 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
         this.panel.addClass('hidden');
     }
 
-    isVisible() {
+    isVisible(): boolean {
         return (
             this.panel?.classList?.contains('visible') &&
             !this.panel.classList.contains('hidden')

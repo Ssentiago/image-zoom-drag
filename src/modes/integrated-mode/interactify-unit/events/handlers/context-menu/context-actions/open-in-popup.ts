@@ -7,7 +7,11 @@ export default class OpenInPopup extends Component {
         super();
     }
 
-    openPopupForImage(image: HTMLImageElement | SVGElement) {
-        this.contextMenu.events.unit.plugin.popupMode.showPopupForImage(image);
+    async openPopupForImage(
+        image: HTMLImageElement | SVGElement
+    ): Promise<void> {
+        await this.contextMenu.events.unit.plugin.popupMode.showPopupForImage(
+            image
+        );
     }
 }

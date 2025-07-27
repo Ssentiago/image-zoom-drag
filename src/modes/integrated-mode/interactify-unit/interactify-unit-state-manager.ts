@@ -11,7 +11,7 @@ export default class InteractifyUnitStateManager extends Component {
         this.load();
     }
 
-    async initialize() {
+    async initialize(): Promise<void> {
         this.unit.plugin.emitter.on(
             'toggle-integrated-element',
             this.onToggleElement
@@ -19,7 +19,7 @@ export default class InteractifyUnitStateManager extends Component {
         await this.scheduleActivationIfNeeded();
     }
 
-    private async scheduleActivationIfNeeded() {
+    private async scheduleActivationIfNeeded(): Promise<void> {
         if (this.unit.context.adapter === InteractifyAdapters.PickerMode) {
             await this.activate();
             return;
@@ -89,7 +89,7 @@ export default class InteractifyUnitStateManager extends Component {
     private async smoothTransition(
         element: HTMLElement,
         callback: () => Promise<void>
-    ) {
+    ): Promise<Animation> {
         const transition = element.animate(
             [
                 { opacity: '1', transform: 'scale(1)', filter: 'blur(0)' },
@@ -110,7 +110,7 @@ export default class InteractifyUnitStateManager extends Component {
         ).finished;
     }
 
-    async switchToInteractive() {
+    async switchToInteractive(): Promise<void> {
         this.unit.active = true;
 
         this.unit.plugin.logger.debug(
@@ -171,7 +171,7 @@ export default class InteractifyUnitStateManager extends Component {
         await this.waitForElementsLayout([element, content, container]);
     }
 
-    private async switchToNonInteractive() {
+    private async switchToNonInteractive(): Promise<void> {
         this.unit.active = false;
 
         this.unit.plugin.logger.debug(
@@ -238,7 +238,7 @@ export default class InteractifyUnitStateManager extends Component {
         });
     }
 
-    onunload() {
+    onunload(): void {
         super.onunload();
         this.unit.plugin.emitter.off(
             'toggle-integrated-element',

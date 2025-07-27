@@ -17,7 +17,7 @@ export default class ImageIndexer {
 
     constructor(readonly leafIndex: LeafIndex) {}
 
-    enable() {
+    enable(): void {
         this.leafIndex.plugin.registerMarkdownPostProcessor(
             (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
                 this.processPreviewImages(el, ctx);
@@ -28,14 +28,14 @@ export default class ImageIndexer {
         this.startLivePreviewObserver();
     }
 
-    disable() {
+    disable(): void {
         this.mutationObserver?.disconnect();
     }
 
     private processPreviewImages(
         el: HTMLElement,
         ctx: MarkdownPostProcessorContext
-    ) {
+    ): void {
         const images = this.findImages(el);
 
         images.forEach((image) => {
@@ -63,7 +63,7 @@ export default class ImageIndexer {
     private observePreviewChanges(
         el: HTMLElement,
         ctx: MarkdownPostProcessorContext
-    ) {
+    ): void {
         const observer = new MutationObserver((mutations) => {
             for (const mutation of this.filteredMutations(mutations)) {
                 for (const image of this.getAddedImages(mutation.addedNodes)) {
@@ -97,7 +97,7 @@ export default class ImageIndexer {
         }, 5000);
     }
 
-    private startLivePreviewObserver() {
+    private startLivePreviewObserver(): void {
         if (!this.leafIndex.activeLeafContext) return;
 
         this.mutationObserver = new MutationObserver((mutations) => {
@@ -165,7 +165,9 @@ export default class ImageIndexer {
      * any img or svg elements that are of class cm-widgetBuffer, as these
      * are internal to CodeMirror and should not be interactified.
      */
-    private *getAddedImages(nodes: NodeList) {
+    private *getAddedImages(
+        nodes: NodeList
+    ): Generator<HTMLImageElement | SVGElement, void, unknown> {
         for (const node of Array.from(nodes)) {
             if (!(node instanceof Element)) continue;
 
@@ -218,7 +220,11 @@ export default class ImageIndexer {
         };
     }
 
-    getLivePreviewSource(element: HTMLImageElement | SVGElement) {
+    getLivePreviewSource(element: HTMLImageElement | SVGElement): {
+        source: string;
+        lineStart: number;
+        lineEnd: number;
+    } {
         const parent = this.findElementWithLivePreviewWidget(element) as
             | HTMLElementWithCMView
             | undefined;
@@ -272,7 +278,11 @@ export default class ImageIndexer {
         return df;
     }
 
-    protected findElementWithLivePreviewWidget(el: Element | undefined) {
+    protected findElementWithLivePreviewWidget(
+        el: Element | undefined
+    ):
+        | import('/home/arseny/WebstormProjects/diagram-zoom-drag/src/modes/integrated-mode/adapters/types/interfaces').HTMLElementWithCMView
+        | undefined {
         if (el === undefined) {
             return undefined;
         }
@@ -301,7 +311,7 @@ export default class ImageIndexer {
     getImageOrigin(
         image: HTMLImageElement | SVGElement,
         sourceData: SourceData
-    ) {
+    ): 'generated' | 'external' | 'local' {
         const GENERATED_REGEX = /^```[^\n]+?\n?[\s\S]+?\n?```$/;
 
         if (GENERATED_REGEX.test(sourceData.source)) {
@@ -315,7 +325,7 @@ export default class ImageIndexer {
         return 'local';
     }
 
-    finalizePreviewSource(imageData: BaseUnitContext) {
+    finalizePreviewSource(imageData: BaseUnitContext): void {
         if (imageData.origin !== 'generated') {
             const alt = 'alt' in imageData.element ? imageData.element.alt : '';
             const src = 'src' in imageData.element ? imageData.element.src : '';

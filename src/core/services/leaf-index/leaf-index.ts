@@ -20,7 +20,7 @@ export default class LeafIndex extends Component {
     /**
      *
      */
-    private setupObsidianEventHandlers() {
+    private setupObsidianEventHandlers(): void {
         this.plugin.app.workspace.on('layout-change', async () => {
             await this.updateIndex();
         });
@@ -29,13 +29,13 @@ export default class LeafIndex extends Component {
         });
     }
 
-    private async updateIndex() {
+    private async updateIndex(): Promise<void> {
         await this.cleanupActiveLeaf();
         await this.initializeActiveLeaf();
         await this.setupImageIndexer();
     }
 
-    private async setupImageIndexer() {
+    private async setupImageIndexer(): Promise<void> {
         if (!this.activeLeafContext?.id) {
             return;
         }
@@ -52,13 +52,13 @@ export default class LeafIndex extends Component {
         data.indexer?.enable();
     }
 
-    async onunload() {
+    async onunload(): Promise<void> {
         for (const leafID of this.data.keys()) {
             await this.cleanupLeafData(leafID);
         }
     }
 
-    private async initializeActiveLeaf() {
+    private async initializeActiveLeaf(): Promise<void> {
         const view =
             this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
         if (!view) {
@@ -73,7 +73,7 @@ export default class LeafIndex extends Component {
         this.initializeLeafData(this.activeLeafContext);
     }
 
-    private async cleanupActiveLeaf() {
+    private async cleanupActiveLeaf(): Promise<void> {
         if (!this.activeLeafContext?.id) {
             return;
         }
