@@ -8,12 +8,12 @@ export default class UserState {
 
     constructor(private readonly plugin: InteractifyPlugin) {}
 
-    async initialize() {
+    async initialize(): Promise<void> {
         this.isFirstLaunch = await this.getIsFirstLaunch();
         this.shouldShowTips = this.getShouldShowTips();
     }
 
-    private async getIsFirstLaunch() {
+    private async getIsFirstLaunch(): Promise<boolean> {
         const currentCtime = await this.getPluginCtime();
 
         const savedCtime =
@@ -33,7 +33,7 @@ export default class UserState {
         return false;
     }
 
-    getShouldShowTips() {
+    getShouldShowTips(): boolean {
         const shouldShowTips = this.plugin.app.loadLocalStorage(
             'interactify-should-show-tips'
         );
@@ -56,14 +56,14 @@ export default class UserState {
         return !hasWeekSpent;
     }
 
-    markTipsViewed() {
+    markTipsViewed(): void {
         this.plugin.app.saveLocalStorage(
             'interactify-should-show-tips',
             'viewed'
         );
     }
 
-    private async getPluginCtime() {
+    private async getPluginCtime(): Promise<string> {
         const pluginDir = this.plugin.manifest.dir;
         if (!pluginDir) {
             throw new Error('Plugin directory not found in manifest');

@@ -11,7 +11,7 @@ export class Copy extends Component {
         this.imageConverter = new ImageConverter();
     }
 
-    async copyAsPNG(img: HTMLImageElement | SVGElement) {
+    async copyAsPNG(img: HTMLImageElement | SVGElement): Promise<void> {
         try {
             const blob = await this.imageConverter.imgToBlob(img, 'png');
             await this.writeToBuffer(blob, 'png');
@@ -26,19 +26,19 @@ export class Copy extends Component {
         }
     }
 
-    async copyAsPlain(element: SVGElement) {
+    async copyAsPlain(element: SVGElement): Promise<void> {
         const code = this.imageConverter.svgToCode(element);
         const blob = new Blob([code], { type: 'text/plain' });
         await this.writeToBuffer(blob, 'plain');
     }
 
-    async copyAsSource() {
+    async copyAsSource(): Promise<void> {
         const source = this.contextMenu.events.unit.context.sourceData.source;
         const blob = new Blob([source], { type: 'text/plain' });
         await this.writeToBuffer(blob, 'plain');
     }
 
-    async writeToBuffer(blob: Blob, format: 'png' | 'plain') {
+    async writeToBuffer(blob: Blob, format: 'png' | 'plain'): Promise<void> {
         const mimeTypes = {
             png: 'image/png',
             plain: 'text/plain',

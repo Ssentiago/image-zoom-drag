@@ -87,11 +87,11 @@ export default class Settings extends Component {
         await this.load();
     }
 
-    setupEvents() {
+    setupEvents(): void {
         this.emitter.on('**', () => (this.dirty = true));
     }
 
-    async onunload() {
+    async onunload(): Promise<void> {
         super.onunload();
         this.emitter.removeAllListeners();
 

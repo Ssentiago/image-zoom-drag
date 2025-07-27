@@ -53,14 +53,14 @@ export default class InteractifyPlugin extends Plugin {
     }
 
     private async initializeCore(): Promise<void> {
+        await tPromise;
+
         this.settings = new Settings(this);
         this.addChild(this.settings);
 
         await this.settings.load();
 
         this.addSettingTab(new SettingsTab(this.app, this));
-
-        await tPromise;
 
         this.emitter = new EventEmitter2({
             wildcard: true,
@@ -76,17 +76,17 @@ export default class InteractifyPlugin extends Plugin {
      * Picker mode: it gives the user an ability to switch the image to Popup mode or Integrated. Delegates initialization
      */
     private async initializeUI(): Promise<void> {
-        this.integratedMode = new IntegratedMode(this);
         this.pickerMode = new PickerMode(this);
+        this.integratedMode = new IntegratedMode(this);
         this.popupMode = new PopupMode(this);
-        this.addChild(this.popupMode);
-        this.popupMode.initialize();
 
         this.pickerMode.initialize();
         this.integratedMode.initialize();
+        this.popupMode.initialize();
 
         this.addChild(this.pickerMode);
         this.addChild(this.integratedMode);
+        this.addChild(this.popupMode);
     }
 
     private async initializeServices(): Promise<void> {
@@ -121,6 +121,14 @@ export default class InteractifyPlugin extends Plugin {
         this.noticeEl = notice.containerEl;
     }
 
+    /**
+     * Allows to create interactive notifications
+     *
+     * @param message - The notice message to be displayed
+     * @param callback - the callback that will be executed on notice clicks
+     * @param duration - The duration for which the notice should be displayed. If undefined, that message will be displayed until the user interacts with it explicitly
+     *
+     */
     showInteractiveNotice(
         message: string,
         callback: () => void | Promise<void>,

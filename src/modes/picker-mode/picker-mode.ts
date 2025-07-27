@@ -19,7 +19,7 @@ export default class PickerMode extends Component {
         super();
     }
 
-    initialize() {
+    initialize(): void {
         this.load();
 
         this.setupEvents();
@@ -74,7 +74,7 @@ export default class PickerMode extends Component {
         });
     }
 
-    private createRibbon() {
+    private createRibbon(): void {
         this.ribbonButton = this.plugin.addRibbonIcon(
             'mouse-pointer-click',
             'Picker mode',
@@ -90,13 +90,13 @@ export default class PickerMode extends Component {
         }
     };
 
-    private createTooltip() {
+    private createTooltip(): void {
         this.tooltip = document.createElement('div');
         this.tooltip.addClass('picker-mode-tooltip');
         document.body.appendChild(this.tooltip);
     }
 
-    private showTooltip(element: Element) {
+    private showTooltip(element: Element): void {
         if (!this.tooltip) return;
 
         const el = element.matches('svg,img')
@@ -140,14 +140,14 @@ export default class PickerMode extends Component {
         this.tooltip.style.opacity = '1';
     }
 
-    private hideTooltip() {
+    private hideTooltip(): void {
         if (this.tooltip) {
             this.tooltip.style.opacity = '0';
         }
         this.currentElement = null;
     }
 
-    private activate() {
+    private activate(): void {
         this.isActive = true;
         document.body.addClass('picker-mode');
         this.createTooltip();
@@ -172,7 +172,7 @@ export default class PickerMode extends Component {
         this.plugin.showNotice(t.pickerMode.tooltip.onStart, 10000);
     }
 
-    private deactivate() {
+    private deactivate(): void {
         if (!this.isActive) return;
 
         this.isActive = false;
@@ -290,7 +290,7 @@ export default class PickerMode extends Component {
         this.showTooltip(interactive);
     };
 
-    onunload() {
+    onunload(): void {
         this.deactivate();
         super.onunload();
         this.plugin.emitter.off(

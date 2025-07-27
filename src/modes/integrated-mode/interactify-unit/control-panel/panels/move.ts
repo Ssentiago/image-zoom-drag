@@ -32,7 +32,13 @@ export class MovePanel extends BasePanel<MoveButtons> {
         };
     }
 
-    getButtonsConfig() {
+    getButtonsConfig(): {
+        id: MoveButtons;
+        icon: string;
+        action: () => void;
+        title: string;
+        gridArea: string;
+    }[] {
         const moveButtons =
             this.unit.plugin.settings.$.panels.local.panels.move.buttons;
 
@@ -117,7 +123,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
             }));
     }
 
-    setupPanelContents() {
+    setupPanelContents(): void {
         super.setupPanelContents();
         this.panel.toggleClass(
             'hidden',

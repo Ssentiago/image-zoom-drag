@@ -17,7 +17,7 @@ export default class DOMWatcher extends Component {
         this.enable();
     }
 
-    enable() {
+    private enable(): void {
         this.observer = new MutationObserver(async (mutations) => {
             for (const mutation of mutations) {
                 await this.processMutation(mutation);
@@ -27,11 +27,11 @@ export default class DOMWatcher extends Component {
             childList: true, // Add/removal of children
             subtree: true, // monitor all subtree
             attributes: true, // changes in attributes
-            attributeOldValue: true, // Old attributes
+            attributeOldValue: true,
         });
     }
 
-    private async processMutation(mutation: MutationRecord) {
+    private async processMutation(mutation: MutationRecord): Promise<void> {
         for (const [condition, callback] of this.subscribers) {
             if (condition(mutation)) {
                 await callback(mutation);
@@ -39,16 +39,16 @@ export default class DOMWatcher extends Component {
         }
     }
 
-    onunload() {
+    onunload(): void {
         super.onunload();
         this.observer?.disconnect();
         this.subscribers.clear();
     }
 
-    subscribe(condition: MutationCondition, callback: MutationCallback) {
+    subscribe(condition: MutationCondition, callback: MutationCallback): void {
         this.subscribers.set(condition, callback);
     }
-    unsubscribe(condition: MutationCondition) {
+    unsubscribe(condition: MutationCondition): void {
         this.subscribers.delete(condition);
     }
 }

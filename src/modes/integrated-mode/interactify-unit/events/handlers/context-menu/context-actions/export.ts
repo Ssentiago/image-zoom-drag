@@ -11,7 +11,7 @@ export class Export extends Component {
         this.imageConverter = new ImageConverter();
     }
 
-    async exportAsPNG(img: HTMLImageElement | SVGElement) {
+    async exportAsPNG(img: HTMLImageElement | SVGElement): Promise<void> {
         try {
             const blob = await this.imageConverter.imgToBlob(img, 'png');
             this.downloadFile(blob, 'png');
@@ -26,7 +26,7 @@ export class Export extends Component {
         }
     }
 
-    async exportAsJPG(img: HTMLImageElement | SVGElement) {
+    async exportAsJPG(img: HTMLImageElement | SVGElement): Promise<void> {
         try {
             const blob = await this.imageConverter.imgToBlob(img, 'jpg');
             this.downloadFile(blob, 'jpg');
@@ -41,7 +41,7 @@ export class Export extends Component {
         }
     }
 
-    async exportAsSVG(svg: SVGElement) {
+    async exportAsSVG(svg: SVGElement): Promise<void> {
         try {
             const blob = await this.imageConverter.imgToBlob(svg, 'svg');
             this.downloadFile(blob, 'svg');

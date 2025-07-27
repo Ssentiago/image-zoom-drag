@@ -43,7 +43,7 @@ export default class InteractifyUnit extends Component {
         this.addChild(this.controlPanel);
     }
 
-    async setup() {
+    async setup(): Promise<void> {
         await this.interactiveStateManager.initialize();
     }
     initialize(): void {
@@ -104,12 +104,12 @@ export default class InteractifyUnit extends Component {
         };
     }
 
-    applyLayout() {
+    applyLayout(): void {
         this.applyRealSize();
         this.actions.fitToContainer({ animated: false });
     }
 
-    applyRealSize() {
+    applyRealSize(): void {
         const realSize = this.realSize;
 
         this.context.container.style.height = `${realSize.height}px`;
@@ -137,20 +137,20 @@ export default class InteractifyUnit extends Component {
         }
     }
 
-    async onDelete() {
+    async onDelete(): Promise<void> {
         await this.interactiveStateManager.deactivate();
 
         this.interactiveStateManager.unload();
     }
 
-    onunload() {
+    onunload(): void {
         super.onunload();
         this.plugin.logger.debug(
             `Called unload for interactive element with id ${this.id}`
         );
     }
 
-    private setupEvents() {
+    private setupEvents(): void {
         const debouncedApplyLayout = debounce(
             this.applyLayout.bind(this),
             300,

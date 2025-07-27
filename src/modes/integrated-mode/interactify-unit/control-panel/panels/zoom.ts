@@ -33,7 +33,12 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
         };
     }
 
-    getButtonsConfig() {
+    getButtonsConfig(): {
+        id: ZoomButtons;
+        icon: string;
+        action: () => void;
+        title: string;
+    }[] {
         const zoomButtons =
             this.controlPanel.unit.plugin.settings.$.panels.local.panels.zoom
                 .buttons;
@@ -77,7 +82,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
         return buttons;
     }
 
-    setupPanelContents() {
+    setupPanelContents(): void {
         this.panel.toggleClass(
             'hidden',
             this.controlPanel.unit.plugin.settings.$.panels.global.triggering

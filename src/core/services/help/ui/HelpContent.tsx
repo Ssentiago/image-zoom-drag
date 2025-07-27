@@ -255,7 +255,7 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
                     <p>• Through image context menu</p>
                     <p>• Note panel button (for all images in the note)</p>
                     <p>
-                        Controls: <kbd>Wheel</kbd> - zoom,
+                        Controls: <kbd>Wheel</kbd> - zoom,{' '}
                         <kbd>Click + Drag</kbd> - pan
                     </p>
 

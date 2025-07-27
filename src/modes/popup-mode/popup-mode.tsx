@@ -13,7 +13,7 @@ export default class PopupMode extends Component {
         super();
     }
 
-    initialize() {
+    initialize(): void {
         this.load();
 
         this.plugin.app.workspace.on('layout-change', () => {
@@ -26,7 +26,7 @@ export default class PopupMode extends Component {
         });
     }
 
-    addPopupButton(view: MarkdownView) {
+    addPopupButton(view: MarkdownView): void {
         const hasButton = view.actionsEl.querySelector(
             '.interactify-popup-button'
         );
@@ -48,7 +48,9 @@ export default class PopupMode extends Component {
         });
     }
 
-    async getAllImagesForPopup(view: MarkdownView) {
+    async getAllImagesForPopup(
+        view: MarkdownView
+    ): Promise<Array<HTMLImageElement | SVGElement>> {
         const component = new Component();
         component.load();
 
@@ -77,7 +79,7 @@ export default class PopupMode extends Component {
         return images;
     }
 
-    async showPopupForViewImages() {
+    async showPopupForViewImages(): Promise<void> {
         const view =
             this.plugin.app.workspace.getActiveViewOfType(MarkdownView)!;
 
@@ -89,7 +91,9 @@ export default class PopupMode extends Component {
         await this.showPopup(images);
     }
 
-    async showPopupForImage(image: HTMLImageElement | SVGElement) {
+    async showPopupForImage(
+        image: HTMLImageElement | SVGElement
+    ): Promise<void> {
         await this.showPopup(image);
     }
 
@@ -98,7 +102,7 @@ export default class PopupMode extends Component {
             | HTMLImageElement
             | SVGElement
             | Array<HTMLImageElement | SVGElement>
-    ) {
+    ): Promise<void> {
         const images = Array.isArray(image) ? image : [image];
 
         this.popupDiv ??= document.body.createDiv();
@@ -116,7 +120,7 @@ export default class PopupMode extends Component {
         }
     }
 
-    closePopup() {
+    closePopup(): void {
         this.popupRoot?.unmount();
         this.popupRoot = null;
         this.popupDiv?.remove();
