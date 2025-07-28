@@ -158,7 +158,7 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
                             dx/dy
                         </p>
                         <p>
-                            <kbd>Click + Wheel up / down</kbd> - change diagram
+                            <kbd>Ctrl + Wheel up / down</kbd> - change diagram
                             scale
                         </p>
                         <p>
@@ -171,6 +171,9 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
                         <p>
                             <kbd>Ctrl + ` (backtick)</kbd> - collapse / expand
                             diagram
+                        </p>
+                        <p>
+                            <kbd>Ctrl + Alt + F</kbd> - switch fullscreen mode
                         </p>
                         <p>
                             <kbd>Double click / Double tap</kbd> - reset
