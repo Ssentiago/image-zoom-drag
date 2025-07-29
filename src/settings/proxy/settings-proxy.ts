@@ -1,15 +1,22 @@
-import DiagramZoomDragPlugin from '../../core/diagram-zoom-drag-plugin';
+import Settings from '../settings';
 
 export function createSettingsProxy(
-    plugin: DiagramZoomDragPlugin,
+    settingsManager: Settings,
     obj: any,
     path: any[] = []
-) {
+): any {
     return new Proxy(obj, {
         get(target, key) {
+            if (key === 'toJSON') {
+                return () => target;
+            }
+
             const value = target[key];
             if (typeof value === 'object' && value !== null) {
-                return createSettingsProxy(plugin, value, [...path, key]);
+                return createSettingsProxy(settingsManager, value, [
+                    ...path,
+                    key,
+                ]);
             }
             return value;
         },
@@ -17,7 +24,7 @@ export function createSettingsProxy(
             const oldValue = target[prop];
             target[prop] = value;
             const fullPath = [...path, prop].join('.');
-            plugin.settings.eventBus?.emit(`settings.${fullPath}`, {
+            settingsManager.emitter?.emit(`settings.${fullPath}`, {
                 eventName: `settings.${fullPath}`,
                 oldValue,
                 newValue: value,
@@ -33,7 +40,7 @@ export function createSettingsProxy(
 
             if (existed) {
                 const fullPath = [...path, prop].join('.');
-                plugin.settings.eventBus?.emit(`settings.${fullPath}`, {
+                settingsManager.emitter?.emit(`settings.${fullPath}`, {
                     eventName: `settings.${fullPath}`,
                     operation: 'delete',
                     oldValue,

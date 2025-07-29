@@ -1,21 +1,29 @@
 import { App, PluginSettingTab } from 'obsidian';
 import { createRoot, Root } from 'react-dom/client';
 
-import DiagramZoomDragPlugin from '../core/diagram-zoom-drag-plugin';
-import SettingsRoot from './components/SettingsRoot';
+import InteractifyPlugin from '../core/interactify-plugin';
+import { SettingsEventPayload } from './types/interfaces';
+import SettingsRoot from './ui/SettingsRoot';
 
 export class SettingsTab extends PluginSettingTab {
     private root: Root | undefined = undefined;
 
     constructor(
         public app: App,
-        public plugin: DiagramZoomDragPlugin
+        public plugin: InteractifyPlugin
     ) {
         super(app, plugin);
-        this.containerEl.addClass('diagram-zoom-drag-settings');
+        this.containerEl.addClass('interactify-settings');
     }
 
     display(): void {
+        this.plugin.settings.emitter.on(
+            '**',
+            (payload: SettingsEventPayload) => {
+                this.plugin.emitter.emit(payload.eventName, payload);
+            }
+        );
+
         this.root = createRoot(this.containerEl);
         this.root.render(
             <SettingsRoot
@@ -25,13 +33,8 @@ export class SettingsTab extends PluginSettingTab {
         );
     }
 
-    /**
-     * Hides the settings tab.
-     *
-     * This method unmounts the React root component and clears the container element.
-     */
     hide(): void {
-        this.plugin.settings.eventBus.removeAllListeners();
+        this.plugin.settings.emitter.removeAllListeners();
 
         this.root?.unmount();
         this.containerEl.empty();

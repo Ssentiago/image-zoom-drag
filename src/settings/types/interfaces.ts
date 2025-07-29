@@ -1,6 +1,6 @@
-import { DimensionUnit } from './definitions';
+import { DimensionType } from './definitions';
 
-export interface DiagramData {
+export interface ImageConfig {
     name: string;
     selector: string;
     on: boolean;
@@ -15,7 +15,6 @@ export interface DragItem {
     offsetX: number;
     offsetY: number;
 }
-export type EdgePosition = 'top' | 'bottom' | 'left' | 'right';
 
 export interface PanelPosition {
     top?: string;
@@ -38,11 +37,11 @@ export interface PanelsConfig {
 export interface DimensionSetting {
     width: {
         value: number;
-        unit: DimensionUnit;
+        type: DimensionType;
     };
     height: {
         value: number;
-        unit: DimensionUnit;
+        type: DimensionType;
     };
 }
 
@@ -100,11 +99,28 @@ export interface Panels {
                 position: Position;
             };
         };
-        preset: 'mobile' | 'desktop' | 'presentation' | '';
+        preset: 'minimal' | 'full' | 'presentation' | 'none';
     };
 }
 
-export interface Diagrams {
+export interface Interactivity {
+    markdown: {
+        autoDetect: boolean;
+    };
+    picker: {
+        enabled: boolean;
+    };
+}
+
+interface UnitContextMenu {
+    showForDiagrams: boolean;
+    showForOtherImages: boolean;
+}
+
+export interface Units {
+    configs: ImageConfig[];
+    interactivity: Interactivity;
+    contextMenu: UnitContextMenu;
     settingsPagination: {
         perPage: number;
     };
@@ -116,7 +132,6 @@ export interface Diagrams {
         expanded: DimensionSetting;
         folded: DimensionSetting;
     };
-    supported_diagrams: DiagramData[];
 }
 
 export enum DebugLevel {
@@ -133,9 +148,8 @@ interface Debug {
 }
 
 export interface DefaultSettings {
-    version: string;
     panels: Panels;
-    diagrams: Diagrams;
+    units: Units;
     debug: Debug;
 }
 
@@ -146,19 +160,8 @@ export interface MigrationResult {
     errors?: string[];
 }
 
-export interface EventPath {
-    $path: string;
-
-    toString(): string;
-
-    valueOf(): string;
+export interface SettingsEventPayload {
+    eventName: string;
+    oldValue: any;
+    newValue: any;
 }
-
-export type EventsWrapper<T> = {
-    [K in keyof T]: T[K] extends object ? EventsWrapper<T[K]> : EventPath;
-} & {
-    $path: string;
-    $all: string;
-    $deep: string;
-    $children: string;
-};

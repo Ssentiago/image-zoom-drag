@@ -1,6 +1,6 @@
-import { EventPath } from '../types/interfaces';
+import { EventPath } from './types/interfaces';
 
-export function createEventsWrapper(obj: any, path: string[] = []) {
+export function createEventsWrapper(obj: any, path: string[] = []): any {
     return new Proxy(obj, {
         get(target: any, key: string) {
             if (key === '$path') {
@@ -15,7 +15,7 @@ export function createEventsWrapper(obj: any, path: string[] = []) {
             }
 
             if (key === '$children') {
-                return createEventsWrapper(obj, [...path, key]);
+                return `${basePath}.*`;
             }
 
             const value = target[key];
