@@ -7,7 +7,7 @@
   "name": "interactify",
   "repository": "https://github.com/Ssentiago/Interactify.git",
   "type": "module",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "scripts": {
     "dev": "NODE_ENV=development rollup -c rollup.config.ts --configPlugin esbuild -w",
     "build": "cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin esbuild",
