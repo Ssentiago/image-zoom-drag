@@ -24,7 +24,7 @@ Integrated mode is where the plugin makes images interactive directly in place w
 Changes:
 - `Toggle panel visibility` command logic changed - now toggles panel visibility for all images in the note
 - Reset zoom and position with double-click/double-tap on images
-- Added `CTRL + `` shortcut to fold/unfold images
+- Added ``CTRL + ` `` shortcut to fold/unfold images
 - Added `CTRL + ALT + F` shortcut to toggle fullscreen mode for images
 - Auto-activation of images can now be disabled (Settings → Images → General → Autodetect images)
 - Reorganized right-click context menu for images
@@ -37,7 +37,8 @@ Changes:
 - Added tip button to images (shown during first week after plugin installation)
 - Images in open notes now respond immediately to size changes in settings
 - Added option to control context menu for different image types: auto-generated (diagrams) vs all others (Settings → Images → General → Context menu)
-- 
+
+
 ### Popup Mode
 Popup mode opens images in a separate modal window.
 
