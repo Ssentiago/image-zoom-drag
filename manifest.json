@@ -1,9 +1,9 @@
 {
-    "id": "diagram-zoom-drag",
-    "name": "Interactify",
-    "version": "5.3.0",
-    "minAppVersion": "0.9.12",
-    "description": "Make any image or diagram interactive with zoom, drag, and control panels",
-    "author": "ChenPengyuan(gitcpy) & Ssentiago",
-    "isDesktopOnly": false
+  "id": "diagram-zoom-drag",
+  "name": "Interactify",
+  "version": "6.0.0",
+  "minAppVersion": "0.9.12",
+  "description": "Make any image or diagram interactive with zoom, drag, and control panels",
+  "author": "ChenPengyuan(gitcpy) & Ssentiago",
+  "isDesktopOnly": false
 }
