@@ -1,5 +1,7 @@
 # Interactify
 
+> **Note:** Previously known as "Diagram Zoom Drag". Same plugin, expanded features!
+
 Interactive image viewer for Obsidian with zoom, drag, and multiple viewing modes.
 
 ## Before/After
