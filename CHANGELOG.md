@@ -1,3 +1,8 @@
+# 6.0.1
+
+## Fixes
+- Enable tip buttons for small panels
+
 # 6.0.0
 
 ## BREAKING CHANGES
