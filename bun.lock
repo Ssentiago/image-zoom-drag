@@ -18,7 +18,7 @@
         "@babel/plugin-transform-runtime": "^7.28.0",
         "@babel/preset-typescript": "^7.27.1",
         "@emotion/babel-plugin": "^11.13.5",
-        "@obsidian-lib/dev-tools": "0.0.17",
+        "@obsidian-lib/dev-tools": "0.0.22",
         "@obsidian-lib/i18n-tools": "^0.0.13",
         "@rollup/plugin-alias": "^5.1.1",
         "@rollup/plugin-babel": "^6.0.4",
@@ -33,6 +33,7 @@
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
         "babel-plugin-styled-components": "^2.1.4",
+        "cross-env": "^10.0.0",
         "cssnano": "^7.1.0",
         "dependency-cruiser": "^17.0.0",
         "eslint": "^9.32.0",
@@ -170,6 +171,8 @@
     "@emotion/unitless": ["@emotion/unitless@0.8.1", "", {}, "sha512-KOEGMu6dmJZtpadb476IsZBclKvILjopjUii3V+7MnXIQCYh8W3NgNcgwo21n9LXZX6EDIKvqfjYxXebDwxKmQ=="],
 
     "@emotion/utils": ["@emotion/utils@1.4.2", "", {}, "sha512-3vLclRofFziIa3J2wDh9jjbkUz9qk5Vi3IZ/FSTKViB0k+ef0fPV7dYrUIugbgupYDx7v9ud/SjrtEP8Y4xLoA=="],
+
+    "@epic-web/invariant": ["@epic-web/invariant@1.0.0", "", {}, "sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.8", "", { "os": "aix", "cpu": "ppc64" }, "sha512-urAvrUedIqEiFR3FYSLTWQgLu5tb+m0qZw0NBEasUeo6wuqatkMDaRT+1uABiGXEu5vqgPd7FGE1BhsAIy9QVA=="],
 
@@ -333,7 +336,7 @@
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
-    "@obsidian-lib/dev-tools": ["@obsidian-lib/dev-tools@0.0.17", "", { "dependencies": { "@inquirer/prompts": "^7.7.1", "@types/node": "^24.1.0", "@types/semver": "^7.7.0", "chalk": "^5.4.1", "commander": "^14.0.0", "find-up-simple": "^1.0.1", "inquirer": "^12.8.2", "prettier": "^3.6.2", "ps-list": "^8.1.1", "remark": "^15.0.1", "remark-parse": "^11.0.0", "remark-stringify": "^11.0.0", "semver": "^7.7.2" }, "bin": { "obsidian-dev-tools": "dist/index.js" } }, "sha512-KwemN1ZaKIkA65Dc0gTNswC/rh5WP3E/hM4t202lLzo6dZ5NMNs0FS7UHaZvbRSxOtCmKc2yt8Xv+iG9hZVMlg=="],
+    "@obsidian-lib/dev-tools": ["@obsidian-lib/dev-tools@0.0.22", "", { "dependencies": { "@inquirer/prompts": "^7.7.1", "@trivago/prettier-plugin-sort-imports": "^5.2.2", "@types/node": "^24.1.0", "@types/semver": "^7.7.0", "chalk": "^5.4.1", "commander": "^14.0.0", "find-up-simple": "^1.0.1", "inquirer": "^12.8.2", "prettier": "^3.6.2", "ps-list": "^8.1.1", "remark": "^15.0.1", "remark-parse": "^11.0.0", "remark-stringify": "^11.0.0", "semver": "^7.7.2" }, "bin": { "obsidian-dev-tools": "dist/index.js" } }, "sha512-kCfp6E4Dn8FowplpiOH/AmEd4pjToMVMr9cRO65ND4dlrFm1xtwIiHukEu0ZLHd4qWXpDtmLb49OT6/sylrrqg=="],
 
     "@obsidian-lib/i18n-tools": ["@obsidian-lib/i18n-tools@0.0.13", "", { "dependencies": { "@inquirer/prompts": "^7.5.3", "@trivago/prettier-plugin-sort-imports": "^5.2.2", "@types/ink": "^2.0.3", "@types/node": "^24.0.4", "chalk": "^5.4.1", "cli-highlight": "^2.1.11", "commander": "^14.0.0", "find-up-simple": "^1.0.1", "glob": "^11.0.3", "ink": "^6.0.1", "inquirer": "^12.7.0", "ix": "^7.0.0", "lodash.merge": "^4.6.2", "pkgroll": "^2.14.3", "prettier": "^3.6.2", "react": "^19.1.0", "ts-morph": "^26.0.0", "tsx": "^4.20.3" }, "bin": { "i18n-tools": "dist/index.js" } }, "sha512-jAdUcqlDgA5x9QFndbGmOTNVz+hubdYPzAN2yCLAb/vdeUZ4QfnLWTm9hFmYzZRWaKlPRYYFekQwJNNYujPPwA=="],
 
@@ -792,6 +795,8 @@
     "create-require": ["create-require@1.1.1", "", {}, "sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ=="],
 
     "crelt": ["crelt@1.0.6", "", {}, "sha512-VQ2MBenTq1fWZUH9DJNGti7kKv6EeAuYr3cLwxUWhIu1baTaXh4Ib5W2CqHVqib4/MqbYGJqiL3Zb8GJZr3l4g=="],
+
+    "cross-env": ["cross-env@10.0.0", "", { "dependencies": { "@epic-web/invariant": "^1.0.0", "cross-spawn": "^7.0.6" }, "bin": { "cross-env": "dist/bin/cross-env.js", "cross-env-shell": "dist/bin/cross-env-shell.js" } }, "sha512-aU8qlEK/nHYtVuN4p7UQgAwVljzMg8hB4YK5ThRqD2l/ziSnryncPNn7bMLt5cFYsKVKBh8HqLqyCoTupEUu7Q=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
