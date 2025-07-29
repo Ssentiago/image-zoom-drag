@@ -67,9 +67,14 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
             return;
         }
 
+        const specialPanels = [
+            'interactify-fold-panel',
+            'interactify-tip-panel',
+        ];
+
         if (
             !this.controlPanel.canRender &&
-            !('fold' in this && 'unfold' in this)
+            !specialPanels.includes(this.cssClass)
         ) {
             return;
         }
