@@ -1,3 +1,10 @@
+# 6.1.0
+- Rebranded to Image Zoom & Drag
+
+## Features
+- Added `Open help guide` command to the command palette
+- Add ability to change help guide mode
+
 # 6.0.1
 
 ## Fixes
