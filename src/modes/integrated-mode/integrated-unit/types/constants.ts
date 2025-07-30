@@ -1,5 +1,5 @@
 export enum ImageConfigs {
-    Default = '.interactify',
+    Default = '.izd-default',
     IMG_SVG = 'img,svg',
     Mermaid = '.mermaid',
     Mehrmaid = '.block-language-mehrmaid',

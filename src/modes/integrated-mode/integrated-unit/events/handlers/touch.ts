@@ -43,7 +43,7 @@ export class Touch extends Component implements Handler {
         const target = e.target as HTMLElement;
 
         // we got touch to a button panel - returning
-        if (target.closest('.interactify-panel')) {
+        if (target.closest('.izd-panel')) {
             return;
         }
         e.preventDefault();
@@ -136,7 +136,7 @@ export class Touch extends Component implements Handler {
         const target = e.target as HTMLElement;
 
         // we got touch to a button panel - returning
-        if (target.closest('.interactify-panel')) {
+        if (target.closest('.izd-panel')) {
             return;
         }
 

@@ -19,7 +19,7 @@ const About: FC = () => {
                     }
                     onClick={() => {
                         window.open(
-                            'https://github.com/Ssentiago/interactify/',
+                            'https://github.com/Ssentiago/image-zoom-drag/',
                             '_blank'
                         );
                     }}
@@ -36,12 +36,12 @@ const About: FC = () => {
             </OSetting>
 
             <FooterContent>
-                <Slogan>Make Obsidian images and diagrams Interactify!</Slogan>
+                <Slogan>Make Obsidian images and diagrams interactive!</Slogan>
                 <Info>
                     {plugin.manifest.version}
                     <span>•</span>
                     <a
-                        href='https://github.com/Ssentiago/interactify/blob/main/LICENSE'
+                        href='https://github.com/Ssentiago/image-zoom-drag/blob/main/LICENSE'
                         target='_blank'
                     >
                         Apache-2.0

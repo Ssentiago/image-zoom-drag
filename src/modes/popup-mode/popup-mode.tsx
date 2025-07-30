@@ -1,4 +1,4 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 import PopupRoot from '@/modes/popup-mode/ui/PopupRoot';
 import { isThisSvgIcon } from '@/utils/dom-utils';
 
@@ -9,7 +9,7 @@ export default class PopupMode extends Component {
     popupDiv: HTMLDivElement | null = null;
     popupRoot: Root | null = null;
 
-    constructor(readonly plugin: InteractifyPlugin) {
+    constructor(readonly plugin: IzdPlugin) {
         super();
     }
 
@@ -27,9 +27,7 @@ export default class PopupMode extends Component {
     }
 
     addPopupButton(view: MarkdownView): void {
-        const hasButton = view.actionsEl.querySelector(
-            '.interactify-popup-button'
-        );
+        const hasButton = view.actionsEl.querySelector('.izd-popup-button');
 
         if (hasButton) {
             return;
@@ -41,7 +39,7 @@ export default class PopupMode extends Component {
             this.showPopupForViewImages.bind(this)
         );
 
-        button.addClass('interactify-popup-button');
+        button.addClass('izd-popup-button');
 
         this.register(() => {
             button.remove();

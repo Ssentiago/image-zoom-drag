@@ -1,4 +1,4 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 
 import { Component, MarkdownView } from 'obsidian';
 
@@ -11,7 +11,7 @@ export default class LeafIndex extends Component {
     data: Map<string, LeafIndexData> = new Map();
     activeLeafContext: LeafContext | undefined;
 
-    constructor(readonly plugin: InteractifyPlugin) {
+    constructor(readonly plugin: IzdPlugin) {
         super();
         this.load();
         this.setupObsidianEventHandlers();

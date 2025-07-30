@@ -1,4 +1,4 @@
-import { TriggerType } from '@/modes/integrated-mode/interactify-unit/types/constants';
+import { TriggerType } from '@/modes/integrated-mode/integrated-unit/types/constants';
 
 import { Component } from 'obsidian';
 

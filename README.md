@@ -1,4 +1,4 @@
-# Interactify
+# Image Zoom & Drag
 
 > **Note:** Previously known as "Diagram Zoom Drag". Same plugin, expanded features!
 
@@ -22,12 +22,12 @@ Interactive image viewer for Obsidian with zoom, drag, and multiple viewing mode
 ## Installation
 
 **Community Plugins:**
-Settings → Community plugins → Browse → "Interactify" → Install
+Settings → Community plugins → Browse → "Image Zoom & Drag" → Install
 
 **Manual installation:**
-1. Download the latest release from [releases page](https://github.com/Ssentiago/interactify/releases)
-2. Extract to `VaultFolder/.obsidian/plugins/interactify/`
-3. Settings → Community plugins → Enable "Interactify"
+1. Download the latest release from [releases page](https://github.com/Ssentiago/image-zoom-drag/releases)
+2. Extract to `VaultFolder/.obsidian/plugins/image-zoom-drag/`
+3. Settings → Community plugins → Enable "Image Zoom & Drag"
 
 ## Quick Start
 
@@ -37,8 +37,8 @@ After installation, images in your notes will automatically become interactive. 
 
 **Quick setup:**
 ```bash
-git clone https://github.com/Ssentiago/interactify.git
-cd interactify
+git clone https://github.com/Ssentiago/image-zoom-drag.git
+cd image-zoom-drag
 bun install
 bun run dev  # Start development mode
 ```

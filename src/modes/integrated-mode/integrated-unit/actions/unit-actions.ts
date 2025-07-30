@@ -1,8 +1,8 @@
-import InteractifyUnit from '../interactify-unit';
+import IntegratedUnit from '../integrated-unit';
 import { UnitActionOptions } from './types/interfaces';
 
 export class UnitActions {
-    constructor(public unit: InteractifyUnit) {}
+    constructor(public unit: IntegratedUnit) {}
 
     moveElement(dx: number, dy: number, options?: UnitActionOptions): void {
         const content = this.unit.context.content;

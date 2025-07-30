@@ -1,5 +1,5 @@
 import { t, tf } from '@/lang';
-import { ImageConfigs } from '@/modes/integrated-mode/interactify-unit/types/constants';
+import { ImageConfigs } from '@/modes/integrated-mode/integrated-unit/types/constants';
 
 import React, { FC, useState } from 'react';
 

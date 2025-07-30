@@ -1,19 +1,19 @@
 import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
-import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
-import InteractifyUnitFactory from '@/modes/integrated-mode/interactify-unit/interactify-unit-factory';
+import IntegratedUnit from '@/modes/integrated-mode/integrated-unit/integrated-unit';
+import IntegratedUnitFactory from '@/modes/integrated-mode/integrated-unit/integrated-unit-factory';
 import {
     InteractiveInitialization,
     ImageConfigs,
-} from '@/modes/integrated-mode/interactify-unit/types/constants';
+} from '@/modes/integrated-mode/integrated-unit/types/constants';
 import {
     UnitContext,
     UnitSize,
     FileStats,
-} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+} from '@/modes/integrated-mode/integrated-unit/types/interfaces';
 
-import InteractifyPlugin from '../../../core/interactify-plugin';
+import IzdPlugin from '../../../core/izd-plugin';
 import { ImageConfig } from '../../../settings/types/interfaces';
-import { InteractifyAdapters } from './types/constants';
+import { IntegratedAdapters } from './types/constants';
 import { HTMLElementWithCMView } from './types/interfaces';
 
 export default abstract class BaseAdapter {
@@ -69,14 +69,14 @@ export default abstract class BaseAdapter {
         let status = true;
 
         if (
-            context.adapter === InteractifyAdapters.LivePreview &&
+            context.adapter === IntegratedAdapters.LivePreview &&
             (context.element as HTMLElementWithCMView).cmView
         ) {
             status = false;
         } else if (
             [
-                InteractifyAdapters.Preview,
-                InteractifyAdapters.PickerMode,
+                IntegratedAdapters.Preview,
+                IntegratedAdapters.PickerMode,
             ].includes(context.adapter!)
         ) {
             status = true;
@@ -115,7 +115,7 @@ export default abstract class BaseAdapter {
     }
 
     protected async createUnit(context: UnitContext): Promise<void> {
-        const unit = await InteractifyUnitFactory.createUnit(
+        const unit = await IntegratedUnitFactory.createUnit(
             this.integratedMode.plugin,
             context,
             this.fileStat
@@ -123,7 +123,7 @@ export default abstract class BaseAdapter {
         this.emitCreated(unit);
     }
 
-    protected emitCreated(unit: InteractifyUnit): void {
+    protected emitCreated(unit: IntegratedUnit): void {
         this.integratedMode.plugin.emitter.emit('unit.created', unit);
     }
 
@@ -147,8 +147,8 @@ export default abstract class BaseAdapter {
         const container = document.createElement('div');
         const content = document.createElement('div');
 
-        container.addClass('interactify-container');
-        content.addClass('interactify-content');
+        container.addClass('izd-container');
+        content.addClass('izd-content');
 
         const el = context.element!;
         const originalParent = el.parentElement as HTMLElement;
@@ -158,10 +158,7 @@ export default abstract class BaseAdapter {
             ? 'preview'
             : 'live-preview';
 
-        container.setAttribute(
-            'data-interactify-rendering-mode',
-            `${renderingMode}`
-        );
+        container.setAttribute('data-izd-rendering-mode', `${renderingMode}`);
         container.setAttribute(
             'data-folded',
             this.integratedMode.plugin.settings.$.units.folding.foldByDefault.toString()
@@ -189,7 +186,7 @@ export default abstract class BaseAdapter {
     }
 
     async unitProcessing(
-        adapter: InteractifyAdapters,
+        adapter: IntegratedAdapters,
         context: Partial<UnitContext>
     ): Promise<void> {
         context.adapter = adapter;

@@ -1,4 +1,4 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 import { ShortSystemInfo, SystemInfo } from '@/core/services/types/interfaces';
 
 import { moment, normalizePath, Platform } from 'obsidian';
@@ -9,7 +9,7 @@ export default class Logger {
     private isStorageAvailable = true;
     logsDir!: string;
 
-    constructor(public plugin: InteractifyPlugin) {
+    constructor(public plugin: IzdPlugin) {
         this.storageKey = `${plugin.manifest.id}-logs`;
         this.checkStorageAvailability();
     }
@@ -43,7 +43,7 @@ export default class Logger {
 
             await this.rotateLogFiles(this.logsDir);
         } catch (error) {
-            console.error('Interactify: Error in the file:', error);
+            console.error('Image Zoom & Drag: Error in the file:', error);
         }
     }
 
@@ -51,7 +51,7 @@ export default class Logger {
         const pluginDir = this.plugin.manifest.dir;
         if (pluginDir === undefined) {
             throw new Error(
-                `Interactify: It was not possible to get the way to the plugin. Path:${pluginDir}`
+                `Image Zoom & Drag: It was not possible to get the way to the plugin. Path:${pluginDir}`
             );
         }
         this.logsDir = normalizePath(`${pluginDir}/logs`);
@@ -82,11 +82,13 @@ export default class Logger {
 
                 if (stat && now - stat.mtime > maxAge) {
                     await this.plugin.app.vault.adapter.remove(filePath);
-                    console.log(`Interactify: Remove the old log-file${file}`);
+                    console.log(
+                        `Image Zoom & Drag: Remove the old log-file${file}`
+                    );
                 }
             }
         } catch (error) {
-            console.error('Interactify: Log Rotation Error:', error);
+            console.error('Image Zoom & Drag: Log Rotation Error:', error);
         }
     }
 
@@ -233,7 +235,7 @@ export default class Logger {
             localStorage.removeItem('test');
         } catch {
             this.isStorageAvailable = false;
-            console.warn('Interactify: Localstorage is not available');
+            console.warn('Image Zoom & Drag: Localstorage is not available');
         }
     }
 

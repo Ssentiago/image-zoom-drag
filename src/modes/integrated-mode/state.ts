@@ -1,5 +1,5 @@
-import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
-import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
+import { IntegratedAdapters } from '@/modes/integrated-mode/adapters/types/constants';
+import IntegratedUnit from '@/modes/integrated-mode/integrated-unit/integrated-unit';
 import {
     StateData,
     StateOrphanData,
@@ -83,11 +83,11 @@ export default class State {
         return !!this.getResizeObserver(leafID);
     }
 
-    getUnits(leafID: LeafID): InteractifyUnit[] {
+    getUnits(leafID: LeafID): IntegratedUnit[] {
         return this.data.get(leafID)?.units ?? [];
     }
 
-    pushUnit(leafID: LeafID, unit: InteractifyUnit): void {
+    pushUnit(leafID: LeafID, unit: IntegratedUnit): void {
         const data = this.data.get(leafID);
         if (!data) {
             this.integratedMode.plugin.logger.error(
@@ -98,7 +98,7 @@ export default class State {
         data.units.push(unit);
     }
 
-    pushOrphanUnit(unit: InteractifyUnit): void {
+    pushOrphanUnit(unit: IntegratedUnit): void {
         this.orphans.units.push(unit);
     }
 
@@ -125,7 +125,7 @@ export default class State {
         const unitsToKeep = [];
         for (const unit of data.units) {
             if (
-                unit.context.adapter === InteractifyAdapters.PickerMode ||
+                unit.context.adapter === IntegratedAdapters.PickerMode ||
                 currentFileCtime !== unit.fileStats.ctime
             ) {
                 await unit.onDelete();

@@ -1,6 +1,6 @@
 import { Component } from 'obsidian';
 
-import InteractifyUnit from '../interactify-unit';
+import IntegratedUnit from '../integrated-unit';
 import { ContextMenu } from './handlers/context-menu/context-menu';
 import { Focus } from './handlers/focus';
 import { Keyboard } from './handlers/keyboard';
@@ -14,7 +14,7 @@ export default class Events extends Component {
     private readonly focus: Focus;
     private readonly contextMenu: ContextMenu;
 
-    constructor(public unit: InteractifyUnit) {
+    constructor(public unit: IntegratedUnit) {
         super();
 
         this.mouse = new Mouse(this);

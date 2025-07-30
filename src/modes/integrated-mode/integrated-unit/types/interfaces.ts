@@ -1,5 +1,5 @@
 import { BaseUnitContext } from '@/core/services/types/interfaces';
-import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
+import { IntegratedAdapters } from '@/modes/integrated-mode/adapters/types/constants';
 import { HTMLElementWithCMView } from '@/modes/integrated-mode/adapters/types/interfaces';
 
 import { MarkdownPostProcessorContext } from 'obsidian';
@@ -23,7 +23,7 @@ export interface PreviewContextData {
 }
 
 export interface UnitContext extends BaseUnitContext {
-    adapter: InteractifyAdapters;
+    adapter: IntegratedAdapters;
     size: UnitSize;
     layout: 'wide' | 'tall' | 'proportional';
     originalParent: HTMLElement;

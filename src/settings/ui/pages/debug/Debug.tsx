@@ -41,7 +41,7 @@ const Debug: FC = () => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'interactify-logs.txt';
+        link.download = 'izd-logs.txt';
         link.click();
         URL.revokeObjectURL(url);
     }, [plugin.logger]);
@@ -74,7 +74,7 @@ const Debug: FC = () => {
                 `${systemInfo}\n\n`
         );
         const githubUrl =
-            `https://github.com/Ssentiago/interactify/issues/new?` +
+            `https://github.com/Ssentiago/image-zoom-drag/issues/new?` +
             `title=${encodeURIComponent('[Bug Report] ')}&` +
             `labels=bug&` +
             `body=${issueBody}`;

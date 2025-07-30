@@ -2,13 +2,13 @@ import React from 'react';
 
 import { App } from 'obsidian';
 
-import InteractifyPlugin from '../../core/interactify-plugin';
+import IzdPlugin from '../../core/izd-plugin';
 import { SettingProvider } from './core/SettingsContext';
 import SettingsPage from './settings-page/SettingsPage';
 
 const SettingsRoot: React.FC<{
     app: App;
-    plugin: InteractifyPlugin;
+    plugin: IzdPlugin;
 }> = ({ app, plugin }) => (
     <SettingProvider
         app={app}

@@ -28,7 +28,7 @@ export class ServicePanel extends BasePanel<ServiceButtons> {
     }
 
     get cssClass() {
-        return 'interactify-service-panel';
+        return 'izd-service-panel';
     }
 
     get cssStyles() {

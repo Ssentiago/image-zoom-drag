@@ -14,7 +14,7 @@ export const useUserGuideVideo = () => {
     const downloadVideo = async (videoPath: string): Promise<boolean> => {
         try {
             const url =
-                'https://raw.githubusercontent.com/Ssentiago/interactify/main/assets/videos/find-class.mp4';
+                'https://raw.githubusercontent.com/Ssentiago/image-zoom-drag/main/assets/videos/find-class.mp4';
             const response = await requestUrl(url);
 
             if (response.status !== 200) {

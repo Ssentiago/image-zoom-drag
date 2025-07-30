@@ -21,7 +21,7 @@ export class ZoomPanel extends BasePanel<ZoomButtons> {
     }
 
     get cssClass() {
-        return 'interactify-zoom-panel';
+        return 'izd-zoom-panel';
     }
 
     get cssStyles() {

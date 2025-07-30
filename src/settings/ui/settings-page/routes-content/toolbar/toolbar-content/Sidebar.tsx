@@ -35,11 +35,9 @@ const Sidebar: FC = () => {
     const navigate = (path: string) => setLocation(path);
 
     useEffect(() => {
-        const interactifySettings = document.querySelector(
-            '.interactify-settings'
-        );
-        if (interactifySettings) {
-            interactifySettings.classList.toggle('sidebar-open', isSidebarOpen);
+        const izdSettings = document.querySelector('.izd-settings');
+        if (izdSettings) {
+            izdSettings.classList.toggle('sidebar-open', isSidebarOpen);
         }
     }, [isSidebarOpen]);
 

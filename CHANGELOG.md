@@ -13,7 +13,7 @@
 
 The plugin now supports any SVG and IMG images, not just pre-configured diagram presets.
 
-To enable: Interactify settings → Images → Presets → Enable the IMG_SVG preset
+To enable: Image Zoom & Drag settings → Images → Presets → Enable the IMG_SVG preset
 
 ### Three Working Modes
 

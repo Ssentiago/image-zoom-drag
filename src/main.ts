@@ -1,3 +1,3 @@
-import InteractifyPlugin from './core/interactify-plugin';
+import IzdPlugin from './core/izd-plugin';
 
-export default InteractifyPlugin;
+export default IzdPlugin;

@@ -1,9 +1,9 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 import { t } from '@/lang';
 import {
     InteractiveInitialization,
     InteractiveMode,
-} from '@/modes/integrated-mode/interactify-unit/types/constants';
+} from '@/modes/integrated-mode/integrated-unit/types/constants';
 import { SettingsEventPayload } from '@/settings/types/interfaces';
 import { isInsideMarkdownDOM, isThisSvgIcon } from '@/utils/dom-utils';
 
@@ -15,7 +15,7 @@ export default class PickerMode extends Component {
     private currentElement: null | Element = null;
     private ribbonButton!: HTMLElement;
 
-    constructor(private readonly plugin: InteractifyPlugin) {
+    constructor(private readonly plugin: IzdPlugin) {
         super();
     }
 
@@ -206,7 +206,7 @@ export default class PickerMode extends Component {
         const target = e.target as Element;
         const element =
             target.closest('.cm-preview-code-block') ||
-            target.closest('svg,img,.interactify-container');
+            target.closest('svg,img,.izd-container');
 
         if (!element) return;
 
@@ -226,7 +226,7 @@ export default class PickerMode extends Component {
         const target = e.target as Element;
         const element =
             target.closest('.cm-preview-code-block') ||
-            target.closest('svg,img,.interactify-container');
+            target.closest('svg,img,.izd-container');
 
         if (element === this.currentElement) {
             this.hideTooltip();
@@ -247,7 +247,7 @@ export default class PickerMode extends Component {
 
         let element =
             event.target.closest('.cm-preview-code-block') ||
-            event.target.closest('svg,img,.interactify-container');
+            event.target.closest('svg,img,.izd-container');
         if (!element) {
             this.deactivate();
             return;

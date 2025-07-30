@@ -4,7 +4,7 @@ import { deepMerge } from '@/utils/object-utils';
 import EventEmitter2 from 'eventemitter2';
 import { Component, normalizePath } from 'obsidian';
 
-import InteractifyPlugin from '../core/interactify-plugin';
+import IzdPlugin from '../core/izd-plugin';
 import { createEventsWrapper } from './proxy/events-wrapper';
 import { createSettingsProxy } from './proxy/settings-proxy';
 import { EventsWrapper } from './proxy/types/definitions';
@@ -21,7 +21,7 @@ export default class Settings extends Component {
     private saveTimeout?: NodeJS.Timeout | undefined;
     private saveResolve?: (() => void) | undefined;
 
-    constructor(public readonly plugin: InteractifyPlugin) {
+    constructor(public readonly plugin: IzdPlugin) {
         super();
         this.emitter = new EventEmitter2({
             wildcard: true,
@@ -77,7 +77,7 @@ export default class Settings extends Component {
         const pluginPath = this.plugin.manifest.dir;
 
         if (!pluginPath) {
-            throw new Error('Interactify: `No plugin dir found`');
+            throw new Error('Image Zoom & Drag: `No plugin dir found`');
         }
 
         const configPath = normalizePath(`${pluginPath}/data.json`);

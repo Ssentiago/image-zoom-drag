@@ -1,11 +1,11 @@
-import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
+import IntegratedUnit from '@/modes/integrated-mode/integrated-unit/integrated-unit';
 
 export interface StateData {
-    units: InteractifyUnit[];
+    units: IntegratedUnit[];
     resizeObserver: ResizeObserver | undefined;
     nativeTouchEventsEnabled: boolean;
 }
 
 export interface StateOrphanData {
-    units: InteractifyUnit[];
+    units: IntegratedUnit[];
 }

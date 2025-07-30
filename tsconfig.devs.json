@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "outDir": "test-vault/.obsidian/plugins/Interactify/",
+        "outDir": "test-vault/.obsidian/plugins/image-zoom-drag/",
         "esModuleInterop": true,
         "removeComments": false,
         "incremental": true,

@@ -1,4 +1,4 @@
-import { ImageConfigs } from '@/modes/integrated-mode/interactify-unit/types/constants';
+import { ImageConfigs } from '@/modes/integrated-mode/integrated-unit/types/constants';
 import {
     DebugLevel,
     DefaultSettings,

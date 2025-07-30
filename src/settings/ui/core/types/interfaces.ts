@@ -2,13 +2,13 @@ import React from 'react';
 
 import { App } from 'obsidian';
 
-import InteractifyPlugin from '../../../../core/interactify-plugin';
+import IzdPlugin from '../../../../core/izd-plugin';
 import { UndoRedoApi } from '../../hooks/types/interfaces';
 
 export interface UndoRedoContextProps<T> extends UndoRedoApi<T> {}
 
 export interface SettingsContextProps {
-    plugin: InteractifyPlugin;
+    plugin: IzdPlugin;
     app: App;
     forceReload: () => void;
     reloadCount: number;
@@ -18,6 +18,6 @@ export interface SettingsContextProps {
 
 export interface SettingProviderProps {
     app: App;
-    plugin: InteractifyPlugin;
+    plugin: IzdPlugin;
     children: React.ReactNode;
 }

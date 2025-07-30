@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "8b702fd10bcb057b",
+        "id": "9d1277c29f3eea01",
         "type": "tabs",
         "children": [
           {
-            "id": "59fb61fc6cdff7bb",
+            "id": "ccb9479fd1d7b63e",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -156,7 +156,6 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "diagram-zoom-drag:Picker mode": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -165,20 +164,20 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "59fb61fc6cdff7bb",
+  "active": "ccb9479fd1d7b63e",
   "lastOpenFiles": [
-    "two embed local images.md",
-    "some mermaids.md",
-    "screenshot test.md",
+    "very huge mermaid.md",
     "one mermaid.md",
-    "one embed internal image.md",
+    "two embed local images.md",
+    "screenshot test.md",
     "Pasted image 20250630225538.png",
+    "some mermaids.md",
+    "one embed internal image.md",
     "Pasted image 20250616233435.png",
     "simple mermaid.md",
     "latex.md",
     "two simple mermaid and one huge.md",
     "three simple mermaids.md",
-    "mehrmaid.md",
-    "very huge mermaid.md"
+    "mehrmaid.md"
   ]
 }

@@ -102,7 +102,7 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
     return (
         <OModal
             onClose={onClose}
-            title={'Interactify Help'}
+            title={'Image Zoom & Drag Help'}
             height={'100%'}
             width={'100%'}
         >
@@ -117,8 +117,8 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
                         to interact with)
                     </p>
                     <p>
-                        You can enable picker mode at: Settings → Interactify
-                        Settings → Images → General →{' '}
+                        You can enable picker mode at: Settings → Image Zoom &
+                        Drag Settings → Images → General →{' '}
                         <kbd>Enable Picker Mode</kbd>
                     </p>
                     <p>
@@ -208,8 +208,8 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
                                 </p>
                                 <p>
                                     To enable for regular images: Obsidian
-                                    Settings → Plugins → Interactify Settings →
-                                    Images → Presets.
+                                    Settings → Plugins → Image Zoom & Drag
+                                    Settings → Images → Presets → IMG_SVG.
                                 </p>
                                 <p>
                                     Enable the "IMG_SVG" preset to make all

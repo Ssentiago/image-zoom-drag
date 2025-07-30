@@ -67,10 +67,7 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
             return;
         }
 
-        const specialPanels = [
-            'interactify-fold-panel',
-            'interactify-tip-panel',
-        ];
+        const specialPanels = ['izd-fold-panel', 'izd-tip-panel'];
 
         if (
             !this.controlPanel.canRender &&
@@ -89,7 +86,7 @@ export abstract class BasePanel<TButtonKey extends string> extends Component {
         const controlPanel = this.controlPanel.controlPanel;
         const panel = controlPanel.createEl('div');
         panel.addClass(this.cssClass);
-        panel.addClass('interactify-panel');
+        panel.addClass('izd-panel');
         panel.addClass('visible');
         panel.setCssStyles(this.cssStyles);
         return panel;

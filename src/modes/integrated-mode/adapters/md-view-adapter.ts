@@ -3,10 +3,10 @@ import IntegratedMode from '@/modes/integrated-mode/integrated-mode';
 import {
     FileStats,
     UnitContext,
-} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+} from '@/modes/integrated-mode/integrated-unit/types/interfaces';
 
 import BaseAdapter from './base-adapter';
-import { InteractifyAdapters } from './types/constants';
+import { IntegratedAdapters } from './types/constants';
 
 export class MdViewAdapter extends BaseAdapter {
     constructor(
@@ -29,8 +29,8 @@ export class MdViewAdapter extends BaseAdapter {
 
         const adapter =
             elementCtx.mode === 'live-preview'
-                ? InteractifyAdapters.LivePreview
-                : InteractifyAdapters.Preview;
+                ? IntegratedAdapters.LivePreview
+                : IntegratedAdapters.Preview;
 
         await this.unitProcessing(adapter, unitCtx);
     };

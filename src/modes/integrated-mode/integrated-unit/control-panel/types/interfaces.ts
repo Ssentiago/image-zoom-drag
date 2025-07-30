@@ -1,8 +1,8 @@
-import InteractifyUnit from '../../interactify-unit';
+import IntegratedUnit from '../../integrated-unit';
 import { TriggerType } from '../../types/constants';
 
 export interface IControlPanel {
-    unit: InteractifyUnit;
+    unit: IntegratedUnit;
     controlPanel: HTMLElement;
     canRender: boolean;
     initialize: () => void;

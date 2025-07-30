@@ -1,7 +1,7 @@
-import { BasePanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/base-panel';
-import { TipButtons } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/types/constants';
-import { ButtonsData } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/types/interfaces';
-import { IControlPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/types/interfaces';
+import { BasePanel } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/base-panel';
+import { TipButtons } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/types/constants';
+import { ButtonsData } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/types/interfaces';
+import { IControlPanel } from '@/modes/integrated-mode/integrated-unit/control-panel/types/interfaces';
 
 export default class TipPanel extends BasePanel<TipButtons> {
     buttons = new Map<TipButtons, ButtonsData>();
@@ -14,7 +14,7 @@ export default class TipPanel extends BasePanel<TipButtons> {
         return true;
     }
     protected get cssClass(): string {
-        return 'interactify-tip-panel';
+        return 'izd-tip-panel';
     }
 
     protected get cssStyles(): object {

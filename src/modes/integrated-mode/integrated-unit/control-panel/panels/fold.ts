@@ -35,7 +35,7 @@ export class FoldPanel extends BasePanel<FoldButtons> {
     }
 
     get cssClass() {
-        return 'interactify-fold-panel';
+        return 'izd-fold-panel';
     }
 
     getButtonsConfig(): {

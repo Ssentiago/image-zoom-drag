@@ -1,13 +1,13 @@
 import { Component, debounce } from 'obsidian';
 
-import InteractifyPlugin from '../../../core/interactify-plugin';
+import IzdPlugin from '../../../core/izd-plugin';
 import { UnitActions } from './actions/unit-actions';
 import { ControlPanel } from './control-panel/control-panel';
 import Events from './events/events';
-import InteractifyUnitStateManager from './interactify-unit-state-manager';
+import IntegratedUnitStateManager from './integrated-unit-state-manager';
 import { FileStats, UnitContext } from './types/interfaces';
 
-export default class InteractifyUnit extends Component {
+export default class IntegratedUnit extends Component {
     id!: string;
     dx = 0;
     dy = 0;
@@ -19,21 +19,17 @@ export default class InteractifyUnit extends Component {
     actions!: UnitActions;
     controlPanel!: ControlPanel;
     events!: Events;
-    interactiveStateManager!: InteractifyUnitStateManager;
-    plugin!: InteractifyPlugin;
+    interactiveStateManager!: IntegratedUnitStateManager;
+    plugin!: IzdPlugin;
 
-    constructor(
-        plugin: InteractifyPlugin,
-        context: UnitContext,
-        fileStats: FileStats
-    ) {
+    constructor(plugin: IzdPlugin, context: UnitContext, fileStats: FileStats) {
         super();
         this.id = crypto.randomUUID();
 
         this.plugin = plugin;
         this.context = context;
         this.fileStats = fileStats;
-        this.interactiveStateManager = new InteractifyUnitStateManager(this);
+        this.interactiveStateManager = new IntegratedUnitStateManager(this);
 
         this.actions = new UnitActions(this);
         this.controlPanel = new ControlPanel(this);

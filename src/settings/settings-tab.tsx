@@ -1,7 +1,7 @@
 import { App, PluginSettingTab } from 'obsidian';
 import { createRoot, Root } from 'react-dom/client';
 
-import InteractifyPlugin from '../core/interactify-plugin';
+import IzdPlugin from '../core/izd-plugin';
 import { SettingsEventPayload } from './types/interfaces';
 import SettingsRoot from './ui/SettingsRoot';
 
@@ -10,10 +10,10 @@ export class SettingsTab extends PluginSettingTab {
 
     constructor(
         public app: App,
-        public plugin: InteractifyPlugin
+        public plugin: IzdPlugin
     ) {
         super(app, plugin);
-        this.containerEl.addClass('interactify-settings');
+        this.containerEl.addClass('izd-settings');
     }
 
     display(): void {

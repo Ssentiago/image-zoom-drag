@@ -21,7 +21,7 @@ export class MovePanel extends BasePanel<MoveButtons> {
     }
 
     get cssClass() {
-        return 'interactify-move-panel';
+        return 'izd-move-panel';
     }
 
     get cssStyles() {

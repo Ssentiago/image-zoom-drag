@@ -1,12 +1,12 @@
-import { InteractifyAdapters } from '@/modes/integrated-mode/adapters/types/constants';
+import { IntegratedAdapters } from '@/modes/integrated-mode/adapters/types/constants';
 
 import { Component } from 'obsidian';
 
-import InteractifyUnit from './interactify-unit';
+import IntegratedUnit from './integrated-unit';
 import { InteractiveMode } from './types/constants';
 
-export default class InteractifyUnitStateManager extends Component {
-    constructor(private readonly unit: InteractifyUnit) {
+export default class IntegratedUnitStateManager extends Component {
+    constructor(private readonly unit: IntegratedUnit) {
         super();
         this.load();
     }
@@ -20,7 +20,7 @@ export default class InteractifyUnitStateManager extends Component {
     }
 
     private async scheduleActivationIfNeeded(): Promise<void> {
-        if (this.unit.context.adapter === InteractifyAdapters.PickerMode) {
+        if (this.unit.context.adapter === IntegratedAdapters.PickerMode) {
             await this.activate();
             return;
         }
@@ -135,7 +135,7 @@ export default class InteractifyUnitStateManager extends Component {
             originalParent.className = '';
         }
 
-        this.unit.context.adapter === InteractifyAdapters.LivePreview &&
+        this.unit.context.adapter === IntegratedAdapters.LivePreview &&
             this.unit.context.livePreviewWidget?.addClass(
                 'live-preview-parent'
             );
@@ -147,7 +147,7 @@ export default class InteractifyUnitStateManager extends Component {
                     if (!(e.target instanceof Element)) return;
 
                     if (
-                        e.target.closest('.interactify-control-panel') ||
+                        e.target.closest('.izd-control-panel') ||
                         !this.unit.context.container.contains(e.target)
                     )
                         return;
@@ -183,10 +183,10 @@ export default class InteractifyUnitStateManager extends Component {
 
         if (this.unit.context.element instanceof SVGElement) {
             originalParent.className = content.className;
-            originalParent.removeClass('interactify-content');
+            originalParent.removeClass('izd-content');
         }
 
-        if (this.unit.context.adapter === InteractifyAdapters.LivePreview) {
+        if (this.unit.context.adapter === IntegratedAdapters.LivePreview) {
             const lPreviewWidget = this.unit.context.livePreviewWidget;
             lPreviewWidget?.removeClass('live-preview-parent');
             lPreviewWidget?.style?.removeProperty('height');

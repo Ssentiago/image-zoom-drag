@@ -14,7 +14,7 @@ import { Notice, Plugin } from 'obsidian';
 import Help from './services/help/help';
 import Logger from './services/logger/logger';
 
-export default class InteractifyPlugin extends Plugin {
+export default class IzdPlugin extends Plugin {
     noticeEl?: HTMLElement;
 
     settings!: Settings;

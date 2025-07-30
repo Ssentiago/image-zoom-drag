@@ -1,4 +1,4 @@
-import { SourceData } from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+import { SourceData } from '@/modes/integrated-mode/integrated-unit/types/interfaces';
 
 import { View } from 'obsidian';
 

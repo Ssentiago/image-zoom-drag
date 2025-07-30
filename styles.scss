@@ -1,4 +1,4 @@
-.interactify-settings {
+.izd-settings {
     padding-right: 5px;
     padding-left: 5px;
     padding-top: 10px;
@@ -43,18 +43,18 @@
     }
 }
 
-.interactify-container {
+.izd-container {
     transition: all 0.3s ease !important;
     position: relative !important;
     overflow: hidden !important;
     cursor: grab !important;
     user-select: none !important;
 
-    &[data-interactify-rendering-mode='preview'] {
+    &[data-izd-rendering-mode='preview'] {
         margin-bottom: 40px !important;
     }
 
-    &[data-interactify-rendering-mode='live-preview'] {
+    &[data-izd-rendering-mode='live-preview'] {
         margin-top: 28px;
     }
 
@@ -63,7 +63,7 @@
     }
 }
 
-.interactify-content {
+.izd-content {
     position: relative !important;
     transform-origin: center !important;
     cursor: grab !important;
@@ -78,7 +78,7 @@
     }
 }
 
-.interactify-panel {
+.izd-panel {
     position: absolute;
     display: grid;
     gap: 5px;
@@ -151,7 +151,7 @@
     .interactive-candidate:not([data-interactive-mode='interactive']):not(
             .cm-preview-code-block .interactive-candidate
         ),
-    .interactify-container:not(.live-preview-parent .interactify-container),
+    .izd-container:not(.live-preview-parent .izd-container),
     .live-preview-parent:not(.cm-preview-code-block .live-preview-parent),
     .cm-preview-code-block {
         outline: 2px dashed var(--interactive-accent) !important;

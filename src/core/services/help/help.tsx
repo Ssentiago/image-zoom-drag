@@ -1,4 +1,4 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 import HelpRoot from '@/core/services/help/ui/HelpRoot';
 
 import { Component } from 'obsidian';
@@ -9,12 +9,12 @@ export default class Help extends Component {
     root: Root | null = null;
     isHelpOpen = false;
 
-    constructor(readonly plugin: InteractifyPlugin) {
+    constructor(readonly plugin: IzdPlugin) {
         super();
 
         if (this.plugin.userState.isFirstLaunch) {
             this.plugin.showInteractiveNotice(
-                'New to Interactify? Click here for quick start guide (auto-hide in 1 min)',
+                'New to Image Zoom & Drag? Click here for quick start guide (auto-hide in 1 min)',
                 () => {
                     this.showModal('full');
                 },

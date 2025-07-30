@@ -1,9 +1,9 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 import { BaseUnitContext } from '@/core/services/types/interfaces';
 import { t } from '@/lang';
 import { IntegratedModeContext } from '@/modes/integrated-mode/integrated-mode-context';
-import InteractifyUnit from '@/modes/integrated-mode/interactify-unit/interactify-unit';
-import { TriggerType } from '@/modes/integrated-mode/interactify-unit/types/constants';
+import IntegratedUnit from '@/modes/integrated-mode/integrated-unit/integrated-unit';
+import { TriggerType } from '@/modes/integrated-mode/integrated-unit/types/constants';
 import { LeafID } from '@/modes/integrated-mode/types/definitions';
 
 import { Component, debounce, MarkdownView } from 'obsidian';
@@ -15,7 +15,7 @@ export default class IntegratedMode extends Component {
     readonly context: IntegratedModeContext;
     state: State;
 
-    constructor(public readonly plugin: InteractifyPlugin) {
+    constructor(public readonly plugin: IzdPlugin) {
         super();
         this.context = new IntegratedModeContext(this);
         this.state = new State(this);
@@ -120,7 +120,7 @@ export default class IntegratedMode extends Component {
     }
 
     private setupInternalEventHandlers(): void {
-        this.plugin.emitter.on('unit.created', (unit: InteractifyUnit) => {
+        this.plugin.emitter.on('unit.created', (unit: IntegratedUnit) => {
             const leafID = this.context.leafID;
             if (!leafID) {
                 this.plugin.logger.warn('No active leaf found.');

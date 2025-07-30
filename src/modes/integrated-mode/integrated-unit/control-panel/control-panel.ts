@@ -1,14 +1,14 @@
-import { FoldPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/fold';
-import { MovePanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/move';
-import { ServicePanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/service';
-import TipPanel from '@/modes/integrated-mode/interactify-unit/control-panel/panels/tip';
-import { ZoomPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/panels/zoom';
-import { IControlPanel } from '@/modes/integrated-mode/interactify-unit/control-panel/types/interfaces';
-import { TriggerType } from '@/modes/integrated-mode/interactify-unit/types/constants';
+import { FoldPanel } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/fold';
+import { MovePanel } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/move';
+import { ServicePanel } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/service';
+import TipPanel from '@/modes/integrated-mode/integrated-unit/control-panel/panels/tip';
+import { ZoomPanel } from '@/modes/integrated-mode/integrated-unit/control-panel/panels/zoom';
+import { IControlPanel } from '@/modes/integrated-mode/integrated-unit/control-panel/types/interfaces';
+import { TriggerType } from '@/modes/integrated-mode/integrated-unit/types/constants';
 
 import { Component } from 'obsidian';
 
-import InteractifyUnit from '../interactify-unit';
+import IntegratedUnit from '../integrated-unit';
 
 export class ControlPanel extends Component implements IControlPanel {
     private static readonly BUTTON_SIZE = 34; // size 30 px plus padding 4 px
@@ -23,7 +23,7 @@ export class ControlPanel extends Component implements IControlPanel {
 
     controlPanel!: HTMLElement;
 
-    constructor(public unit: InteractifyUnit) {
+    constructor(public unit: IntegratedUnit) {
         super();
     }
 
@@ -31,7 +31,7 @@ export class ControlPanel extends Component implements IControlPanel {
         this.load();
 
         this.controlPanel = this.unit.context.container.createDiv();
-        this.controlPanel.addClass('interactify-control-panel');
+        this.controlPanel.addClass('izd-control-panel');
 
         this.move = new MovePanel(this);
         this.zoom = new ZoomPanel(this);

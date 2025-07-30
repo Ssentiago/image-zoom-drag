@@ -1,4 +1,4 @@
-import InteractifyPlugin from '@/core/interactify-plugin';
+import IzdPlugin from '@/core/izd-plugin';
 
 import { moment } from 'obsidian';
 
@@ -6,7 +6,7 @@ export default class UserState {
     isFirstLaunch = false;
     shouldShowTips = false;
 
-    constructor(private readonly plugin: InteractifyPlugin) {}
+    constructor(private readonly plugin: IzdPlugin) {}
 
     async initialize(): Promise<void> {
         this.isFirstLaunch = await this.getIsFirstLaunch();
@@ -16,18 +16,17 @@ export default class UserState {
     private async getIsFirstLaunch(): Promise<boolean> {
         const currentCtime = await this.getPluginCtime();
 
-        const savedCtime =
-            this.plugin.app.loadLocalStorage('interactify-ctime');
+        const savedCtime = this.plugin.app.loadLocalStorage('izd-ctime');
 
         if (typeof savedCtime !== 'string') {
-            this.plugin.app.saveLocalStorage('interactify-ctime', currentCtime);
+            this.plugin.app.saveLocalStorage('izd-ctime', currentCtime);
             return true;
         }
 
         const isEqual = savedCtime === currentCtime;
 
         if (!isEqual) {
-            this.plugin.app.saveLocalStorage('interactify-ctime', currentCtime);
+            this.plugin.app.saveLocalStorage('izd-ctime', currentCtime);
             return true;
         }
         return false;
@@ -35,14 +34,13 @@ export default class UserState {
 
     getShouldShowTips(): boolean {
         const shouldShowTips = this.plugin.app.loadLocalStorage(
-            'interactify-should-show-tips'
+            'izd-should-show-tips'
         );
         if (typeof shouldShowTips === 'string') {
             return false;
         }
 
-        const savedCtime =
-            this.plugin.app.loadLocalStorage('interactify-ctime');
+        const savedCtime = this.plugin.app.loadLocalStorage('izd-ctime');
         if (typeof savedCtime !== 'string') {
             return true;
         }
@@ -57,10 +55,7 @@ export default class UserState {
     }
 
     markTipsViewed(): void {
-        this.plugin.app.saveLocalStorage(
-            'interactify-should-show-tips',
-            'viewed'
-        );
+        this.plugin.app.saveLocalStorage('izd-should-show-tips', 'viewed');
     }
 
     private async getPluginCtime(): Promise<string> {

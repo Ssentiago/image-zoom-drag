@@ -2,7 +2,7 @@ import { HTMLElementWithCMView } from '@/modes/integrated-mode/adapters/types/in
 import {
     PreviewContextData,
     SourceData,
-} from '@/modes/integrated-mode/interactify-unit/types/interfaces';
+} from '@/modes/integrated-mode/integrated-unit/types/interfaces';
 import { isThisSvgIcon } from '@/utils/dom-utils';
 
 import { MarkdownPostProcessorContext, MarkdownView } from 'obsidian';
