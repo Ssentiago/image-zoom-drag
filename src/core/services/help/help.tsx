@@ -11,7 +11,9 @@ export default class Help extends Component {
 
     constructor(readonly plugin: IzdPlugin) {
         super();
+    }
 
+    onload(): void {
         if (this.plugin.userState.isFirstLaunch) {
             this.plugin.showInteractiveNotice(
                 'New to Image Zoom & Drag? Click here for quick start guide (auto-hide in 1 min)',
@@ -21,6 +23,8 @@ export default class Help extends Component {
                 60000
             );
         }
+
+        this.setupCommands();
     }
 
     showModal(mode: 'full' | 'minimal'): void {
@@ -47,5 +51,13 @@ export default class Help extends Component {
 
     onunload(): void {
         this.closeModal();
+    }
+
+    setupCommands(): void {
+        this.plugin.addCommand({
+            id: 'open-help-guide',
+            name: 'Open help guide',
+            callback: () => this.showModal('full'),
+        });
     }
 }
