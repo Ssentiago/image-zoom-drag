@@ -3,11 +3,34 @@ import { HelpRootProps } from '@/core/services/help/ui/HelpRoot';
 import HelpSection from '@/core/services/help/ui/HelpSection';
 import { BaseUnitContext } from '@/core/services/types/interfaces';
 
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { OModal } from '@obsidian-lib/native-react-components';
 import { Component, MarkdownRenderer } from 'obsidian';
 import styled from 'styled-components';
+
+const ModeToggle = styled.div`
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background: var(--background-secondary);
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+`;
+
+const ToggleButton = styled.button`
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: var(--background-primary);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--background-modifier-hover);
+    }
+`;
 
 const ContentWrapper = styled.div`
     display: flex;
@@ -81,8 +104,13 @@ const renderMermaid = async (
     await new Promise((resolve) => requestAnimationFrame(resolve));
 };
 
-const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
+const HelpContent: FC<HelpContentProps> = ({
+    onClose,
+    mode: externalMode,
+    help,
+}) => {
     const diagramSectionRef = useRef<HTMLDivElement>(null);
+    const [mode, setMode] = useState(externalMode);
 
     useEffect(() => {
         let component: Component | null = null;
@@ -106,6 +134,16 @@ const HelpContent: FC<HelpContentProps> = ({ onClose, mode, help }) => {
             height={'100%'}
             width={'100%'}
         >
+            <ModeToggle>
+                <span>Help mode: {mode === 'full' ? 'Detailed' : 'Quick'}</span>
+                <ToggleButton
+                    onClick={() =>
+                        setMode(mode === 'full' ? 'minimal' : 'full')
+                    }
+                >
+                    {mode === 'full' ? 'Show less' : 'Show more'}
+                </ToggleButton>
+            </ModeToggle>
             {mode === 'full' && (
                 <HelpSection title={'Picker mode'}>
                     <p>
