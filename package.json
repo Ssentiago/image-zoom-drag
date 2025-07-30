@@ -1,10 +1,10 @@
 {
-    "author": "ChenPengyuan(gitcpy) & Ssentiago",
+    "name": "image-zoom-drag",
     "description": "Make any image or diagram interactive with zoom, drag, and control panels",
+    "author": "ChenPengyuan(gitcpy) & Ssentiago",
     "keywords": [],
     "license": "Apache-2.0",
     "main": "src/main.ts",
-    "name": "image-zoom-drag",
     "repository": "https://github.com/Ssentiago/image-zoom-drag.git",
     "type": "module",
     "version": "6.0.1",
