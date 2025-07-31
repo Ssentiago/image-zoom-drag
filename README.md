@@ -1,5 +1,10 @@
 # Image Zoom & Drag
 
+[![Downloads](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json&query=$.diagram-zoom-drag.downloads&label=downloads&style=for-the-badge)](https://obsidian.md/plugins?id=diagram-zoom-drag)
+[![Release](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/Ssentiago/image-zoom-drag/main/manifest.json&query=$.version&label=release&style=for-the-badge)](https://github.com/Ssentiago/image-zoom-drag/releases/latest)
+
+
+
 > **Note:** Previously known as "Diagram Zoom Drag". Same plugin, expanded features!
 
 Interactive image viewer for Obsidian with zoom, drag, and multiple viewing modes.
