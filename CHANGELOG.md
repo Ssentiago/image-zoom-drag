@@ -1,3 +1,8 @@
+# 6.1.1
+
+## Fixes
+- Fixed navigation on the images gallery in popup mode and added on-screen navigation buttons
+
 # 6.1.0
 - Rebranded to Image Zoom & Drag
 
