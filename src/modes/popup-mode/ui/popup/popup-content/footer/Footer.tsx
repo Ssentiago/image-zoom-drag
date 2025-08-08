@@ -72,12 +72,25 @@ const generateThumbnail = (
     });
 };
 
-const ThumbnailButton = styled(BaseButton)<{ $isActive: boolean }>`
+const ThumbnailButton = styled(BaseButton)<{
+    $isActive: boolean;
+    $opacity: number;
+}>`
     width: 60px;
     height: 60px;
     margin: 0;
     border: ${(props) =>
         props.$isActive ? '2px solid #007acc' : '1px solid #ccc'};
+    transform: ${(props) => (props.$isActive ? 'scale(1.02)' : 'scale(1)')};
+    box-shadow: ${(props) =>
+        props.$isActive
+            ? '0 6px 12px rgba(0,0,0,0.25)'
+            : '0 2px 4px rgba(0,0,0,0.1)'};
+    opacity: ${(props) => props.$opacity};
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        opacity 0.2s ease;
 
     img {
         width: 100%;
@@ -89,6 +102,10 @@ const ThumbnailButton = styled(BaseButton)<{ $isActive: boolean }>`
 const Footer = () => {
     const { images, activeImageIndex, setActiveImageIndex } = usePopupContext();
     const [thumbnails, setThumbnails] = useState<string[]>([]);
+
+    const [paginatedThumbnails, setPaginatedThumbnails] = useState<string[]>(
+        []
+    );
 
     useEffect(() => {
         const generateThumbnails = async () => {
@@ -106,24 +123,58 @@ const Footer = () => {
         generateThumbnails();
     }, [images]);
 
+    useEffect(() => {
+        const VISIBLE_COUNT = 11;
+        const HALF_COUNT = Math.floor(VISIBLE_COUNT / 2);
+
+        let startIndex = Math.max(0, activeImageIndex - HALF_COUNT);
+        let endIndex = Math.min(thumbnails.length, startIndex + VISIBLE_COUNT);
+
+        if (endIndex - startIndex < VISIBLE_COUNT) {
+            startIndex = Math.max(0, endIndex - VISIBLE_COUNT);
+        }
+
+        const paginated = thumbnails.slice(startIndex, endIndex);
+        setPaginatedThumbnails(paginated);
+    }, [thumbnails, activeImageIndex]);
+
     return (
         <SFooter>
             <Counter>
                 {activeImageIndex + 1} / {images.length}
             </Counter>
             <GalleryContainer>
-                {thumbnails.map((thumb, index) => (
-                    <ThumbnailButton
-                        key={index}
-                        $isActive={index === activeImageIndex}
-                        onClick={() => setActiveImageIndex(index)}
-                    >
-                        <img
-                            src={thumb}
-                            alt={`Thumbnail ${index}`}
-                        />
-                    </ThumbnailButton>
-                ))}
+                {paginatedThumbnails.map((thumb, index) => {
+                    const HALF_COUNT = Math.floor(11 / 2);
+                    let startIndex = Math.max(0, activeImageIndex - HALF_COUNT);
+                    let endIndex = Math.min(thumbnails.length, startIndex + 11);
+
+                    if (endIndex - startIndex < 11) {
+                        startIndex = Math.max(0, endIndex - 11);
+                    }
+
+                    const globalIndex = startIndex + index;
+                    const isActive = globalIndex === activeImageIndex;
+
+                    const distanceFromCenter = Math.abs(index - 5);
+                    const opacity = isActive
+                        ? 1
+                        : Math.max(0.3, 1 - distanceFromCenter * 0.15);
+
+                    return (
+                        <ThumbnailButton
+                            key={globalIndex}
+                            $isActive={isActive}
+                            $opacity={opacity}
+                            onClick={() => setActiveImageIndex(globalIndex)}
+                        >
+                            <img
+                                src={thumb}
+                                alt={`Thumbnail ${globalIndex}`}
+                            />
+                        </ThumbnailButton>
+                    );
+                })}{' '}
             </GalleryContainer>
         </SFooter>
     );

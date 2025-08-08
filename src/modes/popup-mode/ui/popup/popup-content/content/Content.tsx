@@ -16,15 +16,6 @@ const fadeIn = keyframes`
     }
 `;
 
-const Container = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    pointer-events: none;
-`;
-
 const DraggableWrapper = styled.div<{
     isDragging: boolean;
     x: number;
@@ -40,14 +31,67 @@ const DraggableWrapper = styled.div<{
     transform-origin: center;
 `;
 
+const NavigationButton = styled.button<{ $side: 'left' | 'right' }>`
+    position: absolute;
+    top: 50%;
+    ${(props) => props.$side}: 20px;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    opacity: 0.7;
+    transition:
+        opacity 0.2s ease,
+        background 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: auto;
+
+    &:hover {
+        opacity: 1 !important;
+        background: rgba(0, 0, 0, 0.6);
+    }
+`;
+
+const Container = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+    position: relative;
+`;
+
 const Content: FC = () => {
-    const { images, activeImageIndex } = usePopupContext();
+    const { images, activeImageIndex, setActiveImageIndex } = usePopupContext();
     const containerRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [scale, setScale] = useState(1);
+
+    const handlePrevious = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (activeImageIndex > 0) {
+            setActiveImageIndex(activeImageIndex - 1);
+        }
+    };
+
+    const handleNext = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (activeImageIndex < images.length - 1) {
+            setActiveImageIndex(activeImageIndex + 1);
+        }
+    };
 
     const calculateInitialScale = () => {
         if (!containerRef.current || !imageRef.current) return 1;
@@ -160,6 +204,24 @@ const Content: FC = () => {
                     <ImageViewer img={images[activeImageIndex]} />
                 </div>
             </DraggableWrapper>
+
+            {activeImageIndex > 0 && (
+                <NavigationButton
+                    $side='left'
+                    onClick={handlePrevious}
+                >
+                    ‹
+                </NavigationButton>
+            )}
+
+            {activeImageIndex < images.length - 1 && (
+                <NavigationButton
+                    $side='right'
+                    onClick={handleNext}
+                >
+                    ›
+                </NavigationButton>
+            )}
         </Container>
     );
 };
