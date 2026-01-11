@@ -41,8 +41,9 @@ export class Mouse extends Component implements Handler {
     }
 
     private readonly wheel = (event: WheelEvent): void => {
+        const modifierKey = event.ctrlKey || event.metaKey;
         if (
-            !event.ctrlKey &&
+            !modifierKey &&
             document.fullscreenElement !== this.events.unit.context.content
         ) {
             return;
