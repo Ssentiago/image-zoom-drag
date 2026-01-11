@@ -18,8 +18,9 @@ export class Keyboard extends Component implements Handler {
     }
 
     keyDown = async (event: KeyboardEvent): Promise<void> => {
-        const { code, ctrlKey, shiftKey, altKey } = event;
+        const { code, ctrlKey, metaKey, shiftKey, altKey } = event;
         const actions = this.events.unit.actions;
+        const modifierKey = ctrlKey || metaKey;
 
         const moveKeys = {
             ArrowUp: () => actions.moveElement(0, 50, { animated: true }),
@@ -54,11 +55,11 @@ export class Keyboard extends Component implements Handler {
 
         let handler = null;
 
-        if (ctrlKey && altKey && code in ctrlAltKeys) {
+        if (modifierKey && altKey && code in ctrlAltKeys) {
             handler = ctrlAltKeys[code as keyof typeof ctrlAltKeys];
-        } else if (ctrlKey && code in ctrlKeys) {
+        } else if (modifierKey && code in ctrlKeys) {
             handler = ctrlKeys[code as keyof typeof ctrlKeys];
-        } else if (!ctrlKey && !shiftKey && code in moveKeys) {
+        } else if (!modifierKey && !shiftKey && code in moveKeys) {
             handler = moveKeys[code as keyof typeof moveKeys];
         }
 
