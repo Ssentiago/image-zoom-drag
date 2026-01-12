@@ -77,7 +77,7 @@ export function defaultSettings(): DefaultSettings {
                 preset: 'none',
                 panels: {
                     service: {
-                        on: false,
+                        on: true,
                         buttons: {
                             hide: true,
                             fullscreen: true,
@@ -88,7 +88,7 @@ export function defaultSettings(): DefaultSettings {
                         },
                     },
                     move: {
-                        on: false,
+                        on: true,
                         buttons: {
                             up: true,
                             down: true,
@@ -105,7 +105,7 @@ export function defaultSettings(): DefaultSettings {
                         },
                     },
                     zoom: {
-                        on: false,
+                        on: true,
                         buttons: {
                             in: true,
                             out: true,

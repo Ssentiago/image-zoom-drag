@@ -41,8 +41,9 @@ export class Mouse extends Component implements Handler {
     }
 
     private readonly wheel = (event: WheelEvent): void => {
+        const modifierKey = event.ctrlKey || event.metaKey;
         if (
-            !event.ctrlKey &&
+            !modifierKey &&
             document.fullscreenElement !== this.events.unit.context.content
         ) {
             return;
@@ -92,14 +93,22 @@ export class Mouse extends Component implements Handler {
         const isHorizontal = event.shiftKey && !event.altKey;
         const isVertical = event.shiftKey && event.altKey;
 
+        // Use whichever delta has the larger magnitude. On macOS, holding Shift
+        // causes the browser to convert vertical scroll to horizontal, putting
+        // the value in deltaX instead of deltaY.
+        const delta =
+            Math.abs(event.deltaX) > Math.abs(event.deltaY)
+                ? event.deltaX
+                : event.deltaY;
+
         let x = 0,
             y = 0;
 
         if (isHorizontal) {
-            x = event.deltaY > 0 ? 20 : -20;
+            x = delta > 0 ? 20 : -20;
         }
         if (isVertical) {
-            y = event.deltaY > 0 ? 20 : -20;
+            y = delta > 0 ? 20 : -20;
         }
 
         this.events.unit.actions.moveElement(x, y, { animated: true });
