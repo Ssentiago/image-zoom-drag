@@ -6,7 +6,8 @@
 ## Fixes
 - Keyboard shortcut `Shift + Mouse Scroll` now works properly on macOS
 - All keyboard shortcuts with `Ctrl` key now also support `Cmd` key as modifier
-  Big thanks to @andybergon for both macOS fixes!
+
+Big thanks to @andybergon for both macOS fixes!
 
 # 6.1.1
 
