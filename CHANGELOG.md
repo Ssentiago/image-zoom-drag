@@ -1,3 +1,10 @@
+# 6.1.3
+
+## Fixes
+- Resolve bug with clicking links inside diagrams.
+
+Thanks to @angelo-daumas and his #83
+
 # 6.1.2
 
 ## Features
