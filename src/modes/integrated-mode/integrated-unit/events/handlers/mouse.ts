@@ -32,6 +32,8 @@ export class Mouse extends Component implements Handler {
         this.registerDomEvent(container, 'mouseenter', this.mouseEnter);
 
         this.registerDomEvent(container, 'dblclick', this.dblclick);
+
+        this.registerDomEvent(container, 'click', this.click);
     }
 
     get elements() {
@@ -186,5 +188,16 @@ export class Mouse extends Component implements Handler {
         this.events.unit.actions.resetZoomAndMove({ animated: true });
         event.stopPropagation();
         event.preventDefault();
+    };
+
+    // to handle case when user click on links in diagrams
+    private readonly click = (event: MouseEvent) => {
+        const x = event.clientX;
+        const y = event.clientY;
+
+        if (!(this.startX === x && this.startY === y)) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     };
 }
