@@ -6,18 +6,11 @@ export default class ImageConverter {
         format: 'png' | 'jpg' | 'svg'
     ): Promise<Blob> {
         let blob: Blob;
+        const normalizedFormat = format === 'png' ? 'png' : 'jpeg';
 
         if (img instanceof SVGElement) {
-            if (format === 'svg') {
-                blob = this.svgToBlob(img);
-            } else {
-                blob = await this.drawSVGAsRaster(
-                    img,
-                    format === 'png' ? 'png' : 'jpeg'
-                );
-            }
+            blob = await this.svgToRasterWithStyles(img, normalizedFormat);
         } else {
-            const normalizedFormat = format === 'png' ? 'png' : 'jpeg';
             try {
                 blob = await this.fetchImg(img, normalizedFormat);
             } catch {
@@ -28,46 +21,11 @@ export default class ImageConverter {
         return blob;
     }
 
-    private async drawSVGAsRaster(
-        svg: SVGElement,
-        format: 'png' | 'jpeg'
-    ): Promise<Blob> {
-        const svgData = this.svgToCode(svg);
-        const img = new Image();
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d')!;
-
-        const dataURL = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgData)}`;
-        img.src = dataURL;
-
-        await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
-        });
-
-        canvas.width = img.naturalWidth || 800; // fallback size
-        canvas.height = img.naturalHeight || 600;
-        ctx.drawImage(img, 0, 0);
-
-        return new Promise((resolve) => {
-            canvas.toBlob((blob) => resolve(blob!), `image/${format}`);
-        });
-    }
-
     svgToCode(element: SVGElement): string {
         if (element instanceof SVGElement) {
             return new XMLSerializer().serializeToString(element);
         }
         return '';
-    }
-
-    svgToBlob(element: SVGElement): Blob {
-        const svgData = this.svgToCode(element);
-        const preface = '<?xml version="1.0" standalone="no"?>\r\n';
-        return new Blob([preface, svgData], {
-            type: 'image/svg+xml;charset=utf-8',
-        });
     }
 
     async fetchImg(
@@ -90,5 +48,66 @@ export default class ImageConverter {
         return new Promise((resolve) => {
             canvas.toBlob((blob) => resolve(blob!), `image/${format}`);
         });
+    }
+
+    private async svgToRasterWithStyles(
+        svg: SVGElement,
+        format: 'png' | 'jpeg'
+    ): Promise<Blob> {
+        const clone = svg.cloneNode(true) as SVGElement;
+
+        this.inlineComputedStyles(svg, clone);
+
+        const rect = svg.getBoundingClientRect();
+        clone.setAttribute('width', String(rect.width));
+        clone.setAttribute('height', String(rect.height));
+
+        const bgColor = getComputedStyle(document.body).backgroundColor;
+
+        const svgData = new XMLSerializer().serializeToString(clone);
+        const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgData)}`;
+
+        const img = new Image();
+        img.src = dataUrl;
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext('2d')!;
+
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(img, 0, 0);
+
+        return new Promise((resolve, reject) => {
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    reject(new Error('toBlob returned null'));
+                    return;
+                }
+                resolve(blob);
+            }, `image/${format}`);
+        });
+    }
+
+    private inlineComputedStyles(source: Element, target: Element): void {
+        const computed = getComputedStyle(source);
+        const el = target as SVGElement;
+
+        for (let i = 0; i < computed.length; i++) {
+            const prop = computed[i];
+            el.style.setProperty(prop, computed.getPropertyValue(prop));
+        }
+
+        const sourceChildren = source.children;
+        const targetChildren = target.children;
+        for (let i = 0; i < sourceChildren.length; i++) {
+            this.inlineComputedStyles(sourceChildren[i], targetChildren[i]);
+        }
     }
 }
