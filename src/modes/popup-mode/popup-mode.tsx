@@ -1,4 +1,5 @@
 import IzdPlugin from '@/core/izd-plugin';
+import ImageConverter from '@/modes/integrated-mode/integrated-unit/events/handlers/context-menu/context-actions/utils/image-converter';
 import PopupRoot from '@/modes/popup-mode/ui/PopupRoot';
 import { isThisSvgIcon } from '@/utils/dom-utils';
 
@@ -8,9 +9,13 @@ import { createRoot, Root } from 'react-dom/client';
 export default class PopupMode extends Component {
     popupDiv: HTMLDivElement | null = null;
     popupRoot: Root | null = null;
+    imgConverter!: ImageConverter;
+    objectUrls: string[];
 
     constructor(readonly plugin: IzdPlugin) {
         super();
+        this.imgConverter = new ImageConverter();
+        this.objectUrls = [];
     }
 
     initialize(): void {
@@ -67,14 +72,29 @@ export default class PopupMode extends Component {
 
         await new Promise((resolve) => requestAnimationFrame(resolve));
 
-        const images = Array.from(el.querySelectorAll('img')).filter(
+        const images = Array.from(el.querySelectorAll('img,svg')).filter(
             (img) => !isThisSvgIcon(img)
         ) as Array<HTMLImageElement | SVGElement>;
+
+        const preparedImages = Promise.all(
+            images.map(async (img) => {
+                if (img instanceof HTMLImageElement) {
+                    return img;
+                } else {
+                    const blob = await this.imgConverter.imgToBlob(img, 'png');
+                    const url = URL.createObjectURL(blob);
+                    const newImg = new Image();
+                    newImg.src = url;
+                    this.objectUrls.push(url);
+                    return newImg;
+                }
+            })
+        );
 
         el.remove();
         component.unload();
 
-        return images;
+        return preparedImages;
     }
 
     async showPopupForViewImages(): Promise<void> {
@@ -92,7 +112,16 @@ export default class PopupMode extends Component {
     async showPopupForImage(
         image: HTMLImageElement | SVGElement
     ): Promise<void> {
-        await this.showPopup(image);
+        if (image instanceof HTMLImageElement) {
+            await this.showPopup(image);
+        } else {
+            const blob = await this.imgConverter.imgToBlob(image, 'png');
+            const url = URL.createObjectURL(blob);
+            const newImg = new Image();
+            newImg.src = url;
+            this.objectUrls.push(url);
+            await this.showPopup(newImg);
+        }
     }
 
     async showPopup(
@@ -102,7 +131,7 @@ export default class PopupMode extends Component {
             | Array<HTMLImageElement | SVGElement>
     ): Promise<void> {
         const images = Array.isArray(image) ? image : [image];
-
+        console.log(images);
         this.popupDiv ??= document.body.createDiv();
         if (!this.popupRoot) {
             this.popupRoot = createRoot(this.popupDiv);
@@ -119,6 +148,9 @@ export default class PopupMode extends Component {
     }
 
     closePopup(): void {
+        this.objectUrls.forEach((url) => {
+            URL.revokeObjectURL(url);
+        });
         this.popupRoot?.unmount();
         this.popupRoot = null;
         this.popupDiv?.remove();
