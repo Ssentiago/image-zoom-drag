@@ -1,4 +1,5 @@
-import { Component, Menu, requestUrl } from 'obsidian';
+import electron from 'electron';
+import { Component } from 'obsidian';
 
 import { ContextMenu } from '../context-menu';
 import ImageConverter from './utils/image-converter';
@@ -39,17 +40,25 @@ export class Copy extends Component {
     }
 
     async writeToBuffer(blob: Blob, format: 'png' | 'plain'): Promise<void> {
-        const mimeTypes = {
-            png: 'image/png',
-            plain: 'text/plain',
-        };
+        if (format === 'plain') {
+            const text = await blob.text();
+            await navigator.clipboard.writeText(text);
+            return;
+        }
 
-        const mimeType = mimeTypes[format];
+        // desktop — electron
+        if (electron) {
+            const { clipboard, nativeImage } = electron;
+            const arrayBuffer = await blob.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            const image = nativeImage.createFromBuffer(buffer);
+            clipboard.writeImage(image);
+            return;
+        }
 
+        // mobile — browser clipboard API
         await navigator.clipboard.write([
-            new ClipboardItem({
-                [mimeType]: blob,
-            }),
+            new ClipboardItem({ 'image/png': blob }),
         ]);
     }
 }
