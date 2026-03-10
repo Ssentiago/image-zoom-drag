@@ -148,6 +148,7 @@ export default class IntegratedUnitStateManager extends Component {
 
                     if (
                         e.target.closest('.izd-control-panel') ||
+                        this.unit.context.element.contains(e.target) ||
                         !this.unit.context.container.contains(e.target)
                     )
                         return;

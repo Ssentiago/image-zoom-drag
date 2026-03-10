@@ -146,14 +146,13 @@ export class ContextMenu extends Component implements Handler {
 
         menu.addSeparator();
 
-        !(element instanceof SVGElement) &&
-            menu.addItem((item) => {
-                item.setIcon('maximize-2');
-                item.setTitle('Open this image in popup window');
-                item.onClick(async () => {
-                    await this.openInPopup.openPopupForImage(element);
-                });
+        menu.addItem((item) => {
+            item.setIcon('maximize-2');
+            item.setTitle('Open this image in popup window');
+            item.onClick(async () => {
+                await this.openInPopup.openPopupForImage(element);
             });
+        });
 
         menu.addItem((item) => {
             item.setIcon('info');

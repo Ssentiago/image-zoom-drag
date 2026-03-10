@@ -260,10 +260,6 @@ export default class PickerMode extends Component {
         const interactive = element as HTMLImageElement | SVGElement;
 
         if (event.altKey) {
-            if (element instanceof SVGElement) {
-                this.plugin.showNotice('SVG support coming soon! Stay tuned!');
-                return;
-            }
             await this.plugin.popupMode.showPopup(interactive);
             this.deactivate();
             return;
