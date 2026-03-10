@@ -1,3 +1,14 @@
+# 6.2.0
+## Features
+- Revert SVG images (diagrams, etc.) to opening in Popup mode (beta)
+- Add notification when copying via the image context menu is done
+- Improve svg diagrams export: inline all CSS styles. What you see on screen is what gets exported / copied
+
+## Fixes
+- Fix issue with clicking links inside diagrams in live-preview mode
+
+Thanks to @angelo-daumas for the fix
+
 # 6.1.3
 
 ## Fixes
