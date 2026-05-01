@@ -1,4 +1,5 @@
 import IzdPlugin from '@/core/izd-plugin';
+import { SettingsEventPayload } from '@/settings/types/interfaces';
 
 import { Component, MarkdownView } from 'obsidian';
 
@@ -10,10 +11,14 @@ import ImageIndexer from './image-indexer';
 export default class LeafIndex extends Component {
     data: Map<string, LeafIndexData> = new Map();
     activeLeafContext: LeafContext | undefined;
+    pathsCache: string[];
 
     constructor(readonly plugin: IzdPlugin) {
         super();
+        this.pathsCache =
+            this.plugin.settings.$.units.exclusions.patterns.split('\n');
         this.load();
+        this.setupOwnEventsHandler();
         this.setupObsidianEventHandlers();
     }
 
@@ -27,6 +32,18 @@ export default class LeafIndex extends Component {
         this.plugin.app.workspace.on('active-leaf-change', async () => {
             await this.updateIndex();
         });
+    }
+    private setupOwnEventsHandler() {
+        this.plugin.emitter.on(
+            this.plugin.settings.$$.units.exclusions.patterns.$path,
+            (e: SettingsEventPayload) => {
+                const oldValue = e.oldValue as string;
+                const newValue = e.newValue as string;
+                if (oldValue !== newValue) {
+                    this.pathsCache = newValue.split('\n');
+                }
+            }
+        );
     }
 
     private async updateIndex(): Promise<void> {
@@ -62,6 +79,10 @@ export default class LeafIndex extends Component {
         const view =
             this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
         if (!view) {
+            return;
+        }
+
+        if (this.isExcluded(view.file?.path)) {
             return;
         }
 
@@ -149,5 +170,38 @@ export default class LeafIndex extends Component {
             data.imageIndex.set(elementCtx.element, elementCtx);
             this.plugin.emitter.emit('leaf-index.image.added', elementCtx);
         }
+    }
+
+    private isExcluded(filePath: string | undefined): boolean {
+        if (!filePath || this.pathsCache.length === 0) {
+            return false;
+        }
+        return this.pathsCache.some((pattern) => {
+            const trimmed = pattern.trim();
+            if (!trimmed || trimmed.startsWith('#')) {
+                return false;
+            }
+            return this.matchPattern(trimmed, filePath);
+        });
+    }
+
+    private matchPattern(pattern: string, filePath: string): boolean {
+        if (pattern.endsWith('/')) {
+            return (
+                filePath.startsWith(pattern) || filePath.includes('/' + pattern)
+            );
+        }
+
+        const regexStr = pattern
+            .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+            .replace(/\*\*/g, '.+')
+            .replace(/\*/g, '[^/]+');
+
+        const anchored = pattern.startsWith('/');
+        const regex = new RegExp(
+            anchored ? `^${regexStr}$` : `(^|/)${regexStr}$`
+        );
+
+        return regex.test(filePath);
     }
 }

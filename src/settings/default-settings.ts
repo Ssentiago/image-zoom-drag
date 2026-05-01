@@ -65,6 +65,9 @@ export function defaultSettings(): DefaultSettings {
                     },
                 },
             })),
+            exclusions: {
+                patterns: '',
+            },
         },
         panels: {
             global: {
