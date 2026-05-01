@@ -132,6 +132,9 @@ export interface Units {
         expanded: DimensionSetting;
         folded: DimensionSetting;
     };
+    exclusions: {
+        patterns: string;
+    };
 }
 
 export enum DebugLevel {

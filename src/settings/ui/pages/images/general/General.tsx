@@ -1,3 +1,5 @@
+import Exclusions from '@/settings/ui/pages/images/general/exclusions/Exclusions';
+
 import React from 'react';
 
 import ContextMenu from './context-menu/ContextMenu';
@@ -12,6 +14,7 @@ const General: React.FC = (): React.ReactElement => {
             <Size />
             <Folding />
             <ContextMenu />
+            <Exclusions />
         </>
     );
 };

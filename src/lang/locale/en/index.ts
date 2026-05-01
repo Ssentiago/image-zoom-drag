@@ -162,6 +162,13 @@ const Locale: LocaleSchema  = {
                     }
                 },
                 general: {
+                    exclusions: {
+                        patterns: {
+                            desc: "One pattern per line. Paths are relative to vault root. End with / to match folders. Wildcards: * (any chars), ** (any depth).",
+                            header: "Exclusions",
+                            name: "Excluded paths"
+                        }
+                    },
                     fold: {
                         autoFoldOnFocusChange: {
                             name: "Automatically fold images on focus change"

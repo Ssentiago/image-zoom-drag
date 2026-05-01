@@ -143,6 +143,13 @@ export interface LocaleSchema {
                     };
                 };
                 general: {
+                    exclusions: {
+                        patterns: {
+                            desc: string;
+                            header: string;
+                            name: string;
+                        };
+                    };
                     fold: {
                         autoFoldOnFocusChange: {
                             name: string;
