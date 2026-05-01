@@ -1,3 +1,7 @@
+# 6.3.0
+## Features
+- Add path exclusions: specify patterns to exclude certain files or folders from being processed by the plugin
+
 # 6.2.0
 ## Features
 - Revert SVG images (diagrams, etc.) to opening in Popup mode (beta)
